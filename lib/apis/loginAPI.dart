@@ -10,15 +10,19 @@ Future<LoginModel> loginAPI(BuildContext context, String email, String password)
   Dio dio = new Dio();
   final response = await dio.post(
     url,
-     data: {"email": email,"password": password});
-      
+     data: {"email": email,"password": password}).catchError(
+      (dynamicError){
+        print("called error loop");
+        showDialogSingleButton(context, "Unable to Login", "Please Try Again", "OK");
+      }
+  );
+
+
   if (response.statusCode == 200) {
+    print("called if loop");
        Navigator.of(context).pushReplacementNamed('/HomeScreen');
     }
-    else {
-          showDialogSingleButton(context, "Unable to Login", "Please Try Again", "OK");
-    return null;
-  }
+
   loginModel = LoginModel(
         response.data["email"],
         response.data["password"],
