@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:Flavr/ui/loginModel.dart';
+import 'package:Flavr/model/loginModel.dart';
 
 Future<LoginModel> loginAPI(BuildContext context, String email, String password) async {
   LoginModel loginModel;
