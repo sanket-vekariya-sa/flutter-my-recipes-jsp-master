@@ -1,11 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
-import 'dart:io';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:dio/dio.dart';
+import 'dart:io';
 
-class FeedListPage extends StatefulWidget {
+class FeedListPage extends StatefulWidget{
   int loginData;
+
+
 
   @override
   _HomeScreenState createState() => new _HomeScreenState();
@@ -19,9 +21,9 @@ class _HomeScreenState extends State<FeedListPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-      ),
+//      appBar: AppBar(
+//        title: Text("Home"),
+//      ),
       resizeToAvoidBottomPadding: false,
       key: login_state,
       body: FutureBuilder<dynamic>(
@@ -58,14 +60,29 @@ class _HomeScreenState extends State<FeedListPage> {
     await dio.get(feedDetailsURL, options: Options(headers: map));
     setState(() {
       for (var memberJSON in response1.data) {
-        final itemDetailsfeed = new ItemDetailsFeed(
-            memberJSON["name"],
-            memberJSON["photo"],
-            memberJSON["preparationTime"],
-            memberJSON["serves"],
-            memberJSON["complexity"]);
-        _feedDetails.add(itemDetailsfeed);
+        print("data coming is===$memberJSON");
+
+
+      print("inside if loop is===$memberJSON");
+      final itemDetailsfeed = new ItemDetailsFeed(
+          memberJSON["name"],
+          memberJSON["photo"],
+          memberJSON["preparationTime"],
+          memberJSON["serves"],
+          memberJSON["complexity"],
+          false);
+      _feedDetails.add(itemDetailsfeed);
+
       }
+    });
+  }
+
+  //bool liked = false;
+//
+  _pressed(int) {
+    setState(() {
+      _feedDetails[int].like = !_feedDetails[int].like;
+      ItemDetailsFeed("a","b","c","d","e",true).likeUpdate(_feedDetails[int].like);
     });
   }
 
@@ -82,12 +99,23 @@ class _HomeScreenState extends State<FeedListPage> {
             child: new Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                new Image.network(
-                  _feedDetails[index].photo,
-                  fit: BoxFit.fitWidth,
-                  width: double.infinity,
-                  height: 180,
+                new Stack(
+                  children: <Widget>[
+                    new Image.network(
+                      _feedDetails[index].photo,
+                      fit: BoxFit.fitWidth,
+                      width: double.infinity,
+                      height: 180,
+                    ),
+                    IconButton(
+                      alignment: Alignment.topRight,
+                      icon: Icon(_feedDetails[index].like ?Icons.favorite: Icons.favorite_border,
+                          color: _feedDetails[index].like ? Colors.red :Colors.grey ),
+                      onPressed: () => _pressed(index),
+                    ),
+                  ],
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 25.0, top: 10),
                   child: new Text(_feedDetails[index].name,
