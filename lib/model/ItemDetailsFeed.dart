@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ItemDetailsFeed with ChangeNotifier{
   final String name;
-  final String photo;
+  String photo;
   final String preparationTime;
   final String serves;
   final String complexity;
@@ -15,8 +15,9 @@ class ItemDetailsFeed with ChangeNotifier{
           "Received: '$name'");
     }
     if (photo == null) {
-      throw new ArgumentError("photo of ItemDetailsFeed cannot be null. "
-          "Received: '$photo'");
+//      throw new ArgumentError("photo of ItemDetailsFeed cannot be null. "
+//          "Received: '$photo'");
+      photo = "https://livingstonbagel.com/wp-content/uploads/2016/11/food-placeholder.jpg";
     }
     if (preparationTime == null) {
       throw new ArgumentError("preparationTime of ItemDetailsFeed cannot be null. "
@@ -36,4 +37,8 @@ class ItemDetailsFeed with ChangeNotifier{
     like = value;
     notifyListeners();
   }
+
+  String getName(){
+    return name;
+}
 }

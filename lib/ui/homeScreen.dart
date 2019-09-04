@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'Dining.dart';
+import 'Farvorites.dart';
 import 'FeedListPage.dart';
+import 'Profile.dart';
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() =>  _HomeScreenState();
@@ -10,9 +13,9 @@ int selectedIndex = 0;
 String appBarTitleText ='Home';
   final widgetOptions = [
     new FeedListPage(),
-    Text('Dinning'),
-    Text('Favorites'),
-    Text('Profile'),
+    new Dining(),
+    new Favorites(),
+    new Profile(),
   ];
   @override
   void initState() {
@@ -23,15 +26,17 @@ String appBarTitleText ='Home';
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding : false,
-      appBar: AppBar(title: Text(appBarTitleText, style: TextStyle(color: Colors.black),),
-        backgroundColor: Colors.white,
-          centerTitle: true,
-        actions: <Widget>[
-        new IconButton( icon: new Icon(Icons.search), onPressed: () {},),],
-        iconTheme: IconThemeData(color: Colors.black),
-        elevation:
-        Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 6.0,
-      ),
+//      appBar: AppBar(title: Text(appBarTitleText, style: TextStyle(color: Colors.black),),
+//        backgroundColor: Colors.white,
+//          centerTitle: true,
+//        actions: <Widget>[
+//        new IconButton( icon: new Icon(Icons.search), onPressed: () {
+//
+//        },),],
+//        iconTheme: IconThemeData(color: Colors.black),
+//        elevation:
+//        Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 6.0,
+//      ),
 
       backgroundColor: Colors.white,
       body: Center(
@@ -41,7 +46,7 @@ String appBarTitleText ='Home';
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
           BottomNavigationBarItem(
-              icon: Icon(Icons.local_dining), title: Text('Dinning')),
+              icon: Icon(Icons.add), title: Text('Dinning')),
           BottomNavigationBarItem(
               icon: Icon(Icons.favorite), title: Text('Favourites')),
               BottomNavigationBarItem(

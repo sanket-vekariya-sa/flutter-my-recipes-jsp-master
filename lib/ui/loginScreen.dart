@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final FocusNode _passwordFocus = FocusNode();
+  bool _obscureText = true;
 
   String validateEmail(String value) {
     Pattern pattern =
@@ -32,10 +33,16 @@ class LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
   Widget _buildTextFields() {
     return new Form(
         key: _formKey,
-        child:new Column(
+        child: new Column(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(
@@ -51,28 +58,63 @@ class LoginScreenState extends State<LoginScreen> {
                     borderSide: new BorderSide(color: Colors.black),
                   ),
                 ),
-                onFieldSubmitted: (term){
+                onFieldSubmitted: (term) {
                   FocusScope.of(context).requestFocus(_passwordFocus);
                 },
                 validator: validateEmail,
               ),
             ),
+
+//            Container(
+//            padding: const EdgeInsets.only(
+//                  right: 40.0, bottom: 20.0, left: 40.0),
+//              child: new Row(
+//                children: <Widget>[
+//                TextFormField(
+//                focusNode: _passwordFocus,
+//                  obscureText: true,
+//                  controller: _passwordController,
+//                  style: TextStyle(color: Colors.black),
+//                  decoration: InputDecoration(
+//                    labelText: 'Password',
+//                    labelStyle: TextStyle(color: Colors.grey),
+//                    border: OutlineInputBorder(
+//                      borderRadius: BorderRadius.circular(5.0),
+//                      borderSide: new BorderSide(color: Colors.black),
+//                    ),
+//
+//                  ),
+//                  validator: (value) {
+//                    if (value.isEmpty) {
+//                      return 'Please Enter Password';
+//                    }
+//                    return null;
+//                  }),
+//
+//                ],
+//              ),
+//            )
+
             Padding(
-              padding: const EdgeInsets.only(
-                  right: 40.0, bottom: 20.0, left: 40.0),
+              padding:
+                  const EdgeInsets.only(right: 40.0, bottom: 20.0, left: 40.0),
               child: TextFormField(
-                focusNode: _passwordFocus,
-                  obscureText: true,
+                  focusNode: _passwordFocus,
+                  obscureText: _obscureText,
                   controller: _passwordController,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: new BorderSide(color: Colors.black),
-                    ),
-                  ),
+                      labelText: 'Password',
+                      labelStyle: TextStyle(color: Colors.grey),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: new BorderSide(color: Colors.black),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.remove_red_eye),
+                        onPressed: _toggle,
+                        color: _obscureText ? Colors.grey : Colors.blue,
+                      )),
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'Please Enter Password';
@@ -80,10 +122,8 @@ class LoginScreenState extends State<LoginScreen> {
                     return null;
                   }),
             ),
-
           ],
-        )
-    );
+        ));
   }
 
   @override
@@ -125,8 +165,8 @@ class LoginScreenState extends State<LoginScreen> {
                         fontSize: 15.0),
                   ),
                 ),
-                _buildTextFields()
-                ,Padding(
+                _buildTextFields(),
+                Padding(
                   padding: const EdgeInsets.only(right: 40.0, left: 40.0),
                   child: SizedBox(
                     width: double.infinity,
@@ -135,9 +175,7 @@ class LoginScreenState extends State<LoginScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0)),
                       onPressed: () {
-
                         if (_formKey.currentState.validate()) {
-
                           SystemChannels.textInput
                               .invokeMethod('TextInput.hide');
                           loginAPI(context, _emailController.text,
