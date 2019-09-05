@@ -48,6 +48,7 @@ class LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.only(
                   top: 40.0, right: 40.0, bottom: 10.0, left: 40.0),
               child: TextFormField(
+                textInputAction: TextInputAction.next,
                 style: TextStyle(color: Colors.black),
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -99,6 +100,7 @@ class LoginScreenState extends State<LoginScreen> {
               padding:
                   const EdgeInsets.only(right: 40.0, bottom: 20.0, left: 40.0),
               child: TextFormField(
+                textInputAction: TextInputAction.done,
                   focusNode: _passwordFocus,
                   obscureText: _obscureText,
                   controller: _passwordController,

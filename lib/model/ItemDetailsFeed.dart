@@ -1,44 +1,39 @@
 import 'package:flutter/material.dart';
 
-class ItemDetailsFeed with ChangeNotifier{
-  final String name;
+class ItemDetailsFeed with ChangeNotifier {
+  String name;
   String photo;
-  final String preparationTime;
-  final String serves;
-  final String complexity;
-   bool like;
+  String preparationTime;
+  String serves;
+  String complexity;
+  bool like;
 
-
-  ItemDetailsFeed(this.name, this.photo,this.preparationTime,this.serves,this.complexity,this.like) {
+  ItemDetailsFeed(this.name, this.photo, this.preparationTime, this.serves,
+      this.complexity, this.like) {
     if (name == null) {
-      throw new ArgumentError("name of ItemDetailsFeed cannot be null. "
-          "Received: '$name'");
+      name = "default";
     }
     if (photo == null) {
-//      throw new ArgumentError("photo of ItemDetailsFeed cannot be null. "
-//          "Received: '$photo'");
-      photo = "https://livingstonbagel.com/wp-content/uploads/2016/11/food-placeholder.jpg";
+      photo =
+          "https://livingstonbagel.com/wp-content/uploads/2016/11/food-placeholder.jpg";
     }
     if (preparationTime == null) {
-      throw new ArgumentError("preparationTime of ItemDetailsFeed cannot be null. "
-          "Received: '$preparationTime'");
+      preparationTime = "5";
     }
     if (serves == null) {
-      throw new ArgumentError("serves of ItemDetailsFeed cannot be null. "
-          "Received: '$serves'");
+      serves = "1";
     }
     if (complexity == null) {
-      throw new ArgumentError("complexity of ItemDetailsFeed cannot be null. "
-          "Received: '$complexity'");
+      complexity = "Easy";
     }
   }
 
-  void likeUpdate(value){
+  void likeUpdate(value) {
     like = value;
     notifyListeners();
   }
 
-  String getName(){
+  String getName() {
     return name;
-}
+  }
 }

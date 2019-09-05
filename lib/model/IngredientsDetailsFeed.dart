@@ -1,17 +1,15 @@
-class IngredientsDetailsFeed {
-  final String id;
-  final String ingredient;
+import 'package:flutter/material.dart';
 
+class IngredientsDetailsFeed with ChangeNotifier {
+  int id;
+  String ingredient;
 
   IngredientsDetailsFeed(this.id, this.ingredient) {
     if (id == null) {
-      throw new ArgumentError("id of IngredientsDetailsFeed cannot be null. "
-          "Received: '$id'");
+      id = 0;
     }
     if (ingredient == null) {
-      throw new ArgumentError("ingredient of IngredientsDetailsFeed cannot be null. "
-          "Received: '$ingredient'");
+      ingredient = "default ingredient";
     }
-   
   }
 }
