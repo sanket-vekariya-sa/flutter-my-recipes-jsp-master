@@ -1,12 +1,13 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-Future<ItemDetailsFeed> HomeFeedAPI(BuildContext context) async {
+HomeFeedAPI(BuildContext context) async {
   ItemDetailsFeed itemDetailsFeed;
+  var _feedDetails = <ItemDetailsFeed>[];
+
   final url = "http://35.160.197.175:3006/api/v1/recipe/feeds";
 
   var dio = new Dio();
@@ -17,7 +18,6 @@ Future<ItemDetailsFeed> HomeFeedAPI(BuildContext context) async {
   var response = await dio.get(url, options: Options(headers: map));
 
   if (response.statusCode == 200) {
-    print("called if loop");
     Navigator.of(context).pushReplacementNamed('/HomeScreen');
   }
 
@@ -28,5 +28,5 @@ Future<ItemDetailsFeed> HomeFeedAPI(BuildContext context) async {
       response.data["serves"],
       response.data["complexity"],
       false);
-  return itemDetailsFeed;
+  return _feedDetails.add(itemDetailsFeed);
 }

@@ -4,7 +4,7 @@ import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
+import 'package:Flavr/apis/HomeFeedAPI.dart';
 import 'Dashboard.dart';
 
 class FeedListPage extends StatefulWidget {
@@ -65,7 +65,8 @@ class _HomeScreenState extends State<FeedListPage> {
     );
   }
 
-  _loadData() async {
+  _loadData() async{
+//    _feedDetails = HomeFeedAPI(context);
 //    HomeFeedAPI(context);
     String feedDetailsURL = "http://35.160.197.175:3006/api/v1/recipe/feeds";
     var dio = new Dio();
