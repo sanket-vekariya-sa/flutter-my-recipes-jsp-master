@@ -30,6 +30,10 @@ dependencies:
   flutter_spinkit: "^4.0.0"
   provider: ^3.1.0
   shimmer: ^1.0.0
+  image_picker: ^0.6.1+4
+
+
+
 
 dev_dependencies:
   flutter_test:

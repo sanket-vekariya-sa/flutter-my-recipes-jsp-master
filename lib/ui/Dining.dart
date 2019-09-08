@@ -1,202 +1,215 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
-
+import 'package:image_picker/image_picker.dart';
 
 import 'package:shimmer/shimmer.dart';
-class Dining extends StatefulWidget{
+
+class Dining extends StatefulWidget {
   int loginData;
-
-
 
   @override
   _DiningScreen createState() => new _DiningScreen();
 }
 
 class _DiningScreen extends State<Dining> {
-  var _feedDetails = <ItemDetailsFeed>[];
-
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
+  Widget _appBarTitle = new Text('Add New Recipe');
 
-  @override
-  Widget build(BuildContext context){
-    return new Scaffold(
+  String dropdownValue = 'Easy';
 
-      resizeToAvoidBottomPadding: false,
-      key: login_state,
-      body: FutureBuilder<dynamic>(
-          future: _getResults(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return ListView.builder(
-                itemCount: 10,
-                // Important code
-                itemBuilder: (context, index) =>
-                    Shimmer.fromColors(
-                        baseColor: Colors.grey[400],
-                        highlightColor: Colors.white,
-                        child: ListItem(index: -1)),
-              );
-            }
-            return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, index) => ListItem(index: index),
-            );
-          }),);
-  }}
+//save the result of gallery file
+  File galleryFile;
 
+//save the result of camera file
+  File cameraFile;
 
-Future<List<int>> _getResults() async {
-  await Future.delayed(Duration(seconds: 3));
-  return List<int>.generate(10, (index) => index);
-}
+//  @override
+//  Widget build(BuildContext context) {
+//
+//    imageSelectorGallery() async {
+//      galleryFile = await ImagePicker.pickImage(
+//        source: ImageSource.gallery,
+//        // maxHeight: 50.0,
+//        // maxWidth: 50.0,
+//      );
+//      print("You selected gallery image : " + galleryFile.path);
+//      setState(() {});
+//    }
+//
+//    //display image selected from camera
+//    imageSelectorCamera() async {
+//      cameraFile = await ImagePicker.pickImage(
+//        source: ImageSource.camera,
+//        //maxHeight: 50.0,
+//        //maxWidth: 50.0,
+//      );
+//      print("You selected camera image : " + cameraFile.path);
+//      setState(() {});
+//    }
 
-
-class ListItem extends StatelessWidget {
-  final int index;
-  const ListItem({Key key, this.index});
+  Widget _buildTextFields() {
+    return new Form(
+        child: new Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(1.0),
+              child: TextFormField(
+                  textInputAction: TextInputAction.next,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Name Of Recipe',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: new BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter Name of Recipe';
+                    }
+                    return null;
+                  }),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  right: 1.0, bottom: 2.0, left: 1.0, top: 5.0),
+              child: TextFormField(
+                  textInputAction: TextInputAction.done,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Time Required',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: new BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter Time';
+                    }
+                    return null;
+                  }),
+            ),
+            Padding(
+              padding: EdgeInsets.all(5.0),
+              child: DropdownButton<String>(
+                isExpanded: true,
+                value: dropdownValue,
+                onChanged: (String newValue) {
+                  setState(() {
+                    dropdownValue = newValue;
+                  });
+                },
+                items: <String>['Easy', 'Hard', 'Medium']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(1.0),
+              child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'No of Serves',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: new BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter No of Serves';
+                    }
+                    return null;
+                  }),
+            )
+          ],
+        ));
+  }
+  Widget _buildIngredit() {
+    return new Form(
+        child: new Column(
+          children: <Widget>[
+            Text("Indegreted",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0),),
+            Padding(
+              padding: EdgeInsets.all(1.0),
+              child: TextFormField(
+                textInputAction: TextInputAction.next,
+                style: TextStyle(color: Colors.black),
+                decoration: InputDecoration(
+                    labelText: 'Add Indegret',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: new BorderSide(color: Colors.black),
+                    ),
+                    suffixIcon: IconButton(icon: Icon(Icons.add), onPressed: null)
+                ),
+              ),
+            )
+          ],
+        ));
+  }
   @override
   Widget build(BuildContext context) {
-//    return Container(
-//      height: 60,
-//      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-//      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0)),
-//      child: Row(
-//        children: <Widget>[
-//          Container(
-//            width: 50.0,
-//            height: 50.0,
-//            margin: EdgeInsets.only(right: 15.0),
-//            color: Colors.blue,
-//          ),
-//          index != -1
-//              ? Column(
-//            crossAxisAlignment: CrossAxisAlignment.start,
-//            children: <Widget>[
-//              Text(
-//                'This is title $index',
-//                style: TextStyle(fontWeight: FontWeight.bold),
-//              ),
-//              Text('This is more details'),
-//              Text('One more detail'),
-//            ],
-//          )
-//              : Expanded(
-//            child: Container(
-//              color: Colors.grey,
-//            ),
-//          )
-//        ],
-//      ),
-//    );
-    return Card(
+    imageSelectorGallery() async {
+      galleryFile = await ImagePicker.pickImage(
+        source: ImageSource.gallery,
+        // maxHeight: 50.0,
+        // maxWidth: 50.0,
+      );
+      print("You selected gallery image : " + galleryFile.path);
+      setState(() {});
+    }
 
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-
-      child: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          new Stack(
-            children: <Widget>[
-              new Image.network(
-                "http://35.160.197.175:3006/uploads/e4621e53-c973-47de-9afd-1e12d79a191d.jpg",
-                fit: BoxFit.fitWidth,
-                width: double.infinity,
-                height: 180,
-              ),
-              IconButton(
-                alignment: Alignment.topRight,
-                icon: Icon(Icons.favorite,
-                    color: Colors.red  ),
-
-              ),
-            ],
-          ),
-
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0, top: 10),
-            child: new Text("$index",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12.0)),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0, top: 5),
-            child: new Text("$index",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0)),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 15),
-            child: new Row(
+    return new Scaffold(
+        appBar: AppBar(
+          title: _appBarTitle,
+          centerTitle: true,
+        ),
+        resizeToAvoidBottomPadding: false,
+        key: login_state,
+        body: new SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: new Column(
               children: <Widget>[
-                Expanded(
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.access_time,
-                          color: Colors.grey,
-                        ),
-                        Text(
-                          "$index",
-                          style: TextStyle(
-                              fontSize: 15.0, color: Colors.grey),
-                        )
-                      ],
-                    ),
-                  ),
+                _buildTextFields(),
+                new RaisedButton(
+                  child: new Text('Select Image from Gallery'),
+                  onPressed: imageSelectorGallery,
                 ),
-                Expanded(
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.library_books,
-                          color: Colors.grey,
-                        ),
-                        Text(
-                          "$index",
-                          style: TextStyle(
-                              fontSize: 15.0, color: Colors.grey),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.local_dining,
-                          color: Colors.grey,
-                        ),
-                        Text(
-                          "$index people",
-                          style: TextStyle(
-                              fontSize: 15.0, color: Colors.grey),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+              //  displaySelectedFile(galleryFile),
+                _buildIngredit(),
               ],
             ),
           ),
-        ],
-      ),
-    );
-
+//        child: new Column(
+//          crossAxisAlignment: CrossAxisAlignment.center,
+//          children: <Widget>[
+//
+//
+//          ],
+//        ),
+        ));
   }
+
+ /* Widget displaySelectedFile(File file) {
+    return new SizedBox(
+      height: 200.0,
+      width: 400.0,
+      child: new Image.file(file),
+    );
+  }*/
 }
