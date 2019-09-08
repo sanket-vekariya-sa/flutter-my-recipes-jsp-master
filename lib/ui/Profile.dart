@@ -1,28 +1,17 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:Flavr/apis/loginAPI.dart';
-
-class Profile extends StatefulWidget {
-
-
-  @override
+ class Profile extends StatefulWidget {
+ @override
   State<StatefulWidget> createState() {
     return new ProfileScreenState();
   }
-}
-
+ }
 class ProfileScreenState extends State<Profile> {
-
-
-
   @override
   void initState() {
     super.initState();
-  }
-
-
-
+   }
   Widget _buildTextFields() {
     return new Form(
             child: new Column(
@@ -41,7 +30,6 @@ class ProfileScreenState extends State<Profile> {
                               "https://images.pexels.com/photos/736716/pexels-photo-736716.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500")
                       )
                   )),
-
             ),
 
 
@@ -55,7 +43,6 @@ class ProfileScreenState extends State<Profile> {
                     fontSize: 15.0)
             ),),
 //
-
             Padding(
               padding:
               const EdgeInsets.only(top:10.0),
@@ -64,11 +51,10 @@ class ProfileScreenState extends State<Profile> {
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                       fontSize: 15.0)),
-            ),
-          ],
+           ),
+         ],
         ));
   }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -86,52 +72,57 @@ class ProfileScreenState extends State<Profile> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Padding(
+               Padding(
                   padding: const EdgeInsets.only(top:100.0),
                   child: Text(
                     'Hello Foodie',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                   style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                         fontSize: 30.0),
-                  ),
-                ),
-                Padding(
+                 ),
+               ),
+               Padding(
                   padding: const EdgeInsets.only(top: 5.0),
                   child: Text(
                     'Delicious Recipes App',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                   style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                         fontSize: 15.0),
-                  ),
-                ),
+                 ),
+               ),
                 _buildTextFields(),
                 Padding(
                   padding: const EdgeInsets.only(top:20.0),
 
                   child: SizedBox(
                     width: double.infinity,
-                    height: 40.00,
+                    height: 50.00,
                     child: RaisedButton(
 
 
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0)),
                       onPressed: () {
-
+                        Navigator.of(context).pushReplacementNamed('/HomeScreen');
                       },
-                      child: Text("Go to FeedList Page"),
+                      child: Text("Go to Recipe List", textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                              fontSize: 15.0)),
                       color: Colors.orange,
                       textColor: Colors.white,
-                    ),
-                  ),
-                ),
-                ],
-            ),
-          ),
+
+                   ),
+
+                 ),
+               ),
+              ],
+           ),
+         ),
         ));
-  }
-}
+  }}
