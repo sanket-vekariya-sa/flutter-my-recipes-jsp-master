@@ -54,35 +54,7 @@ class ProfileScreenState extends State<Profile> {
                     color: Colors.black,
                     fontSize: 15.0)
             ),),
-//            Container(
-//            padding: const EdgeInsets.only(
-//                  right: 40.0, bottom: 20.0, left: 40.0),
-//              child: new Row(
-//                children: <Widget>[
-//                TextFormField(
-//                focusNode: _passwordFocus,
-//                  obscureText: true,
-//                  controller: _passwordController,
-//                  style: TextStyle(color: Colors.black),
-//                  decoration: InputDecoration(
-//                    labelText: 'Password',
-//                    labelStyle: TextStyle(color: Colors.grey),
-//                    border: OutlineInputBorder(
-//                      borderRadius: BorderRadius.circular(5.0),
-//                      borderSide: new BorderSide(color: Colors.black),
-//                    ),
 //
-//                  ),
-//                  validator: (value) {
-//                    if (value.isEmpty) {
-//                      return 'Please Enter Password';
-//                    }
-//                    return null;
-//                  }),
-//
-//                ],
-//              ),
-//            )
 
             Padding(
               padding:
