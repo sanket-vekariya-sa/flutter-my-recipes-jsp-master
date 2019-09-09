@@ -9,7 +9,7 @@ import 'Dashboard.dart';
 
 class FeedListPage extends StatefulWidget {
   int loginData;
-
+  var likedFeed = <ItemDetailsFeed>[];
   @override
   _HomeScreenState createState() => new _HomeScreenState();
 }
@@ -17,6 +17,9 @@ class FeedListPage extends StatefulWidget {
 class _HomeScreenState extends State<FeedListPage> {
   var _feedDetails = <ItemDetailsFeed>[];
   Future<ItemDetailsFeed> feed;
+
+  var likedList = FeedListPage().likedFeed;
+
 
   String _searchText = "";
   var names = <ItemDetailsFeed>[]; // names we get from API
@@ -84,11 +87,12 @@ class _HomeScreenState extends State<FeedListPage> {
           memberJSON["preparationTime"],
           memberJSON["serves"],
           memberJSON["complexity"],
-          false);
+          false,
+          memberJSON["ytUrl"]);
       _feedDetails.add(itemDetailsfeed);
       names.add(itemDetailsfeed);
       filteredNames = names;
-      //}
+
     }
   }
 
@@ -173,8 +177,11 @@ class _HomeScreenState extends State<FeedListPage> {
                               color: filteredNames[index].like
                                   ? Colors.red
                                   : Colors.grey),
-                          onPressed: () => _feedDetails[index].like =
-                              !_feedDetails[index].like,
+                          onPressed: () { _feedDetails[index].like =
+                              !_feedDetails[index].like;
+                          likedList.add(filteredNames[index]);
+
+                          },
                         ),
                       ],
                     ),
