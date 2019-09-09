@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:Flavr/ui/Profile.dart';
+import 'package:Flavr/ui/homeScreen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:Flavr/model/loginModel.dart';
@@ -21,6 +23,12 @@ Future<LoginModel> loginAPI(BuildContext context, String email, String password)
   if (response.statusCode == 200) {
     print("called if loop");
        Navigator.of(context).pushReplacementNamed('/HomeScreen');
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(email),
+        ));
+
     }
 
   loginModel = LoginModel(

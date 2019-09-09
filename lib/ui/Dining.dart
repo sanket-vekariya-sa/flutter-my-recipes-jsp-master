@@ -52,90 +52,90 @@ class _DiningScreen extends State<Dining> {
   Widget _buildTextFields() {
     return new Form(
         child: new Column(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(1.0),
-          child: TextFormField(
-              textInputAction: TextInputAction.next,
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                labelText: 'Name Of Recipe',
-                labelStyle: TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: new BorderSide(color: Colors.black),
-                ),
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(1.0),
+              child: TextFormField(
+                  textInputAction: TextInputAction.next,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Name Of Recipe',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: new BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter Name of Recipe';
+                    }
+                    return null;
+                  }),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  right: 1.0, bottom: 2.0, left: 1.0, top: 5.0),
+              child: TextFormField(
+                  textInputAction: TextInputAction.done,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Time Required',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: new BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter Time';
+                    }
+                    return null;
+                  }),
+            ),
+            Padding(
+              padding: EdgeInsets.all(5.0),
+              child: DropdownButton<String>(
+                isExpanded: true,
+                value: dropdownValue,
+                onChanged: (String newValue) {
+                  setState(() {
+                    dropdownValue = newValue;
+                  });
+                },
+                items: <String>['Easy', 'Hard', 'Medium']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please Enter Name of Recipe';
-                }
-                return null;
-              }),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-              right: 1.0, bottom: 2.0, left: 1.0, top: 5.0),
-          child: TextFormField(
-              textInputAction: TextInputAction.done,
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                labelText: 'Time Required',
-                labelStyle: TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: new BorderSide(color: Colors.black),
-                ),
-              ),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please Enter Time';
-                }
-                return null;
-              }),
-        ),
-        Padding(
-          padding: EdgeInsets.all(5.0),
-          child: DropdownButton<String>(
-            isExpanded: true,
-            value: dropdownValue,
-            onChanged: (String newValue) {
-              setState(() {
-                dropdownValue = newValue;
-              });
-            },
-            items: <String>['Easy', 'Hard', 'Medium']
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(1.0),
-          child: TextFormField(
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                labelText: 'No of Serves',
-                labelStyle: TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: new BorderSide(color: Colors.black),
-                ),
-              ),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please Enter No of Serves';
-                }
-                return null;
-              }),
-        )
-      ],
-    ));
+            ),
+            Padding(
+              padding: EdgeInsets.all(1.0),
+              child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'No of Serves',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: new BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter No of Serves';
+                    }
+                    return null;
+                  }),
+            )
+          ],
+        ));
   }
   Widget _buildIngredit() {
     return new Form(
@@ -145,9 +145,9 @@ class _DiningScreen extends State<Dining> {
             Padding(
               padding: EdgeInsets.all(1.0),
               child: TextFormField(
-                  textInputAction: TextInputAction.next,
-                  style: TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
+                textInputAction: TextInputAction.next,
+                style: TextStyle(color: Colors.black),
+                decoration: InputDecoration(
                     labelText: 'Add Indegret',
                     labelStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
@@ -155,8 +155,8 @@ class _DiningScreen extends State<Dining> {
                       borderSide: new BorderSide(color: Colors.black),
                     ),
                     suffixIcon: IconButton(icon: Icon(Icons.add), onPressed: null)
-                  ),
-                 ),
+                ),
+              ),
             )
           ],
         ));
@@ -190,7 +190,7 @@ class _DiningScreen extends State<Dining> {
                   child: new Text('Select Image from Gallery'),
                   onPressed: imageSelectorGallery,
                 ),
-                displaySelectedFile(galleryFile),
+              //  displaySelectedFile(galleryFile),
                 _buildIngredit(),
               ],
             ),
@@ -205,11 +205,11 @@ class _DiningScreen extends State<Dining> {
         ));
   }
 
-  Widget displaySelectedFile(File file) {
+ /* Widget displaySelectedFile(File file) {
     return new SizedBox(
       height: 200.0,
       width: 400.0,
       child: new Image.file(file),
     );
-  }
+  }*/
 }

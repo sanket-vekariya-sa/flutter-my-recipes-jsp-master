@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: "MyRecipes",
        debugShowCheckedModeBanner : false,
       routes: <String,WidgetBuilder>{
-        "/HomeScreen": (BuildContext context) => HomeScreen(),
+        "/HomeScreen": (BuildContext context) => HomeScreen("email id"),
         "/LoginScreen": (BuildContext context) => LoginScreen(),
         "/FeedListPage": (BuildContext context) => FeedListPage(),
         "/Favorites" : (BuildContext context) => Favorites(),

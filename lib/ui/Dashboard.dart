@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:Flavr/model/IngredientsDetailsFeed.dart';
+import 'package:Flavr/model/InstructionDetailsFeed.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -14,15 +15,21 @@ class DashBoard extends StatefulWidget {
 
   @override
   _DashBoardState createState() => new _DashBoardState(index, list);
+
 }
 
 class _DashBoardState extends State<DashBoard> {
   int data;
+  int newindex;
   List<ItemDetailsFeed> list;
+
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
   _DashBoardState(this.data, this.list);
-  var _feedDetails = <IngredientsDetailsFeed>[];
+
+
+   var _feedDetails = <IngredientsDetailsFeed>[];
+  var _instructionDetails = <InstructionDetailsFeed>[];
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +38,10 @@ class _DashBoardState extends State<DashBoard> {
         title: Text(data.toString()),
       ),
       body: SingleChildScrollView(
+        padding: EdgeInsets.all(12.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
           children: <Widget>[
             Image.network(list[data].photo),
 
@@ -115,7 +124,10 @@ class _DashBoardState extends State<DashBoard> {
             ),
 
             Container(
+
               color: Colors.grey,
+              width: double.infinity,
+              height: 40.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -139,10 +151,20 @@ class _DashBoardState extends State<DashBoard> {
                       textAlign: TextAlign.center,
                     );
                   case ConnectionState.active:
+                    return Text(
+                      'no data available',
+                      textAlign: TextAlign.center,
+                    );
                     return SpinKitFadingCircle(color: Colors.black);
                   case ConnectionState.waiting:
                     return SpinKitFadingCircle(color: Colors.pink);
                   case ConnectionState.done:
+                    newindex = data;
+                    return Text(
+
+                      _feedDetails[newindex].ingredient,
+                      textAlign: TextAlign.center,
+                    );
                     return _buildRow();
                 }
                 return null;
@@ -150,7 +172,10 @@ class _DashBoardState extends State<DashBoard> {
             ),
 
             Container(
+
               color: Colors.grey,
+              width: double.infinity,
+              height: 40.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -161,6 +186,35 @@ class _DashBoardState extends State<DashBoard> {
                   )
                 ],
               ),
+            ),
+            FutureBuilder<dynamic>(
+             future: _loadInstruction(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return Text(
+                      'no data available',
+                      textAlign: TextAlign.center,
+                    );
+                  case ConnectionState.active:
+                    return Text(
+                      'no data available',
+                      textAlign: TextAlign.center,
+                    );
+                    return SpinKitFadingCircle(color: Colors.black);
+                  case ConnectionState.waiting:
+                    return SpinKitFadingCircle(color: Colors.pink);
+                  case ConnectionState.done:
+                    newindex = data;
+                    return Text(
+
+                      _instructionDetails[newindex].instruction,
+                      textAlign: TextAlign.center,
+                    );
+                    return _buildRow();
+                }
+                return null;
+              },
             ),
 
 //            FutureBuilder<dynamic>(
@@ -218,25 +272,48 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   _loadData() async {
-    String feedDetailsURL = "http://35.160.197.175:3006/api/v1/recipe/1/ingredients";
+    String ingredientsURL = "http://35.160.197.175:3006/api/v1/recipe/1/ingredients";
     var dio = new Dio();
     Map<String, dynamic> map = {
       HttpHeaders.authorizationHeader:
       "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
     };
     var response1 =
-    await dio.get(feedDetailsURL, options: Options(headers: map));
+    await dio.get(ingredientsURL, options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
-      final itemDetailsfeed = new IngredientsDetailsFeed(
+      final ingreditentfeed = new IngredientsDetailsFeed(
         memberJSON["id"],
         memberJSON["ingredient"],);
-      _feedDetails.add(itemDetailsfeed);
+      _feedDetails.add(ingreditentfeed);
     }
     print("response : $response1");
     print("data response : ${response1.data}");
     print("data item response : ${_feedDetails[0].ingredient}");
     print("length response : ${_feedDetails.length}");
+
+  }
+
+  _loadInstruction() async {
+    String instructionsURL = "http://35.160.197.175:3006/api/v1/recipe/1/instructions";
+    var dio = new Dio();
+    Map<String, dynamic> map = {
+      HttpHeaders.authorizationHeader:
+      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
+    };
+    var response1 =
+    await dio.get(instructionsURL, options: Options(headers: map));
+
+    for (var memberJSON in response1.data) {
+      final instructionfeed = new InstructionDetailsFeed(
+        memberJSON["id"],
+        memberJSON["instruction"],);
+      _instructionDetails.add(instructionfeed);
+    }
+  /*  print("response : $response1");
+    print("data response : ${response1.data}");
+    print("data item response : ${_feedDetails[0].ingredient}");
+    print("length response : ${_feedDetails.length}");*/
 
   }
   @override

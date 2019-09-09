@@ -114,6 +114,7 @@ class _HomeScreenState extends State<FeedListPage> {
             FocusScope.of(context).unfocus();
           },
         );
+        _HomeScreenState();
       } else {
         this._searchIcon = new Icon(Icons.search);
         this._appBarTitle = Text('Home');
@@ -134,6 +135,8 @@ class _HomeScreenState extends State<FeedListPage> {
         }
       }
       filteredNames = tempList;
+    }else{
+
     }
     return new ListView.builder(
       padding: const EdgeInsets.only(top: 10.0),
@@ -267,6 +270,7 @@ class _HomeScreenState extends State<FeedListPage> {
     );
   }
 }
+
 
 Future navigateToSubPage(context, int, list) async {
   Navigator.push(

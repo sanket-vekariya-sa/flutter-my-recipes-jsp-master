@@ -1,15 +1,20 @@
+import 'package:Flavr/apis/loginAPI.dart';
 import 'package:flutter/material.dart';
 import 'Dining.dart';
 import 'Farvorites.dart';
 import 'FeedListPage.dart';
 import 'Profile.dart';
 class HomeScreen extends StatefulWidget {
+  final String text;
+  HomeScreen(this.text);
   @override
-  _HomeScreenState createState() =>  _HomeScreenState();
+  _HomeScreenState createState() =>  _HomeScreenState(text);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-int selectedIndex = 0;
+    int selectedIndex = 0;
+     String  text;
+    _HomeScreenState(this.text);
 String appBarTitleText ='Home';
   final widgetOptions = [
     new FeedListPage(),
