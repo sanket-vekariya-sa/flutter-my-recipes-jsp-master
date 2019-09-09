@@ -1,11 +1,12 @@
 import 'dart:io';
-
+import 'dart:async';
 import 'package:Flavr/model/IngredientsDetailsFeed.dart';
 import 'package:Flavr/model/InstructionDetailsFeed.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:youtube_player/youtube_player.dart';
 
 class DashBoard extends StatefulWidget {
   int index;
@@ -28,20 +29,48 @@ class _DashBoardState extends State<DashBoard> {
 
   var _feedDetails = <IngredientsDetailsFeed>[];
   var _instructionDetails = <InstructionDetailsFeed>[];
+  VideoPlayerController _videoController;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(data.toString()),
+        title: Text(list[data].getName().toUpperCase()),
+        backgroundColor: Colors.orange,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(12.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Image.network(list[data].photo),
-
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Card(
+                child: list[data].youtubeUrl == ""
+                    ? Image.network(list[data].photo)
+                    : Stack(
+                        children: <Widget>[
+                          YoutubePlayer(
+                            context: context,
+                            controlsColor: ControlsColor(
+                                buttonColor: Colors.amber,
+                                playPauseColor: Colors.red,
+                                progressBarBackgroundColor: Colors.pink,
+                                seekBarPlayedColor: Colors.white),
+                            source: list[data].youtubeUrl,
+                            quality: YoutubeQuality.MEDIUM,
+                            loop: true,
+                            autoPlay: true,
+                            keepScreenOn: false,
+                            callbackController: (controller) {
+                              _videoController = controller;
+                            },
+                          ),
+                        ],
+                      ),
+              ),
+            ),
+            //Image.network(list[data].photo)
             Container(
               color: Colors.white30,
               padding: EdgeInsets.all(10.0),
@@ -121,7 +150,7 @@ class _DashBoardState extends State<DashBoard> {
             ),
 
             Container(
-              color: Colors.grey,
+              color: Colors.orange,
               width: double.infinity,
               height: 40.0,
               child: Row(
@@ -130,7 +159,7 @@ class _DashBoardState extends State<DashBoard> {
                   Text(
                     "INGREDIENTS",
                     style: TextStyle(
-                        fontSize: 20.0, fontWeight: FontWeight.normal),
+                        fontSize: 15.0, fontWeight: FontWeight.bold,color: Colors.white),
                   )
                 ],
               ),
@@ -158,7 +187,7 @@ class _DashBoardState extends State<DashBoard> {
                     newindex = data;
                     return Text(
                       _feedDetails[newindex].ingredient,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,style: TextStyle(fontSize: 15.0),
                     );
                     return _buildRow();
                 }
@@ -167,7 +196,7 @@ class _DashBoardState extends State<DashBoard> {
             ),
 
             Container(
-              color: Colors.grey,
+              color: Colors.orange,
               width: double.infinity,
               height: 40.0,
               child: Row(
@@ -176,7 +205,7 @@ class _DashBoardState extends State<DashBoard> {
                   Text(
                     "INSTRUCTIONS",
                     style: TextStyle(
-                        fontSize: 20.0, fontWeight: FontWeight.normal),
+                        fontSize: 15.0, fontWeight: FontWeight.bold,color: Colors.white),
                   )
                 ],
               ),
@@ -202,7 +231,7 @@ class _DashBoardState extends State<DashBoard> {
                     newindex = data;
                     return Text(
                       _instructionDetails[newindex].instruction,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,style: TextStyle(fontSize: 15.0)
                     );
                     return _buildRow();
                 }
@@ -210,28 +239,6 @@ class _DashBoardState extends State<DashBoard> {
               },
             ),
 
-//            FutureBuilder<dynamic>(
-//              future: _loadData(),
-//              builder: (context, snapshot) {
-//                switch (snapshot.connectionState) {
-//                  case ConnectionState.none:
-//                    return Text(
-//                      'no data available',
-//                      textAlign: TextAlign.center,
-//                    );
-//                  case ConnectionState.active:
-//                    return null;
-//                  case ConnectionState.waiting:
-//                    return SpinKitFadingCircle(color: Colors.pink);
-//                  case ConnectionState.done:
-//                    return _buildRow();
-//                }
-//                return null;
-//              },
-//            ),
-// ListView(
-// children: <Widget>[Text(_feedDetails.toString())],
-// ),
           ],
         ),
       ),

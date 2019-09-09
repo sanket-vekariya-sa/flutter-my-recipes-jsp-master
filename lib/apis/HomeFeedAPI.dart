@@ -27,6 +27,7 @@ HomeFeedAPI(BuildContext context) async {
       response.data["preparationTime"],
       response.data["serves"],
       response.data["complexity"],
-      false);
+      false,
+      response.data["ytUrl"]);
   return _feedDetails.add(itemDetailsFeed);
 }
