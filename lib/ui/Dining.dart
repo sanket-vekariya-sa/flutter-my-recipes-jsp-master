@@ -18,115 +18,115 @@ class _DiningScreen extends State<Dining> {
   final addInputs = GlobalKey<FormState>();
   Widget _appBarTitle = new Text('Add New Recipe');
   List<String> _indergentList = new List<String>();
-  String dropdownValue = 'Easy';
+  String dropdownValue = "Easy";
   List<String> _stepList = new List<String>();
-  List<String> _tags = new List<String>();
   File galleryFile;
   File cameraFile;
-  double _fontSize = 25;
   final TextEditingController _indergrent = TextEditingController();
   final TextEditingController _step = TextEditingController();
   final TextEditingController _nameofRecipe = TextEditingController();
-  //final TextEditingController _complexicty = TextEditingController();
+  List<String> _tagList = new List<String>();
+  final TextEditingController tag = TextEditingController();
   final TextEditingController _timeRequired = TextEditingController();
   final TextEditingController _serves = TextEditingController();
   final TextEditingController _youtubeUrl = TextEditingController();
 
   Widget _buildTextFields() {
     return new Form(
-        key: addInputs,
-        child: new Card(
-          child:        new Column(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(10.0),
-                child: TextFormField(
-                    controller: _nameofRecipe,
-                    textInputAction: TextInputAction.next,
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      labelText: 'Name Of Recipe*',
-                      labelStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: new BorderSide(color: Colors.orange),
-                      ),
+      key: addInputs,
+      child: new Card(
+        child: new Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: TextFormField(
+                  controller: _nameofRecipe,
+                  textInputAction: TextInputAction.next,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Name Of Recipe*',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: new BorderSide(color: Colors.orange),
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please Enter Name of Recipe';
-                      }
-                      return null;
-                    }),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    right: 10.0, bottom: 2.0, left: 10.0, top: 5.0),
-                child: TextFormField(
-                    controller: _timeRequired,
-                    textInputAction: TextInputAction.done,
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      labelText: 'Time Required*',
-                      labelStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: new BorderSide(color: Colors.black),
-                      ),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter Name of Recipe';
+                    }
+                    return null;
+                  }),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  right: 10.0, bottom: 2.0, left: 10.0, top: 5.0),
+              child: TextFormField(
+                  controller: _timeRequired,
+                  textInputAction: TextInputAction.done,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Time Required*',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: new BorderSide(color: Colors.black),
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please Enter Time';
-                      }
-                      return null;
-                    }),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter Time';
+                    }
+                    return null;
+                  }),
+            ),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: DropdownButton<String>(
+                isExpanded: true,
+                value: dropdownValue,
+                onChanged: (String newValue) {
+                  setState(() {
+                    dropdownValue = newValue;
+                    print(dropdownValue);
+                  });
+                },
+                items: <String>['Easy', 'Hard', 'Medium']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
-              Padding(
-                padding: EdgeInsets.all(10.0),
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: dropdownValue,
-                  onChanged: (String newValue) {
-                    setState(() {
-                      dropdownValue = newValue;
-                    });
-                  },
-                  items: <String>['Easy', 'Hard', 'Medium']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(10.0),
-                child: TextFormField(
-                    controller: _serves,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.next,
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      labelText: 'No of Serves*',
-                      labelStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: new BorderSide(color: Colors.black),
-                      ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: TextFormField(
+                  controller: _serves,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'No of Serves*',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: new BorderSide(color: Colors.black),
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please Enter No of Serves';
-                      }
-                      return null;
-                    }),
-              )
-            ],
-          ) ,
-        ),);
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter No of Serves';
+                    }
+                    return null;
+                  }),
+            )
+          ],
+        ),
+      ),
+    );
   }
-
 
   Widget _buildTextFieldYouTubeUrl() {
     return new Form(
@@ -136,52 +136,100 @@ class _DiningScreen extends State<Dining> {
               padding: EdgeInsets.all(10.0),
               child: TextFormField(
                 controller: _youtubeUrl,
-                  textInputAction: TextInputAction.next,
-                  style: TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                    labelText: 'YouTube Url(Optional)',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: new BorderSide(color: Colors.orange),
-                    ),
+                textInputAction: TextInputAction.next,
+                style: TextStyle(color: Colors.black),
+                decoration: InputDecoration(
+                  labelText: 'YouTube Url(Optional)',
+                  labelStyle: TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: new BorderSide(color: Colors.orange),
                   ),
-                  ),
+                ),
+              ),
             ),
-
           ],
         ));
   }
+
   Widget _buildTags() {
-    return new Form(
-        child: new Padding(
-          padding: EdgeInsets.all(10.0),
-          child: new Column(
+    return new Card(
+      child: new Column(
+        children: <Widget>[
+          new Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Tags(
-                textField: TagsTextFiled(
-                    textStyle: TextStyle(fontSize: _fontSize),
-                    onSubmitted: (String str){
-                      setState(() {
-                        _tags.add(str);
-                      });
-                    }
-
+              Padding(
+                padding: EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
+                child: Text(
+                  "Tags",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      color: Colors.orange),
                 ),
-
-
-//                itemCount: _tags.length,
-//                itemBuilder: (int index){
-//                  final item = _tags[index]
-//                      return ItemTags(index: null, title: null)
-//                },
-
-
               )
             ],
           ),
+          _listViewTags(context),
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: TextFormField(
+              textInputAction: TextInputAction.next,
+              controller: tag,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                labelText: 'Add Tag',
+                labelStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: new BorderSide(color: Colors.black),
+                ),
+                suffixIcon: IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      var textis = tag.text;
+                      _tagList.add(textis.toString());
+                      setState(() {
+                        _listViewTags(context);
+                        tag.clear();
+                      });
+                    }),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-        ));
+  Widget _listViewTags(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.1,
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: _tagList.length,
+          itemBuilder: (context, index) {
+            return Container(
+                child: Chip(
+                    backgroundColor: Colors.orangeAccent,
+                    label: Text(
+                      _tagList[index],
+                      style: TextStyle(fontSize: 15.0, color: Colors.white),
+                    ),
+                    onDeleted: () {
+                      _tagList.removeAt(index);
+                      setState(() {
+                        _listViewTags(context);
+                      });
+                    },
+                    labelPadding: EdgeInsets.all(3.0),
+                    deleteIcon: Icon(
+                      Icons.clear,
+                      color: Colors.red,
+                    )));
+          }),
+    );
   }
 
   Widget _buildIngredit() {
@@ -201,10 +249,8 @@ class _DiningScreen extends State<Dining> {
                       color: Colors.orange),
                 ),
               )
-
             ],
-          )
-          ,
+          ),
           _listViewIndergents(context),
           Padding(
             padding: EdgeInsets.all(10.0),
@@ -232,7 +278,6 @@ class _DiningScreen extends State<Dining> {
               ),
             ),
           ),
-
         ],
       ),
     );
@@ -244,9 +289,12 @@ class _DiningScreen extends State<Dining> {
       itemCount: _indergentList.length,
       itemBuilder: (context, index) {
         return ListTile(
-          leading:CircleAvatar(
-            child: Text((index+1).toString(),style: TextStyle(color: Colors.white),),
-            backgroundColor:Colors.orange,
+          leading: CircleAvatar(
+            child: Text(
+              (index + 1).toString(),
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.orange,
             maxRadius: 12.0,
           ),
           title: Text(_indergentList[index]),
@@ -275,7 +323,6 @@ class _DiningScreen extends State<Dining> {
                       color: Colors.orange),
                 ),
               )
-
             ],
           ),
           _listViewSteps(context),
@@ -305,7 +352,6 @@ class _DiningScreen extends State<Dining> {
               ),
             ),
           ),
-
         ],
       ),
     );
@@ -317,9 +363,12 @@ class _DiningScreen extends State<Dining> {
       itemCount: _stepList.length,
       itemBuilder: (context, index) {
         return ListTile(
-          leading:CircleAvatar(
-            child: Text((index+1).toString(),style: TextStyle(color: Colors.white),),
-            backgroundColor:Colors.orange,
+          leading: CircleAvatar(
+            child: Text(
+              (index + 1).toString(),
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.orange,
             maxRadius: 12.0,
           ),
           title: Text(_stepList[index]),
@@ -336,8 +385,8 @@ class _DiningScreen extends State<Dining> {
     imageSelectorGallery() async {
       galleryFile = await ImagePicker.pickImage(
         source: ImageSource.gallery,
-        maxHeight: 50.0,
-        maxWidth: 50.0,
+        maxHeight: 200.0,
+        maxWidth: 200.0,
       );
       print("You selected gallery image : " + galleryFile.path);
       setState(() {
@@ -361,7 +410,7 @@ class _DiningScreen extends State<Dining> {
                 _buildIngredit(),
                 _buildSteps(),
                 _buildTextFieldYouTubeUrl(),
-                //_buildTags(),
+                _buildTags(),
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: new Column(
@@ -378,7 +427,7 @@ class _DiningScreen extends State<Dining> {
                     ],
                   ),
                 ),
-
+//                _buildTags(),
                 Padding(
                   padding: const EdgeInsets.only(right: 20.0, left: 20.0),
                   child: SizedBox(
@@ -388,24 +437,33 @@ class _DiningScreen extends State<Dining> {
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0)),
                       onPressed: () {
+                        print(dropdownValue);
                         if (addInputs.currentState.validate()) {
                           if (_indergentList.isEmpty && _stepList.isEmpty) {
                             print("Add Data Please");
                             showDialogSingleButton(context, "Add",
                                 "Please Add Indergents and Steps", "OK");
-
+                            return null;
                           }
-                          if(galleryFile==null){
+                          if (galleryFile == null) {
                             print("Add Data Please");
-                            showDialogSingleButton(context, "Add Image",
-                                "Please Add Image", "OK");
-                          }
-
-                          else {
+                            showDialogSingleButton(
+                                context, "Add Image", "Please Add Image", "OK");
+                            return null;
+                          } else {
                             print("Save data");
-//                            showDialogSingleButton(context, "Save",
-//                                "Add New Recipe", "OK");
-                          addRecipeAPI(context,_nameofRecipe.text,_timeRequired.text,dropdownValue,_serves.text,_indergentList,_stepList,_youtubeUrl.text,galleryFile);
+
+                            addRecipeAPI(
+                                context,
+                                _nameofRecipe.text,
+                                _timeRequired.text,
+                                dropdownValue.toString(),
+                                _serves.text,
+                                _indergentList,
+                                _stepList,
+                                _youtubeUrl.text,
+                                galleryFile,
+                                _tagList);
                           }
                         }
                       },
@@ -415,7 +473,6 @@ class _DiningScreen extends State<Dining> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -424,10 +481,10 @@ class _DiningScreen extends State<Dining> {
 
   Widget displaySelectedFile(File file) {
     return new SizedBox(
-      height: 50.0,
-      width: 50.0,
+      height: 200.0,
+      width: 200.0,
       child:
-          file == null ? new Text('No image Selected') : new Image.file(file),
+      file == null ? new Text('No image Selected') : new Image.file(file),
     );
   }
 }

@@ -22,7 +22,10 @@ Future<GetResponse> createPost(String url, {Map body}) async {
   });
 }
 
-Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,String complexcity,String serves,List ingredents ,List steps,String youTubeUrl,File image) async {
+Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,String complexcity,String serves,List ingredents ,List steps,String youTubeUrl,File image, List metaTags) async {
+
+  print(complexcity);
+
   LoginModel loginModel;
   final url = "http://35.160.197.175:3006/api/v1/recipe/add";
   final photoUrl = "http://35.160.197.175:3006/api/v1/recipe/add-update-recipe-photo";
@@ -37,7 +40,7 @@ Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,S
   };
   final response = await dio.post(
       url,
-      data: {"name": name,"preparationTime": time,"serves":serves,"complexity":complexcity,"ytUrl":youTubeUrl}, options: Options(headers: map)).catchError(
+      data: {"name": name,"preparationTime": time,"serves":serves,"complexity":complexcity,"ytUrl":youTubeUrl,"metaTags":metaTags}, options: Options(headers: map)).catchError(
           (dynamicError){
         print("called error loop");
 
@@ -45,7 +48,7 @@ Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,S
 
   );
 
-print(response.statusCode);
+  print(response.statusCode);
   if (response.statusCode == 200) {
     print("called if loop");
     print("called if ===== $response");
@@ -55,29 +58,38 @@ print(response.statusCode);
 //    if (response.statusCode == 200) {
 //      Navigator.of(context).pushReplacementNamed('/HomeScreen');
 //    }
-    final responseindegrents = await dio.post(
-        ingredentsUrl,
-        data: {"ingredient":ingredents.toString(),"recipeId": photoId.toString().trim()}, options: Options(headers: map)).catchError(
-            (dynamicError){
-          print("called error loop indegrents");
-        }
+    for(var i in ingredents) {
 
-    );
-
-    print("called if indegrents aadeed ===== $responseindegrents");
-    final responsesteps = await dio.post(
-        stepsUrl,
-        data: {"instruction":steps.toString(),"recipeId": photoId.toString().trim()}, options: Options(headers: map)).catchError(
-            (dynamicError){
-          print("called error loop indegrents");
-        }
-
-    );
-    print("called if indegrents aadeed ===== $responsesteps");
-
-    if (responsesteps.statusCode == 200) {
-      Navigator.of(context).pushReplacementNamed('/HomeScreen');
+      final responseindegrents = await dio.post(
+          ingredentsUrl,
+          data: {
+            "ingredient": i.toString(),
+            "recipeId": photoId.toString().trim()
+          }, options: Options(headers: map)).catchError(
+              (dynamicError) {
+            print("called error loop indegrents");
+          }
+      );
+      print("called if indegrents aadeed ===== $responseindegrents");
     }
+
+    for(var i in steps) {
+
+      final responsesteps = await dio.post(
+          stepsUrl,
+          data: {"instruction": i.toString(), "recipeId": photoId.toString().trim()},
+          options: Options(headers: map)).catchError(
+              (dynamicError) {
+            print("called error loop steps");
+          }
+
+      );
+      print("called if indegrents aadeed ===== $responsesteps");
+      if (responsesteps.statusCode == 200) {
+        Navigator.of(context).pushReplacementNamed('/HomeScreen');
+      }
+    }
+
 //    GetResponse newPost = new GetResponse(image.toString(),photoId);
 //    GetResponse p = await createPost(photoUrl,
 //        body: newPost.toMap());
@@ -89,4 +101,3 @@ print(response.statusCode);
 
   return loginModel;
 }
-

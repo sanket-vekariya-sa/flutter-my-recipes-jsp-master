@@ -13,7 +13,7 @@ HomeFeedAPI(BuildContext context) async {
   var dio = new Dio();
   Map<String, dynamic> map = {
     HttpHeaders.authorizationHeader:
-        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
+    "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
   };
   var response = await dio.get(url, options: Options(headers: map));
 
@@ -22,6 +22,7 @@ HomeFeedAPI(BuildContext context) async {
   }
 
   itemDetailsFeed = ItemDetailsFeed(
+      response.data["recipeId"],
       response.data["name"],
       response.data["photo"],
       response.data["preparationTime"],

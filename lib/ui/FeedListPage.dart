@@ -4,21 +4,25 @@ import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:Flavr/apis/HomeFeedAPI.dart';
-import 'Dashboard.dart';
+import 'package:Flavr/ui/Dashboard.dart';
+import 'package:speech_recognition/speech_recognition.dart';
 
 class FeedListPage extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
   @override
-  _HomeScreenState createState() => new _HomeScreenState();
+  _FeedListPageState createState() => new _FeedListPageState();
 }
 
-class _HomeScreenState extends State<FeedListPage> {
+class _FeedListPageState extends State<FeedListPage> {
   var _feedDetails = <ItemDetailsFeed>[];
   Future<ItemDetailsFeed> feed;
 
   var likedList = FeedListPage().likedFeed;
+  SpeechRecognition _speechRecognition;
+  bool _isAvailable = false;
+  bool _isListening = false;
+  String resultText = "";
 
 
   String _searchText = "";
@@ -27,6 +31,7 @@ class _HomeScreenState extends State<FeedListPage> {
   Icon _searchIcon = new Icon(Icons.search);
   Widget _appBarTitle = new Text('Home');
   final TextEditingController _filter = new TextEditingController();
+  final _speech = SpeechRecognition();
 
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
@@ -41,6 +46,14 @@ class _HomeScreenState extends State<FeedListPage> {
             onPressed: () {
               _searchPressed();
             },
+          ),
+          new IconButton(
+            icon: Icon(Icons.mic),
+            focusColor: Colors.pink,
+            onPressed: () {
+              _micPressed();
+            },
+
           ),
         ],
       ),
@@ -75,13 +88,15 @@ class _HomeScreenState extends State<FeedListPage> {
     var dio = new Dio();
     Map<String, dynamic> map = {
       HttpHeaders.authorizationHeader:
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
+      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
     };
     var response1 =
-        await dio.get(feedDetailsURL, options: Options(headers: map));
+    await dio.get(feedDetailsURL, options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
+
       final itemDetailsfeed = new ItemDetailsFeed(
+          memberJSON["recipeId"],
           memberJSON["name"],
           memberJSON["photo"],
           memberJSON["preparationTime"],
@@ -103,6 +118,8 @@ class _HomeScreenState extends State<FeedListPage> {
       });
     });
   }
+
+
 
   void _searchPressed() {
     setState(() {
@@ -178,7 +195,7 @@ class _HomeScreenState extends State<FeedListPage> {
                                   ? Colors.red
                                   : Colors.grey),
                           onPressed: () { _feedDetails[index].like =
-                              !_feedDetails[index].like;
+                          !_feedDetails[index].like;
                           likedList.add(filteredNames[index]);
 
                           },
@@ -275,6 +292,42 @@ class _HomeScreenState extends State<FeedListPage> {
         );
       },
     );
+  }
+  @override
+  void initState() {
+    super.initState();
+    initSpeechRecognizer();
+  }
+
+  void initSpeechRecognizer() {
+    _speechRecognition = SpeechRecognition();
+
+    _speechRecognition.setAvailabilityHandler(
+          (bool result) => setState(() => _isAvailable = result),
+    );
+
+    _speechRecognition.setRecognitionStartedHandler(
+          () => setState(() => _isListening = true),
+    );
+
+    _speechRecognition.setRecognitionResultHandler(
+          (String speech) => setState(() => resultText = speech),
+    );
+
+    _speechRecognition.setRecognitionCompleteHandler(
+          () => setState(() => _isListening = false),
+    );
+
+    _speechRecognition.activate().then(
+          (result) => setState(() => _isAvailable = result),
+    );
+  }
+  void _micPressed() {
+    if (_isAvailable && !_isListening)
+      _speechRecognition
+          .listen(locale: "en_US")
+          .then((result) => print('$result'));
+      _searchPressed();
   }
 }
 

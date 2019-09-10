@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'Dining.dart';
-import 'Farvorites.dart';
-import 'Profile.dart';
-import 'homeScreen.dart';
-import 'splashScreen.dart';
-import 'loginScreen.dart';
-import 'FeedListPage.dart';
+import 'package:Flavr/ui/Dining.dart';
+import 'package:Flavr/ui/Farvorites.dart';
+import 'package:Flavr/ui/FeedListPage.dart';
+import 'package:Flavr/ui/Profile.dart';
+import 'package:Flavr/ui/homeScreen.dart';
+import 'package:Flavr/ui/splashScreen.dart';
+import 'package:Flavr/ui/loginScreen.dart';
+import 'package:Flavr/ui/Profile.dart';
+
 
 
 void main() => runApp(new MyApp());
