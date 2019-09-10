@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 import 'package:Flavr/model/IngredientsDetailsFeed.dart';
@@ -23,6 +24,9 @@ class _DashBoardState extends State<DashBoard> {
   int newindex;
   List<ItemDetailsFeed> list;
 
+  var indegrents;
+  var insturctions;
+
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
   _DashBoardState(this.data, this.list);
@@ -30,6 +34,54 @@ class _DashBoardState extends State<DashBoard> {
   var _feedDetails = <IngredientsDetailsFeed>[];
   var _instructionDetails = <InstructionDetailsFeed>[];
   VideoPlayerController _videoController;
+
+  Widget _listViewIndergents() {
+    return ListView.separated(
+      shrinkWrap: true,
+      itemCount: _feedDetails.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          leading: CircleAvatar(
+            child: Text(
+              (index + 1).toString(),
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.orange,
+            maxRadius: 12.0,
+          ),
+          title: Text(_feedDetails[index].ingredient),
+        );
+      },
+      separatorBuilder: (context, index) {
+        return Divider();
+      },
+    );
+  }
+
+
+  Widget _listViewSteps() {
+    return ListView.separated(
+      shrinkWrap: true,
+      itemCount: _instructionDetails.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          leading: CircleAvatar(
+            child: Text(
+              (index + 1).toString(),
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.orange,
+            maxRadius: 12.0,
+          ),
+          title: Text(_instructionDetails[index].instruction),
+        );
+      },
+      separatorBuilder: (context, index) {
+        return Divider();
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +96,7 @@ class _DashBoardState extends State<DashBoard> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(10.0),
+              padding: EdgeInsets.all(1.0),
               child: Card(
                 child: list[data].youtubeUrl == ""
                     ? Image.network(list[data].photo)
@@ -159,12 +211,16 @@ class _DashBoardState extends State<DashBoard> {
                   Text(
                     "INGREDIENTS",
                     style: TextStyle(
-                        fontSize: 15.0, fontWeight: FontWeight.bold,color: Colors.white),
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   )
                 ],
               ),
             ),
-
+//            _listViewIndergents(context),
+            Container(
+              child:
             FutureBuilder<dynamic>(
               key: login_state,
               future: _loadData(),
@@ -185,14 +241,12 @@ class _DashBoardState extends State<DashBoard> {
                     return SpinKitFadingCircle(color: Colors.pink);
                   case ConnectionState.done:
                     newindex = data;
-                    return Text(
-                      _feedDetails[newindex].ingredient,
-                      textAlign: TextAlign.center,style: TextStyle(fontSize: 15.0),
-                    );
-                    return _buildRow();
+                    return _listViewIndergents();
+
                 }
                 return null;
               },
+            ),
             ),
 
             Container(
@@ -205,7 +259,9 @@ class _DashBoardState extends State<DashBoard> {
                   Text(
                     "INSTRUCTIONS",
                     style: TextStyle(
-                        fontSize: 15.0, fontWeight: FontWeight.bold,color: Colors.white),
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   )
                 ],
               ),
@@ -224,56 +280,26 @@ class _DashBoardState extends State<DashBoard> {
                       'no data available',
                       textAlign: TextAlign.center,
                     );
-                    return SpinKitFadingCircle(color: Colors.black);
                   case ConnectionState.waiting:
                     return SpinKitFadingCircle(color: Colors.pink);
                   case ConnectionState.done:
                     newindex = data;
-                    return Text(
-                      _instructionDetails[newindex].instruction,
-                      textAlign: TextAlign.center,style: TextStyle(fontSize: 15.0)
-                    );
-                    return _buildRow();
+                    return _listViewSteps();
+
                 }
                 return null;
               },
             ),
-
           ],
         ),
       ),
     );
   }
 
-  Widget _buildRow() {
-    return new ListView.builder(
-      padding: const EdgeInsets.only(top: 10.0),
-      itemCount: _feedDetails.length,
-      itemBuilder: (BuildContext context, int index) {
-        return
-//          Text(_feedDetails[index].ingredient);
-
-            new ListTile(
-          title: new Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: new Text(
-                  _feedDetails[index].ingredient,
-                  textAlign: TextAlign.start,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   _loadData() async {
+    print("${list[data].recipeId}=====recipeId is===");
     String ingredientsURL =
-        "http://35.160.197.175:3006/api/v1/recipe/1/ingredients";
+        "http://35.160.197.175:3006/api/v1/recipe/${list[data].recipeId}/ingredients";
     var dio = new Dio();
     Map<String, dynamic> map = {
       HttpHeaders.authorizationHeader:
@@ -289,15 +315,19 @@ class _DashBoardState extends State<DashBoard> {
       );
       _feedDetails.add(ingreditentfeed);
     }
-    print("response : $response1");
-    print("data response : ${response1.data}");
-    print("data item response : ${_feedDetails[0].ingredient}");
-    print("length response : ${_feedDetails.length}");
+
+    print("data item response ingredient : ${_feedDetails[0].ingredient}");
+    indegrents = (_feedDetails[0].ingredient.replaceAll('[', '')).toString();
+    indegrents = (indegrents.replaceAll(']', '')).toString();
+
+    print("${indegrents[0]}===at  0 ===${indegrents}");
+    print("${indegrents[1]} ");
   }
 
   _loadInstruction() async {
+    print("${list[data].recipeId}=====recipeId is===");
     String instructionsURL =
-        "http://35.160.197.175:3006/api/v1/recipe/1/instructions";
+        "http://35.160.197.175:3006/api/v1/recipe/${list[data].recipeId}/instructions";
     var dio = new Dio();
     Map<String, dynamic> map = {
       HttpHeaders.authorizationHeader:
@@ -313,10 +343,9 @@ class _DashBoardState extends State<DashBoard> {
       );
       _instructionDetails.add(instructionfeed);
     }
-    /*  print("response : $response1");
-    print("data response : ${response1.data}");
-    print("data item response : ${_feedDetails[0].ingredient}");
-    print("length response : ${_feedDetails.length}");*/
+
+    print(
+        "length response instruction : ${_instructionDetails[0].instruction}");
   }
 
   @override

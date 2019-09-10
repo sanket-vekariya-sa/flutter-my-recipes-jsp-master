@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ItemDetailsFeed with ChangeNotifier {
+  int recipeId;
   String name;
   String photo;
   String preparationTime;
@@ -9,7 +10,7 @@ class ItemDetailsFeed with ChangeNotifier {
   bool like;
   String youtubeUrl;
 
-  ItemDetailsFeed(this.name, this.photo, this.preparationTime, this.serves,
+  ItemDetailsFeed(this.recipeId,this.name, this.photo, this.preparationTime, this.serves,
       this.complexity, this.like,this.youtubeUrl) {
     if (name == null) {
       name = "default";
@@ -29,6 +30,9 @@ class ItemDetailsFeed with ChangeNotifier {
     }
     if(youtubeUrl == null){
       youtubeUrl = "";
+    }
+    if(recipeId == null){
+      recipeId = 1;
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:Flavr/apis/HomeFeedAPI.dart';
 import 'Dashboard.dart';
+import 'package:speech_recognition/speech_recognition.dart';
 
 class FeedListPage extends StatefulWidget {
   int loginData;
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<FeedListPage> {
   Icon _searchIcon = new Icon(Icons.search);
   Widget _appBarTitle = new Text('Home');
   final TextEditingController _filter = new TextEditingController();
+  final _speech = SpeechRecognition();
 
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
@@ -40,6 +42,12 @@ class _HomeScreenState extends State<FeedListPage> {
             icon: _searchIcon,
             onPressed: () {
               _searchPressed();
+            },
+          ),
+          new IconButton(
+            icon: Icon(Icons.mic),
+            onPressed: () {
+              _micPressed();
             },
           ),
         ],
@@ -81,7 +89,9 @@ class _HomeScreenState extends State<FeedListPage> {
         await dio.get(feedDetailsURL, options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
+
       final itemDetailsfeed = new ItemDetailsFeed(
+        memberJSON["recipeId"],
           memberJSON["name"],
           memberJSON["photo"],
           memberJSON["preparationTime"],
@@ -103,6 +113,8 @@ class _HomeScreenState extends State<FeedListPage> {
       });
     });
   }
+
+
 
   void _searchPressed() {
     setState(() {
@@ -275,6 +287,11 @@ class _HomeScreenState extends State<FeedListPage> {
         );
       },
     );
+  }
+
+  void _micPressed() {
+
+
   }
 }
 

@@ -33,6 +33,7 @@ dependencies:
   image_picker: ^0.6.1+4
   flutter_tags: ^0.4.3
   youtube_player: ^3.5.0
+  speech_recognition: ^0.3.0
 
 
 
