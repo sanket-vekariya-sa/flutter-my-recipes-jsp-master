@@ -4,70 +4,34 @@ import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:Flavr/apis/HomeFeedAPI.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:speech_recognition/speech_recognition.dart';
-import 'Dashboard.dart';
-import 'Farvorites.dart';
-import 'package:flutter/services.dart';
+import 'package:Flavr/ui/Dashboard.dart';
 import 'package:speech_recognition/speech_recognition.dart';
 
 class FeedListPage extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
   @override
-  _HomeScreenState createState() => new _HomeScreenState();
+  _FeedListPageState createState() => new _FeedListPageState();
 }
 
-class _HomeScreenState extends State<FeedListPage> {
+class _FeedListPageState extends State<FeedListPage> {
   var _feedDetails = <ItemDetailsFeed>[];
-  var _testFeedDetails;
-  var testFeed;
   Future<ItemDetailsFeed> feed;
+
+  var likedList = FeedListPage().likedFeed;
   SpeechRecognition _speechRecognition;
   bool _isAvailable = false;
   bool _isListening = false;
+  String resultText = "";
+
+
   String _searchText = "";
-
-  var likedList = FeedListPage().likedFeed;
-
-  @override
-  void initState() {
-    super.initState();
-    initSpeechRecognizer();
-  }
-
-  void initSpeechRecognizer() {
-    _speechRecognition = SpeechRecognition();
-
-    _speechRecognition.setAvailabilityHandler(
-          (bool result) => setState(() => _isAvailable = result),
-    );
-
-    _speechRecognition.setRecognitionStartedHandler(
-          () => setState(() => _isListening = true),
-    );
-
-    _speechRecognition.setRecognitionResultHandler(
-          (String speech) => setState(() => _filter.text = speech),
-    );
-
-    _speechRecognition.setRecognitionCompleteHandler(
-          () => setState(() => _isListening = false),
-    );
-
-    _speechRecognition.activate().then(
-          (result) => setState(() => _isAvailable = result),
-    );
-  }
-
   var names = <ItemDetailsFeed>[]; // names we get from API
   var filteredNames = <ItemDetailsFeed>[];
   Icon _searchIcon = new Icon(Icons.search);
-  Icon _voideSearchIcon = new Icon(Icons.keyboard_voice);
-
   Widget _appBarTitle = new Text('Home');
   final TextEditingController _filter = new TextEditingController();
+  final _speech = SpeechRecognition();
 
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
@@ -84,12 +48,13 @@ class _HomeScreenState extends State<FeedListPage> {
             },
           ),
           new IconButton(
-            icon: _voideSearchIcon,
+            icon: Icon(Icons.mic),
+            focusColor: Colors.pink,
             onPressed: () {
-              _voiceSearchPressed();
+              _micPressed();
             },
-          ),
 
+          ),
         ],
       ),
       resizeToAvoidBottomPadding: false,
@@ -106,10 +71,7 @@ class _HomeScreenState extends State<FeedListPage> {
             case ConnectionState.active:
               return null;
             case ConnectionState.waiting:
-              return Shimmer.fromColors(
-                    baseColor: Colors.grey[400],
-                    highlightColor: Colors.white,
-                    child: ListItem(index: -1));
+              return SpinKitFadingCircle(color: Colors.pink);
             case ConnectionState.done:
               return _buildRow();
           }
@@ -126,15 +88,15 @@ class _HomeScreenState extends State<FeedListPage> {
     var dio = new Dio();
     Map<String, dynamic> map = {
       HttpHeaders.authorizationHeader:
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
+      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
     };
     var response1 =
-        await dio.get(feedDetailsURL, options: Options(headers: map));
+    await dio.get(feedDetailsURL, options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
 
       final itemDetailsfeed = new ItemDetailsFeed(
-        memberJSON["recipeId"],
+          memberJSON["recipeId"],
           memberJSON["name"],
           memberJSON["photo"],
           memberJSON["preparationTime"],
@@ -157,35 +119,7 @@ class _HomeScreenState extends State<FeedListPage> {
     });
   }
 
-  void _voiceSearchPressed() {
-      if (_isAvailable && !_isListening)
-        _speechRecognition
-            .listen(locale: "en_US")
-            .then((result) => print('$result'));
 
-    setState(() {
-      if (this._voideSearchIcon.icon == Icons.keyboard_voice) {
-        this._voideSearchIcon = new Icon(Icons.close);
-        this._appBarTitle = TextFormField(
-          textInputAction: TextInputAction.done,
-          controller: _filter,
-          autofocus: true,
-          decoration: InputDecoration(
-              prefixIcon: new Icon(Icons.settings_voice), hintText: 'Listening...'),
-          onFieldSubmitted: (term) {
-            _filter.text = _searchText;
-            FocusScope.of(context).unfocus();
-          },
-        );
-        _filter.text = _searchText;
-      } else {
-        this._voideSearchIcon = new Icon(Icons.keyboard_voice);
-        this._appBarTitle = Text('Home');
-        _filter.clear();
-        _searchText= "";
-      }
-    });
-  }
 
   void _searchPressed() {
     setState(() {
@@ -222,6 +156,8 @@ class _HomeScreenState extends State<FeedListPage> {
         }
       }
       filteredNames = tempList;
+    }else{
+
     }
     return new ListView.builder(
       padding: const EdgeInsets.only(top: 10.0),
@@ -259,7 +195,7 @@ class _HomeScreenState extends State<FeedListPage> {
                                   ? Colors.red
                                   : Colors.grey),
                           onPressed: () { _feedDetails[index].like =
-                              !_feedDetails[index].like;
+                          !_feedDetails[index].like;
                           likedList.add(filteredNames[index]);
 
                           },
@@ -356,6 +292,42 @@ class _HomeScreenState extends State<FeedListPage> {
         );
       },
     );
+  }
+  @override
+  void initState() {
+    super.initState();
+    initSpeechRecognizer();
+  }
+
+  void initSpeechRecognizer() {
+    _speechRecognition = SpeechRecognition();
+
+    _speechRecognition.setAvailabilityHandler(
+          (bool result) => setState(() => _isAvailable = result),
+    );
+
+    _speechRecognition.setRecognitionStartedHandler(
+          () => setState(() => _isListening = true),
+    );
+
+    _speechRecognition.setRecognitionResultHandler(
+          (String speech) => setState(() => resultText = speech),
+    );
+
+    _speechRecognition.setRecognitionCompleteHandler(
+          () => setState(() => _isListening = false),
+    );
+
+    _speechRecognition.activate().then(
+          (result) => setState(() => _isAvailable = result),
+    );
+  }
+  void _micPressed() {
+    if (_isAvailable && !_isListening)
+      _speechRecognition
+          .listen(locale: "en_US")
+          .then((result) => print('$result'));
+      _searchPressed();
   }
 }
 

@@ -17,7 +17,7 @@ class ItemDetailsFeed with ChangeNotifier {
     }
     if (photo == null) {
       photo =
-          "https://zabas.com/wp-content/uploads/2014/09/Placeholder-food.jpg";
+      "https://zabas.com/wp-content/uploads/2014/09/Placeholder-food.jpg";
     }
     if (preparationTime == null) {
       preparationTime = "5";

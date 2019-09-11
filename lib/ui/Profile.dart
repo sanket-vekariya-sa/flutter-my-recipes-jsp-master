@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -11,7 +14,11 @@ class Profile extends StatefulWidget {
 
 class ProfileScreenState extends State<Profile> {
   var mail;
+  File galleryFile;
+  File imgFile;
 
+  String profileImage;
+ SharedPreferences pref;
   @override
   void initState() {
     super.initState();
@@ -21,7 +28,7 @@ class ProfileScreenState extends State<Profile> {
     return new Form(
         child: new Column(
       children: <Widget>[
-        Padding(
+        /*Padding(
           padding: const EdgeInsets.only(
               top: 10.0, right: 10.0, bottom: 10.0, left: 10.0),
           child: Container(
@@ -33,8 +40,20 @@ class ProfileScreenState extends State<Profile> {
                       fit: BoxFit.fill,
                       image: new NetworkImage(
                           "https://images.pexels.com/photos/736716/pexels-photo-736716.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500")))),
-        ),
+        ),*/
+        Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child :displaySelectedFile(galleryFile),
 
+        ),
+//        RaisedButton(
+//          shape: RoundedRectangleBorder(
+//              borderRadius: new BorderRadius.circular(10.0)),
+//          onPressed: imageSelectorGallery,
+//          child: Text("Select Image"),
+//          color: Colors.orange,
+//          textColor: Colors.white,
+//        ),
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: FutureBuilder<dynamic>(
@@ -73,6 +92,7 @@ class ProfileScreenState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
         onWillPop: () {
           if (Navigator.canPop(context)) {
@@ -137,13 +157,27 @@ class ProfileScreenState extends State<Profile> {
               ],
             ),
           ),
+          floatingActionButton: new FloatingActionButton(
+            onPressed: imageSelectorGallery,
+            tooltip: 'Pick Image',
+            child: new Icon(Icons.add_a_photo),
+            backgroundColor: Colors.orange,
+            ),
         ));
+
   }
 
   _loadName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     mail = prefs.getString("mail");
   }
+  _loadLocalProfileImage() async {
+    pref = SharedPreferences.getInstance() as SharedPreferences;
+    pref.setString('imgUrl',galleryFile.path );
+    imgFile = await galleryFile.copy(galleryFile.path);
+
+  }
+
 
   Widget _buildRow() {
     return new Text(mail.toString(),
@@ -151,4 +185,32 @@ class ProfileScreenState extends State<Profile> {
         style: TextStyle(
             fontWeight: FontWeight.w600, color: Colors.black, fontSize: 15.0));
   }
-}
+  imageSelectorGallery() async {
+    galleryFile = await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 200.0,
+      maxWidth: 200.0,
+    );
+    print("You selected gallery image : " + galleryFile.path);
+
+    setState(() {
+      displaySelectedFile(galleryFile);
+    });
+
+  }
+  Widget displaySelectedFile(File file) {
+         return new SizedBox(
+                  height: 200.0,
+                  width: 200.0,
+                  child:
+                  file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/profile.png'), radius: 200.0,)
+                      : new CircleAvatar(backgroundImage: new FileImage(file), radius: 200.0,));
+
+          }
+
+
+  }
+
+
+
+

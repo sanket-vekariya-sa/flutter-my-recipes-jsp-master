@@ -1,9 +1,9 @@
-import 'package:Flavr/apis/loginAPI.dart';
 import 'package:flutter/material.dart';
-import 'Dining.dart';
-import 'Farvorites.dart';
-import 'FeedListPage.dart';
-import 'Profile.dart';
+import 'package:Flavr/ui/Dining.dart';
+import 'package:Flavr/ui/Farvorites.dart';
+import 'package:Flavr/ui/FeedListPage.dart';
+import 'package:Flavr/ui/Profile.dart';
+
 class HomeScreen extends StatefulWidget {
   final String text;
   HomeScreen(this.text);

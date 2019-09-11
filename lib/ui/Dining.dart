@@ -131,25 +131,25 @@ class _DiningScreen extends State<Dining> {
   Widget _buildTextFieldYouTubeUrl() {
     return new Form(
         child: new Column(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(10.0),
-          child: TextFormField(
-            controller: _youtubeUrl,
-            textInputAction: TextInputAction.next,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(
-              labelText: 'YouTube Url(Optional)',
-              labelStyle: TextStyle(color: Colors.grey),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5.0),
-                borderSide: new BorderSide(color: Colors.orange),
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: TextFormField(
+                controller: _youtubeUrl,
+                textInputAction: TextInputAction.next,
+                style: TextStyle(color: Colors.black),
+                decoration: InputDecoration(
+                  labelText: 'YouTube Url(Optional)',
+                  labelStyle: TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: new BorderSide(color: Colors.orange),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ],
-    ));
+          ],
+        ));
   }
 
   Widget _buildTags() {
@@ -484,7 +484,7 @@ class _DiningScreen extends State<Dining> {
       height: 200.0,
       width: 200.0,
       child:
-          file == null ? new Text('No image Selected') : new Image.file(file),
+      file == null ? new Text('No image Selected') : new Image.file(file),
     );
   }
 }
