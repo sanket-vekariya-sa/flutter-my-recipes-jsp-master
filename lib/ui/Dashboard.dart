@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:youtube_player/youtube_player.dart';
+import 'package:share/share.dart';
 
 class DashBoard extends StatefulWidget {
   int index;
@@ -89,6 +90,14 @@ class _DashBoardState extends State<DashBoard> {
       appBar: AppBar(
         title: Text(list[data].getName().toUpperCase()),
         backgroundColor: Colors.orange,
+        actions: <Widget>[
+          new IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () {
+              _shareRecipe();
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(12.0),
@@ -316,16 +325,11 @@ class _DashBoardState extends State<DashBoard> {
       _feedDetails.add(ingreditentfeed);
     }
 
-    print("data item response ingredient : ${_feedDetails[0].ingredient}");
     indegrents = (_feedDetails[0].ingredient.replaceAll('[', '')).toString();
     indegrents = (indegrents.replaceAll(']', '')).toString();
-
-    print("${indegrents[0]}===at  0 ===${indegrents}");
-    print("${indegrents[1]} ");
   }
 
   _loadInstruction() async {
-    print("${list[data].recipeId}=====recipeId is===");
     String instructionsURL =
         "http://35.160.197.175:3006/api/v1/recipe/${list[data].recipeId}/instructions";
     var dio = new Dio();
@@ -351,5 +355,22 @@ class _DashBoardState extends State<DashBoard> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void _shareRecipe() {
+    if(list[data].youtubeUrl == "") {
+      Share.share(
+          "Recipe : ${list[data].name}\n"
+              "Searve : ${list[data].serves}\n"
+              "Preparation Time : ${list[data].preparationTime}\n"
+              "Complexity : ${list[data].complexity}\n");
+    } else{
+      Share.share(
+          "Recipe : ${list[data].name}\n"
+              "Searve : ${list[data].serves}\n"
+              "Preparation Time : ${list[data].preparationTime}\n"
+              "Complexity : ${list[data].complexity}\n"
+              "Youtube Link : ${list[data].youtubeUrl}");
+    }
   }
 }

@@ -253,7 +253,7 @@ class _HomeScreenState extends State<FeedListPage> {
           child: SingleChildScrollView(
             child: new ListTile(
               onTap: () {
-                navigateToSubPage(context, index, _feedDetails);
+                navigateToSubPage(context, index, filteredNames);
               },
               title: new Card(
                 child: new Column(
