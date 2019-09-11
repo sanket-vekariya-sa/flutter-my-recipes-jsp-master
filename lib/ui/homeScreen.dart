@@ -47,14 +47,7 @@ String appBarTitleText ='Home';
        body: Center(
         child: widgetOptions.elementAt(selectedIndex),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: (){
-          Navigator.of(context).pushReplacementNamed('/Dining');
-        },
-        tooltip: 'Add Recipe',
-        child: new Icon(Icons.playlist_add, color: Colors.black,),
-        backgroundColor: Colors.blue,
-      ),
+
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),

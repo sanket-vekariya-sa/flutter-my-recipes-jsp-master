@@ -79,6 +79,14 @@ class _FeedListPageState extends State<FeedListPage> {
           return null;
         },
       ),
+      floatingActionButton: new FloatingActionButton(
+        onPressed: (){
+          Navigator.of(context).pushReplacementNamed('/Dining');
+        },
+        tooltip: 'Add Recipe',
+        child: new Icon(Icons.playlist_add, color: Colors.black,),
+        backgroundColor: Colors.blue,
+      ),
     );
   }
 

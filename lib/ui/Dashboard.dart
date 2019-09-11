@@ -46,7 +46,7 @@ class _DashBoardState extends State<DashBoard> {
               (index + 1).toString(),
               style: TextStyle(color: Colors.white),
             ),
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.blue,
             maxRadius: 12.0,
           ),
           title: Text(_feedDetails[index].ingredient),
@@ -70,7 +70,7 @@ class _DashBoardState extends State<DashBoard> {
               (index + 1).toString(),
               style: TextStyle(color: Colors.white),
             ),
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.blue,
             maxRadius: 12.0,
           ),
           title: Text(_instructionDetails[index].instruction),
@@ -85,10 +85,11 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(list[data].getName().toUpperCase()),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.blue,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(12.0),
@@ -202,9 +203,9 @@ class _DashBoardState extends State<DashBoard> {
             ),
 
             Container(
-              color: Colors.orange,
+              color: Colors.blue,
               width: double.infinity,
-              height: 40.0,
+              height: 50.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -250,9 +251,9 @@ class _DashBoardState extends State<DashBoard> {
             ),
 
             Container(
-              color: Colors.orange,
+              color: Colors.blue,
               width: double.infinity,
-              height: 40.0,
+              height: 50.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[

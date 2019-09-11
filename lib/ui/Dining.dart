@@ -129,7 +129,7 @@ class _DiningScreen extends State<Dining> {
   }
 
   Widget _buildTextFieldYouTubeUrl() {
-    return new Form(
+    return new Card(
         child: new Column(
           children: <Widget>[
             Padding(
