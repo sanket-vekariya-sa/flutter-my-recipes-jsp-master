@@ -10,6 +10,8 @@ import 'package:speech_recognition/speech_recognition.dart';
 import 'Dashboard.dart';
 import 'Farvorites.dart';
 import 'package:flutter/services.dart';
+import 'package:speech_recognition/speech_recognition.dart';
+
 class FeedListPage extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
@@ -130,7 +132,9 @@ class _HomeScreenState extends State<FeedListPage> {
         await dio.get(feedDetailsURL, options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
+
       final itemDetailsfeed = new ItemDetailsFeed(
+        memberJSON["recipeId"],
           memberJSON["name"],
           memberJSON["photo"],
           memberJSON["preparationTime"],

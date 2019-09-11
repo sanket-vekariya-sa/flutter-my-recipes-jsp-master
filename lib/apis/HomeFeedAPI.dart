@@ -22,6 +22,7 @@ HomeFeedAPI(BuildContext context) async {
   }
 
   itemDetailsFeed = ItemDetailsFeed(
+    response.data["recipeId"],
       response.data["name"],
       response.data["photo"],
       response.data["preparationTime"],
