@@ -13,23 +13,22 @@ import 'Farvorites.dart';
 class FeedListPage extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
-
   @override
-  _HomeScreenState createState() => new _HomeScreenState();
+  _FeedListPageState createState() => new _FeedListPageState();
 }
 
-class _HomeScreenState extends State<FeedListPage> {
+class _FeedListPageState extends State<FeedListPage> {
   var _feedDetails = <ItemDetailsFeed>[];
-  var _testFeedDetails;
-  var testFeed;
-  bool showIcon;
   Future<ItemDetailsFeed> feed;
+
+  var likedList = FeedListPage().likedFeed;
   SpeechRecognition _speechRecognition;
   bool _isAvailable = false;
   bool _isListening = false;
-  String _searchText = "";
+  String resultText = "";
 
-  var likedList = FeedListPage().likedFeed;
+
+  String _searchText = "";
 
   @override
   void initState() {
@@ -68,6 +67,7 @@ class _HomeScreenState extends State<FeedListPage> {
 
   Widget _appBarTitle = new Text('Home');
   final TextEditingController _filter = new TextEditingController();
+  final _speech = SpeechRecognition();
 
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
@@ -76,6 +76,7 @@ class _HomeScreenState extends State<FeedListPage> {
     return new Scaffold(
       appBar: AppBar(
         title: _appBarTitle,
+        centerTitle: true,
         actions: <Widget>[
           new IconButton(
             icon: _searchIcon,
@@ -143,6 +144,7 @@ class _HomeScreenState extends State<FeedListPage> {
       _feedDetails.add(itemDetailsfeed);
       names.add(itemDetailsfeed);
       filteredNames = names;
+
     }
   }
 
@@ -155,7 +157,6 @@ class _HomeScreenState extends State<FeedListPage> {
   }
 
   void _voiceSearchPressed() {
-    showIcon = false;
     if (_isAvailable && !_isListening)
       _speechRecognition
           .listen(locale: "en_US")
@@ -261,12 +262,20 @@ class _HomeScreenState extends State<FeedListPage> {
                   children: <Widget>[
                     new Stack(
                       children: <Widget>[
-                        new Image.network(
-                          filteredNames[index].photo,
-                          fit: BoxFit.fitWidth,
-                          width: double.infinity,
-                          height: 180,
-                        ),
+
+//                        new Image.network(
+//                          filteredNames[index].photo,
+//                          fit: BoxFit.fitWidth,
+//                          width: double.infinity,
+//                          height: 180,
+//                        ),
+                new  FadeInImage.assetNetwork(
+                  placeholder: 'images/loaderfood.gif',
+                  image: filteredNames[index].photo,
+                  fit: BoxFit.fitWidth,
+                  width: double.infinity,
+                  height: 180,
+                ),
                         IconButton(
                           alignment: Alignment.topRight,
                           icon: Icon(

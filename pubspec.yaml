@@ -58,6 +58,9 @@ flutter:
   assets:
     - images/splashscreen_img.png
     - images/profile.png
+    - images/recipe.png
+    - images/loaderfood.gif
+    - images/profileimage.jpg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

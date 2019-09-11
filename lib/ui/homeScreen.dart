@@ -14,11 +14,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
     int selectedIndex = 0;
      String  text;
+
     _HomeScreenState(this.text);
 String appBarTitleText ='Home';
   final widgetOptions = [
     new FeedListPage(),
-    new Dining(),
     new Favorites(),
     new Profile(),
   ];
@@ -29,6 +29,7 @@ String appBarTitleText ='Home';
 
    @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomPadding : false,
 //      appBar: AppBar(title: Text(appBarTitleText, style: TextStyle(color: Colors.black),),
@@ -43,23 +44,28 @@ String appBarTitleText ='Home';
 //        Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 6.0,
 //      ),
 
-      backgroundColor: Colors.white,
-      body: Center(
+       body: Center(
         child: widgetOptions.elementAt(selectedIndex),
+      ),
+      floatingActionButton: new FloatingActionButton(
+        onPressed: (){
+          Navigator.of(context).pushReplacementNamed('/Dining');
+        },
+        tooltip: 'Add Recipe',
+        child: new Icon(Icons.playlist_add, color: Colors.black,),
+        backgroundColor: Colors.blue,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add), title: Text('Dinning')),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), title: Text('Favourites')),
-              BottomNavigationBarItem(
+              icon: Icon(Icons.local_dining), title: Text('Wishlist')),
+           BottomNavigationBarItem(
               icon: Icon(Icons.person), title: Text('Profile')),
         ],
         currentIndex: selectedIndex,
-        unselectedItemColor:Colors.grey ,
-        selectedItemColor: Colors.orange,
+        unselectedItemColor:Colors.black ,
+        selectedItemColor: Colors.blue,
 
        onTap: onItemTapped,
       ),
@@ -72,15 +78,17 @@ String appBarTitleText ='Home';
       appBarTitleText = 'Home';
 
     }else if(index == 1){
-      appBarTitleText = 'Dinning';
+      appBarTitleText = 'Wishlist';
 
     }else if(index == 2){
-      appBarTitleText = 'Favourites';
-
-    }else if(index == 3){
+      //appBarTitleText = 'Favourites';
       appBarTitleText = 'Profile';
 
-    }
+   }
+// else if(index == 3){
+//      appBarTitleText = 'Profile';
+//
+//    }
 
     setState(() {
       selectedIndex = index;
