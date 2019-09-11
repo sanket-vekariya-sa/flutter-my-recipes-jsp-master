@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,15 +12,29 @@ class Profile extends StatefulWidget {
   }
 }
 
+Future<bool> saveImagePreference(String imgurl) async{
+  SharedPreferences pref= await SharedPreferences.getInstance();
+      pref.setString("imgUrl", imgurl);
+  return pref.commit();
+}
+Future<String> getImagePreference() async{
+  SharedPreferences pref= await SharedPreferences.getInstance();
+  String savedImage = pref.getString("imgUrl");
+  return savedImage;
+}
+
+
 class ProfileScreenState extends State<Profile> {
   var mail;
   File galleryFile;
   File imgFile;
+  String savedImagenew="";
 
   String profileImage;
  SharedPreferences pref;
   @override
   void initState() {
+    getImagePreference().then(upDateImage);
     super.initState();
   }
 
@@ -132,7 +146,7 @@ class ProfileScreenState extends State<Profile> {
                 ),
                 _buildTextFields(),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
+                  padding: const EdgeInsets.only(top: 20.0, right: 40.0, left: 40.0),
                   child: SizedBox(
                     width: double.infinity,
                     height: 50.00,
@@ -140,8 +154,7 @@ class ProfileScreenState extends State<Profile> {
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0)),
                       onPressed: () {
-                        Navigator.of(context)
-                            .pushReplacementNamed('/HomeScreen');
+                        Navigator.of(context).pushReplacementNamed('/HomeScreen');
                       },
                       child: Text("Go to Recipe List",
                           textAlign: TextAlign.center,
@@ -149,8 +162,8 @@ class ProfileScreenState extends State<Profile> {
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                               fontSize: 15.0)),
-                      color: Colors.orange,
-                      textColor: Colors.white,
+                      color: Colors.blue,
+                      textColor: Colors.black,
                     ),
                   ),
                 ),
@@ -160,8 +173,8 @@ class ProfileScreenState extends State<Profile> {
           floatingActionButton: new FloatingActionButton(
             onPressed: imageSelectorGallery,
             tooltip: 'Pick Image',
-            child: new Icon(Icons.add_a_photo),
-            backgroundColor: Colors.orange,
+            child: new Icon(Icons.add_a_photo, color: Colors.black,),
+            backgroundColor: Colors.blue,
             ),
         ));
 
@@ -191,6 +204,8 @@ class ProfileScreenState extends State<Profile> {
       maxHeight: 200.0,
       maxWidth: 200.0,
     );
+   // String img= galleryFile.toString();
+    saveImagePreference(galleryFile.path);
     print("You selected gallery image : " + galleryFile.path);
 
     setState(() {
@@ -203,13 +218,19 @@ class ProfileScreenState extends State<Profile> {
                   height: 200.0,
                   width: 200.0,
                   child:
-                  file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/profile.png'), radius: 200.0,)
+                  file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/profileimage.jpg'), radius: 200.0,)
                       : new CircleAvatar(backgroundImage: new FileImage(file), radius: 200.0,));
 
           }
 
 
+
+  void upDateImage(String value) {
+    setState(() {
+      this.savedImagenew = value;
+    });
   }
+}
 
 
 

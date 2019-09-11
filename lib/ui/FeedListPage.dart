@@ -29,7 +29,7 @@ class _FeedListPageState extends State<FeedListPage> {
   var names = <ItemDetailsFeed>[]; // names we get from API
   var filteredNames = <ItemDetailsFeed>[];
   Icon _searchIcon = new Icon(Icons.search);
-  Widget _appBarTitle = new Text('Home');
+  Widget _appBarTitle = new Text('Home',);
   final TextEditingController _filter = new TextEditingController();
   final _speech = SpeechRecognition();
 
@@ -40,6 +40,7 @@ class _FeedListPageState extends State<FeedListPage> {
     return new Scaffold(
       appBar: AppBar(
         title: _appBarTitle,
+        centerTitle: true,
         actions: <Widget>[
           new IconButton(
             icon: _searchIcon,
@@ -128,6 +129,7 @@ class _FeedListPageState extends State<FeedListPage> {
         this._appBarTitle = TextFormField(
           textInputAction: TextInputAction.done,
           controller: _filter,
+
           autofocus: true,
           decoration: InputDecoration(
               prefixIcon: new Icon(Icons.search), hintText: 'Search...'),
@@ -138,7 +140,7 @@ class _FeedListPageState extends State<FeedListPage> {
         _HomeScreenState();
       } else {
         this._searchIcon = new Icon(Icons.search);
-        this._appBarTitle = Text('Home');
+        this._appBarTitle = Text('Home',);
         _filter.clear();
       }
     });
@@ -179,12 +181,20 @@ class _FeedListPageState extends State<FeedListPage> {
                   children: <Widget>[
                     new Stack(
                       children: <Widget>[
-                        new Image.network(
-                          filteredNames[index].photo,
-                          fit: BoxFit.fitWidth,
-                          width: double.infinity,
-                          height: 180,
-                        ),
+
+//                        new Image.network(
+//                          filteredNames[index].photo,
+//                          fit: BoxFit.fitWidth,
+//                          width: double.infinity,
+//                          height: 180,
+//                        ),
+                new  FadeInImage.assetNetwork(
+                  placeholder: 'images/loaderfood.gif',
+                  image: filteredNames[index].photo,
+                  fit: BoxFit.fitWidth,
+                  width: double.infinity,
+                  height: 180,
+                ),
                         IconButton(
                           alignment: Alignment.topRight,
                           icon: Icon(

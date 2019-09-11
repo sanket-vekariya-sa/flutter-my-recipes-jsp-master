@@ -45,7 +45,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     labelText: 'Name Of Recipe*',
-                    labelStyle: TextStyle(color: Colors.grey),
+                    labelStyle: TextStyle(color: Colors.blue),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                       borderSide: new BorderSide(color: Colors.orange),
@@ -67,7 +67,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     labelText: 'Time Required*',
-                    labelStyle: TextStyle(color: Colors.grey),
+                    labelStyle: TextStyle(color: Colors.blue),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                       borderSide: new BorderSide(color: Colors.black),
@@ -109,7 +109,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     labelText: 'No of Serves*',
-                    labelStyle: TextStyle(color: Colors.grey),
+                    labelStyle: TextStyle(color: Colors.blue),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                       borderSide: new BorderSide(color: Colors.black),
@@ -140,7 +140,7 @@ class _DiningScreen extends State<Dining> {
                 style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   labelText: 'YouTube Url(Optional)',
-                  labelStyle: TextStyle(color: Colors.grey),
+                  labelStyle: TextStyle(color: Colors.blue),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                     borderSide: new BorderSide(color: Colors.orange),
@@ -166,7 +166,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
-                      color: Colors.orange),
+                      color: Colors.blue),
                 ),
               )
             ],
@@ -180,7 +180,7 @@ class _DiningScreen extends State<Dining> {
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Add Tag',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelStyle: TextStyle(color: Colors.blue),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
                   borderSide: new BorderSide(color: Colors.black),
@@ -246,7 +246,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
-                      color: Colors.orange),
+                      color: Colors.blue),
                 ),
               )
             ],
@@ -260,7 +260,7 @@ class _DiningScreen extends State<Dining> {
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Add Ingredient',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelStyle: TextStyle(color: Colors.blue),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
                   borderSide: new BorderSide(color: Colors.black),
@@ -320,7 +320,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
-                      color: Colors.orange),
+                      color: Colors.blue),
                 ),
               )
             ],
@@ -334,7 +334,7 @@ class _DiningScreen extends State<Dining> {
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Add Step',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelStyle: TextStyle(color: Colors.blue),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
                   borderSide: new BorderSide(color: Colors.black),
@@ -393,12 +393,20 @@ class _DiningScreen extends State<Dining> {
         displaySelectedFile(galleryFile);
       });
     }
-
-    return new Scaffold(
+    return WillPopScope(
+      onWillPop: () {
+        _moveToHomeScreen(context);
+      },
+    child : Scaffold(
         appBar: AppBar(
+       leading: IconButton(
+       icon: Icon(Icons.arrow_back),
+       onPressed: () {
+       _moveToHomeScreen(context);
+      }),
           title: _appBarTitle,
           centerTitle: true,
-          backgroundColor: Colors.orange,
+          backgroundColor: Colors.blue,
         ),
         resizeToAvoidBottomPadding: false,
         body: new SingleChildScrollView(
@@ -421,8 +429,8 @@ class _DiningScreen extends State<Dining> {
                             borderRadius: new BorderRadius.circular(10.0)),
                         onPressed: imageSelectorGallery,
                         child: Text("Select Image"),
-                        color: Colors.orange,
-                        textColor: Colors.white,
+                        color: Colors.blue,
+                        textColor: Colors.black,
                       )
                     ],
                   ),
@@ -468,23 +476,32 @@ class _DiningScreen extends State<Dining> {
                         }
                       },
                       child: Text("Add Recipe"),
-                      color: Colors.orange,
-                      textColor: Colors.white,
+                      color: Colors.blue,
+                      textColor: Colors.black,
                     ),
                   ),
                 ),
               ],
             ),
           ),
-        ));
+        )));
   }
 
   Widget displaySelectedFile(File file) {
+//    return new SizedBox(
+//      height: 200.0,
+//      width: 200.0,
+//      child:
+//      file == null ? new Text('No image Selected') : new Image.file(file),
+//    );
     return new SizedBox(
-      height: 200.0,
-      width: 200.0,
-      child:
-      file == null ? new Text('No image Selected') : new Image.file(file),
-    );
+        height: 200.0,
+        width: 200.0,
+        child:
+        file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/recipe.png'), radius: 200.0,)
+            : new CircleAvatar(backgroundImage: new FileImage(file), radius: 200.0,));
   }
+  void _moveToHomeScreen(BuildContext context) =>
+      Navigator.of(context).pushReplacementNamed('/HomeScreen');
 }
+

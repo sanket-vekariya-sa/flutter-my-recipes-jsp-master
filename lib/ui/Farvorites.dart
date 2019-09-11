@@ -14,13 +14,17 @@ class Favorites extends StatefulWidget{
 
 class _FavroitesScreen extends State<Favorites> {
   var _feedDetails = <ItemDetailsFeed>[];
-
+  Widget _appBarTitle = new Text('Wishlist');
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-
+      appBar: AppBar(
+        title: _appBarTitle,
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+      ),
       resizeToAvoidBottomPadding: false,
       key: login_state,
       body: FutureBuilder<dynamic>(
