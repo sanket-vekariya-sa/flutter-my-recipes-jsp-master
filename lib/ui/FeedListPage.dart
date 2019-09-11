@@ -5,8 +5,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:Flavr/apis/HomeFeedAPI.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:speech_recognition/speech_recognition.dart';
 import 'Dashboard.dart';
-
+import 'Farvorites.dart';
+import 'package:flutter/services.dart';
 class FeedListPage extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
@@ -16,15 +19,51 @@ class FeedListPage extends StatefulWidget {
 
 class _HomeScreenState extends State<FeedListPage> {
   var _feedDetails = <ItemDetailsFeed>[];
+  var _testFeedDetails;
+  var testFeed;
   Future<ItemDetailsFeed> feed;
+  SpeechRecognition _speechRecognition;
+  bool _isAvailable = false;
+  bool _isListening = false;
+  String _searchText = "";
 
   var likedList = FeedListPage().likedFeed;
 
+  @override
+  void initState() {
+    super.initState();
+    initSpeechRecognizer();
+  }
 
-  String _searchText = "";
+  void initSpeechRecognizer() {
+    _speechRecognition = SpeechRecognition();
+
+    _speechRecognition.setAvailabilityHandler(
+          (bool result) => setState(() => _isAvailable = result),
+    );
+
+    _speechRecognition.setRecognitionStartedHandler(
+          () => setState(() => _isListening = true),
+    );
+
+    _speechRecognition.setRecognitionResultHandler(
+          (String speech) => setState(() => _filter.text = speech),
+    );
+
+    _speechRecognition.setRecognitionCompleteHandler(
+          () => setState(() => _isListening = false),
+    );
+
+    _speechRecognition.activate().then(
+          (result) => setState(() => _isAvailable = result),
+    );
+  }
+
   var names = <ItemDetailsFeed>[]; // names we get from API
   var filteredNames = <ItemDetailsFeed>[];
   Icon _searchIcon = new Icon(Icons.search);
+  Icon _voideSearchIcon = new Icon(Icons.keyboard_voice);
+
   Widget _appBarTitle = new Text('Home');
   final TextEditingController _filter = new TextEditingController();
 
@@ -42,6 +81,13 @@ class _HomeScreenState extends State<FeedListPage> {
               _searchPressed();
             },
           ),
+          new IconButton(
+            icon: _voideSearchIcon,
+            onPressed: () {
+              _voiceSearchPressed();
+            },
+          ),
+
         ],
       ),
       resizeToAvoidBottomPadding: false,
@@ -58,7 +104,10 @@ class _HomeScreenState extends State<FeedListPage> {
             case ConnectionState.active:
               return null;
             case ConnectionState.waiting:
-              return SpinKitFadingCircle(color: Colors.pink);
+              return Shimmer.fromColors(
+                    baseColor: Colors.grey[400],
+                    highlightColor: Colors.white,
+                    child: ListItem(index: -1));
             case ConnectionState.done:
               return _buildRow();
           }
@@ -104,6 +153,36 @@ class _HomeScreenState extends State<FeedListPage> {
     });
   }
 
+  void _voiceSearchPressed() {
+      if (_isAvailable && !_isListening)
+        _speechRecognition
+            .listen(locale: "en_US")
+            .then((result) => print('$result'));
+
+    setState(() {
+      if (this._voideSearchIcon.icon == Icons.keyboard_voice) {
+        this._voideSearchIcon = new Icon(Icons.close);
+        this._appBarTitle = TextFormField(
+          textInputAction: TextInputAction.done,
+          controller: _filter,
+          autofocus: true,
+          decoration: InputDecoration(
+              prefixIcon: new Icon(Icons.settings_voice), hintText: 'Listening...'),
+          onFieldSubmitted: (term) {
+            _filter.text = _searchText;
+            FocusScope.of(context).unfocus();
+          },
+        );
+        _filter.text = _searchText;
+      } else {
+        this._voideSearchIcon = new Icon(Icons.keyboard_voice);
+        this._appBarTitle = Text('Home');
+        _filter.clear();
+        _searchText= "";
+      }
+    });
+  }
+
   void _searchPressed() {
     setState(() {
       if (this._searchIcon.icon == Icons.search) {
@@ -139,8 +218,6 @@ class _HomeScreenState extends State<FeedListPage> {
         }
       }
       filteredNames = tempList;
-    }else{
-
     }
     return new ListView.builder(
       padding: const EdgeInsets.only(top: 10.0),
