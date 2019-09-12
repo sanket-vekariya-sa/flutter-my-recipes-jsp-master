@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:Flavr/model/ItemDetailsFeed.dart';
+import 'package:Flavr/model/FeedListDetailsModel.dart';
 
 
 import 'package:shimmer/shimmer.dart';
-class Favorites extends StatefulWidget{
+class WishListScreen extends StatefulWidget{
   int loginData;
 
 
 
   @override
-  _FavroitesScreen createState() => new _FavroitesScreen();
+  _WishListScreenState createState() => new _WishListScreenState();
 }
 
-class _FavroitesScreen extends State<Favorites> {
+class _WishListScreenState extends State<WishListScreen> {
   var _feedDetails = <ItemDetailsFeed>[];
   Widget _appBarTitle = new Text('Wishlist');
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();

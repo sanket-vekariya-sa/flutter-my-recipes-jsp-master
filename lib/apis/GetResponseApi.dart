@@ -1,12 +1,12 @@
 import 'dart:io';
 
-class GetResponse {
+class GetResponseApi {
   final String photo;
   final String recipeId;
 
-  GetResponse(this.photo, this.recipeId);
+  GetResponseApi(this.photo, this.recipeId);
 
-  GetResponse.fromJson(Map<String, dynamic> json)
+  GetResponseApi.fromJson(Map<String, dynamic> json)
       : photo = json['photo'],
         recipeId = json['recipeId'];
 

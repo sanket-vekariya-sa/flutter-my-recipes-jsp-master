@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:Flavr/apis/loginAPI.dart';
+import 'package:Flavr/apis/LoginApi.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new LoginScreenState();
+    return new _LoginScreenState();
   }
 }
 
-class LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final FocusNode _passwordFocus = FocusNode();
   bool _obscureText = true;
@@ -65,35 +65,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
             ),
 
-//            Container(
-//            padding: const EdgeInsets.only(
-//                  right: 40.0, bottom: 20.0, left: 40.0),
-//              child: new Row(
-//                children: <Widget>[
-//                TextFormField(
-//                focusNode: _passwordFocus,
-//                  obscureText: true,
-//                  controller: _passwordController,
-//                  style: TextStyle(color: Colors.black),
-//                  decoration: InputDecoration(
-//                    labelText: 'Password',
-//                    labelStyle: TextStyle(color: Colors.grey),
-//                    border: OutlineInputBorder(
-//                      borderRadius: BorderRadius.circular(5.0),
-//                      borderSide: new BorderSide(color: Colors.black),
-//                    ),
 //
-//                  ),
-//                  validator: (value) {
-//                    if (value.isEmpty) {
-//                      return 'Please Enter Password';
-//                    }
-//                    return null;
-//                  }),
-//
-//                ],
-//              ),
-//            )
 
             Padding(
               padding:
@@ -133,9 +105,9 @@ class LoginScreenState extends State<LoginScreen> {
         onWillPop: () {
           if (Navigator.canPop(context)) {
             return Navigator.of(context).pushNamedAndRemoveUntil(
-                '/HomeScreen', (Route<dynamic> route) => false);
+                '/DashBoardScreen', (Route<dynamic> route) => false);
           } else {
-            return Navigator.of(context).pushReplacementNamed('/HomeScreen');
+            return Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
           }
         },
         child: Scaffold(
@@ -179,7 +151,7 @@ class LoginScreenState extends State<LoginScreen> {
                         if (_formKey.currentState.validate()) {
                           SystemChannels.textInput
                               .invokeMethod('TextInput.hide');
-                          loginAPI(context, _emailController.text,
+                          LoginAPI(context, _emailController.text,
                               _passwordController.text);
                         }
                       },

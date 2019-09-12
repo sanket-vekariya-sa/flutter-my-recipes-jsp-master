@@ -1,24 +1,24 @@
 import 'dart:io';
 
-import 'package:Flavr/model/ItemDetailsFeed.dart';
+import 'package:Flavr/model/FeedListDetailsModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:Flavr/ui/Dashboard.dart';
+import 'package:Flavr/ui/RecipeDetailsScreen.dart';
 import 'package:speech_recognition/speech_recognition.dart';
 
-class FeedListPage extends StatefulWidget {
+class FeedListScreen extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
   @override
-  _FeedListPageState createState() => new _FeedListPageState();
+  _FeedListScreenState createState() => new _FeedListScreenState();
 }
 
-class _FeedListPageState extends State<FeedListPage> {
+class _FeedListScreenState extends State<FeedListScreen> {
   var _feedDetails = <ItemDetailsFeed>[];
   Future<ItemDetailsFeed> feed;
 
-  var likedList = FeedListPage().likedFeed;
+  var likedList = FeedListScreen().likedFeed;
   SpeechRecognition _speechRecognition;
   bool _isAvailable = false;
   bool _isListening = false;
@@ -81,7 +81,7 @@ class _FeedListPageState extends State<FeedListPage> {
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: (){
-          Navigator.of(context).pushReplacementNamed('/Dining');
+          Navigator.of(context).pushReplacementNamed('/AddRecipeScreen');
         },
         tooltip: 'Add Recipe',
         child: new Icon(Icons.playlist_add, color: Colors.black,),
@@ -120,7 +120,7 @@ class _FeedListPageState extends State<FeedListPage> {
     }
   }
 
-  _HomeScreenState() {
+  _DashBoardScreenState() {
     _filter.addListener(() {
       setState(() {
         _searchText = _filter.text;
@@ -145,7 +145,7 @@ class _FeedListPageState extends State<FeedListPage> {
             FocusScope.of(context).unfocus();
           },
         );
-        _HomeScreenState();
+        _DashBoardScreenState();
       } else {
         this._searchIcon = new Icon(Icons.search);
         this._appBarTitle = Text('Home',);
@@ -352,5 +352,5 @@ class _FeedListPageState extends State<FeedListPage> {
 
 Future navigateToSubPage(context, int, list) async {
   Navigator.push(
-      context, MaterialPageRoute(builder: (context) => DashBoard(int, list)));
+      context, MaterialPageRoute(builder: (context) => RecipeDetailsScreen(int, list)));
 }

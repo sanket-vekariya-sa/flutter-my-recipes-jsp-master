@@ -5,10 +5,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 
-class Profile extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new ProfileScreenState();
+    return new _ProfileScreenState();
   }
 }
 
@@ -24,7 +24,7 @@ Future<String> getImagePreference() async{
 }
 
 
-class ProfileScreenState extends State<Profile> {
+class _ProfileScreenState extends State<ProfileScreen> {
   var mail;
   File galleryFile;
   File imgFile;
@@ -111,9 +111,9 @@ class ProfileScreenState extends State<Profile> {
         onWillPop: () {
           if (Navigator.canPop(context)) {
             return Navigator.of(context).pushNamedAndRemoveUntil(
-                '/HomeScreen', (Route<dynamic> route) => false);
+                '/DashBoardScreen', (Route<dynamic> route) => false);
           } else {
-            return Navigator.of(context).pushReplacementNamed('/HomeScreen');
+            return Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
           }
         },
         child: Scaffold(
@@ -154,7 +154,7 @@ class ProfileScreenState extends State<Profile> {
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0)),
                       onPressed: () {
-                        Navigator.of(context).pushReplacementNamed('/HomeScreen');
+                        Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
                       },
                       child: Text("Go to Recipe List",
                           textAlign: TextAlign.center,

@@ -1,20 +1,19 @@
 import 'dart:io';
 
-import 'package:Flavr/apis/addRecipeAPI.dart';
-import 'package:Flavr/apis/loginAPI.dart';
+import 'package:Flavr/apis/AddRecipeApi.dart';
+import 'package:Flavr/apis/LoginApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/tag.dart';
 import 'package:image_picker/image_picker.dart';
 
-class Dining extends StatefulWidget {
+class AddRecipeScreen extends StatefulWidget {
   int loginData;
 
   @override
-  _DiningScreen createState() => new _DiningScreen();
+  _AddRecipeScreen createState() => new _AddRecipeScreen();
 }
 
-class _DiningScreen extends State<Dining> {
-  //GlobalKey<ScaffoldState> add_inputs = new GlobalKey<ScaffoldState>();
+class _AddRecipeScreen extends State<AddRecipeScreen> {
   final addInputs = GlobalKey<FormState>();
   Widget _appBarTitle = new Text('Add New Recipe');
   List<String> _indergentList = new List<String>();
@@ -395,14 +394,14 @@ class _DiningScreen extends State<Dining> {
     }
     return WillPopScope(
       onWillPop: () {
-        _moveToHomeScreen(context);
+        _moveToDashBoardScreen(context);
       },
     child : Scaffold(
         appBar: AppBar(
        leading: IconButton(
        icon: Icon(Icons.arrow_back),
        onPressed: () {
-       _moveToHomeScreen(context);
+       _moveToDashBoardScreen(context);
       }),
           title: _appBarTitle,
           centerTitle: true,
@@ -461,7 +460,7 @@ class _DiningScreen extends State<Dining> {
                           } else {
                             print("Save data");
 
-                            addRecipeAPI(
+                            AddRecipeApi(
                                 context,
                                 _nameofRecipe.text,
                                 _timeRequired.text,
@@ -501,7 +500,7 @@ class _DiningScreen extends State<Dining> {
         file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/recipe.png'), radius: 200.0,)
             : new CircleAvatar(backgroundImage: new FileImage(file), radius: 200.0,));
   }
-  void _moveToHomeScreen(BuildContext context) =>
-      Navigator.of(context).pushReplacementNamed('/HomeScreen');
+  void _moveToDashBoardScreen(BuildContext context) =>
+      Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
 }
 

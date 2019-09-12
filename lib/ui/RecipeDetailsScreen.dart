@@ -1,25 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
-import 'package:Flavr/model/IngredientsDetailsFeed.dart';
-import 'package:Flavr/model/InstructionDetailsFeed.dart';
-import 'package:Flavr/model/ItemDetailsFeed.dart';
+import 'package:Flavr/model/IngredientsModel.dart';
+import 'package:Flavr/model/InstructionsModel.dart';
+import 'package:Flavr/model/FeedListDetailsModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:youtube_player/youtube_player.dart';
 
-class DashBoard extends StatefulWidget {
+class RecipeDetailsScreen extends StatefulWidget {
   int index;
   List<ItemDetailsFeed> list;
 
-  DashBoard(this.index, this.list);
+  RecipeDetailsScreen(this.index, this.list);
 
   @override
-  _DashBoardState createState() => new _DashBoardState(index, list);
+  _RecipeDetailsScreenState createState() => new _RecipeDetailsScreenState(index, list);
 }
 
-class _DashBoardState extends State<DashBoard> {
+class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   int data;
   int newindex;
   List<ItemDetailsFeed> list;
@@ -29,7 +29,7 @@ class _DashBoardState extends State<DashBoard> {
 
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
-  _DashBoardState(this.data, this.list);
+  _RecipeDetailsScreenState(this.data, this.list);
 
   var _feedDetails = <IngredientsDetailsFeed>[];
   var _instructionDetails = <InstructionDetailsFeed>[];

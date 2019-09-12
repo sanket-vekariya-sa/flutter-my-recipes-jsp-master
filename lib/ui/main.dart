@@ -1,11 +1,11 @@
+import 'package:Flavr/ui/SplashScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:Flavr/ui/Dining.dart';
-import 'package:Flavr/ui/Farvorites.dart';
-import 'package:Flavr/ui/FeedListPage.dart';
-import 'package:Flavr/ui/Profile.dart';
-import 'package:Flavr/ui/homeScreen.dart';
-import 'package:Flavr/ui/splashScreen.dart';
-import 'package:Flavr/ui/loginScreen.dart';
+import 'package:Flavr/ui/AddRecipeScreen.dart';
+import 'package:Flavr/ui/WishListScreen.dart';
+import 'package:Flavr/ui/FeedListScreen.dart';
+import 'package:Flavr/ui/ProfileScreen.dart';
+import 'package:Flavr/ui/DashBoardScreen.dart';
+import 'package:Flavr/ui/LoginScreen.dart';
 
 void main() => runApp(new MyApp());
 
@@ -17,12 +17,13 @@ class MyApp extends StatelessWidget {
       title: "MyRecipes",
       debugShowCheckedModeBanner : false,
       routes: <String,WidgetBuilder>{
-        "/HomeScreen": (BuildContext context) => HomeScreen("email id"),
         "/LoginScreen": (BuildContext context) => LoginScreen(),
-        "/FeedListPage": (BuildContext context) => FeedListPage(),
-        "/Favorites" : (BuildContext context) => Favorites(),
-        "/Profile" : (BuildContext context) => Profile(),
-        "/Dining" : (BuildContext context) => Dining(),
+        "/DashBoardScreen": (BuildContext context) => DashBoardScreen("email id"),
+
+        "/FeedListScreen": (BuildContext context) => FeedListScreen(),
+        "/WishListScreen" : (BuildContext context) => WishListScreen(),
+        "/ProfileScreen" : (BuildContext context) => ProfileScreen(),
+        "/AddRecipeScreen" : (BuildContext context) => AddRecipeScreen(),
       },
       home:
       SplashScreen(),

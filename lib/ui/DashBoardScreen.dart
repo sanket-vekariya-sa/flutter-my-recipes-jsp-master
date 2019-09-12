@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:Flavr/ui/Dining.dart';
-import 'package:Flavr/ui/Farvorites.dart';
-import 'package:Flavr/ui/FeedListPage.dart';
-import 'package:Flavr/ui/Profile.dart';
+import 'package:Flavr/ui/AddRecipeScreen.dart';
+import 'package:Flavr/ui/WishListScreen.dart';
+import 'package:Flavr/ui/FeedListScreen.dart';
+import 'package:Flavr/ui/ProfileScreen.dart';
 
-class HomeScreen extends StatefulWidget {
+class DashBoardScreen extends StatefulWidget {
   final String text;
-  HomeScreen(this.text);
+  DashBoardScreen(this.text);
   @override
-  _HomeScreenState createState() =>  _HomeScreenState(text);
+  _DashBoardScreenState createState() =>  _DashBoardScreenState(text);
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _DashBoardScreenState extends State<DashBoardScreen> {
     int selectedIndex = 0;
      String  text;
 
-    _HomeScreenState(this.text);
+    _DashBoardScreenState(this.text);
 String appBarTitleText ='Home';
   final widgetOptions = [
-    new FeedListPage(),
-    new Favorites(),
-    new Profile(),
+    new FeedListScreen(),
+    new WishListScreen(),
+    new ProfileScreen(),
   ];
   @override
   void initState() {

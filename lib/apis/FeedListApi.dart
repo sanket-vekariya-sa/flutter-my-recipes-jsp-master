@@ -4,7 +4,7 @@ import 'package:Flavr/model/FeedListDetailsModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-HomeFeedApi(BuildContext context) async {
+FeedListApi(BuildContext context) async {
   ItemDetailsFeed itemDetailsFeed;
   var _feedDetails = <ItemDetailsFeed>[];
 

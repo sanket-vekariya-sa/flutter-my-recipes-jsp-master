@@ -21,13 +21,13 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.of(context).pushReplacementNamed('/LoginScreen');
       } else {
         SystemChannels.textInput.invokeMethod('TextInput.hide');
-        Navigator.of(context).pushReplacementNamed('/HomeScreen');
+        Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
       }
     });
   }
 
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed('/HomeScreen');
+    Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
   }
 
   @override

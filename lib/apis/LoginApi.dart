@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<LoginModel> loginAPI(
+Future<LoginModel> LoginAPI(
     BuildContext context, String email, String password) async {
   LoginModel loginModel;
   final url = "http://35.160.197.175:3006/api/v1/user/login";
