@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:Flavr/model/ItemDetailsFeed.dart';
+import 'package:Flavr/model/FeedListDetailsModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-HomeFeedAPI(BuildContext context) async {
+HomeFeedApi(BuildContext context) async {
   ItemDetailsFeed itemDetailsFeed;
   var _feedDetails = <ItemDetailsFeed>[];
 
@@ -18,7 +18,7 @@ HomeFeedAPI(BuildContext context) async {
   var response = await dio.get(url, options: Options(headers: map));
 
   if (response.statusCode == 200) {
-    Navigator.of(context).pushReplacementNamed('/HomeScreen');
+    Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
   }
 
   itemDetailsFeed = ItemDetailsFeed(

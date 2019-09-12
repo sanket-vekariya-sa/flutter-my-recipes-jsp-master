@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:Flavr/model/loginModel.dart';
-import 'package:Flavr/ui/homeScreen.dart';
+import 'package:Flavr/model/LoginModel.dart';
+import 'package:Flavr/ui/DashBoardScreen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,14 +22,14 @@ Future<LoginModel> loginAPI(
 
   if (response.statusCode == 200) {
     print("called if loop");
-    Navigator.of(context).pushReplacementNamed('/HomeScreen');
+    Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
     await prefs.setBool('authenticated', true);
     prefs.setString("mail", email.toString());
 
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => HomeScreen(email),
+          builder: (context) => DashBoardScreen(email),
         ));
   }
 

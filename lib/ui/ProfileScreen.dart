@@ -29,7 +29,7 @@ class ProfileScreenState extends State<Profile> {
   File galleryFile;
   File imgFile;
   String savedImagenew="";
-
+  File getImageFile;
   String profileImage;
  SharedPreferences pref;
   @override
