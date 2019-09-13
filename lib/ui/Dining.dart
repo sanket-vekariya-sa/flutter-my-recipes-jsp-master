@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:Flavr/apis/addRecipeAPI.dart';
 import 'package:Flavr/apis/loginAPI.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tags/tag.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Dining extends StatefulWidget {
@@ -33,10 +32,24 @@ class _DiningScreen extends State<Dining> {
 
   Widget _buildTextFields() {
     return new Form(
+      autovalidate: true,
       key: addInputs,
       child: new Card(
+        elevation: 5,
+        margin: EdgeInsets.only(left: 0, right: 0, top: 5),
         child: new Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
+              child: Text(
+                "Details",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                    color: Colors.black),
+              ),
+            ),
             Padding(
               padding: EdgeInsets.all(10.0),
               child: TextFormField(
@@ -45,7 +58,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     labelText: 'Name Of Recipe*',
-                    labelStyle: TextStyle(color: Colors.blue),
+                    labelStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                       borderSide: new BorderSide(color: Colors.orange),
@@ -67,7 +80,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     labelText: 'Time Required*',
-                    labelStyle: TextStyle(color: Colors.blue),
+                    labelStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                       borderSide: new BorderSide(color: Colors.black),
@@ -82,22 +95,25 @@ class _DiningScreen extends State<Dining> {
             ),
             Padding(
               padding: EdgeInsets.all(10.0),
-              child: DropdownButton<String>(
-                isExpanded: true,
-                value: dropdownValue,
-                onChanged: (String newValue) {
-                  setState(() {
-                    dropdownValue = newValue;
-                    print(dropdownValue);
-                  });
-                },
-                items: <String>['Easy', 'Hard', 'Medium']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
+              child: Container(
+                margin: EdgeInsets.only(left: 5, right: 5),
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  value: dropdownValue,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownValue = newValue;
+                      print(dropdownValue);
+                    });
+                  },
+                  items: <String>['Easy', 'Hard', 'Medium']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
             Padding(
@@ -109,7 +125,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     labelText: 'No of Serves*',
-                    labelStyle: TextStyle(color: Colors.blue),
+                    labelStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                       borderSide: new BorderSide(color: Colors.black),
@@ -129,7 +145,9 @@ class _DiningScreen extends State<Dining> {
   }
 
   Widget _buildTextFieldYouTubeUrl() {
-    return new Form(
+    return new Card(
+        elevation: 5,
+        margin: EdgeInsets.only(left: 0, right: 0, top: 5),
         child: new Column(
           children: <Widget>[
             Padding(
@@ -140,7 +158,7 @@ class _DiningScreen extends State<Dining> {
                 style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   labelText: 'YouTube Url(Optional)',
-                  labelStyle: TextStyle(color: Colors.blue),
+                  labelStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                     borderSide: new BorderSide(color: Colors.orange),
@@ -154,6 +172,8 @@ class _DiningScreen extends State<Dining> {
 
   Widget _buildTags() {
     return new Card(
+      elevation: 5,
+      margin: EdgeInsets.only(left: 0, right: 0, top: 5),
       child: new Column(
         children: <Widget>[
           new Column(
@@ -166,7 +186,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
-                      color: Colors.blue),
+                      color: Colors.black),
                 ),
               )
             ],
@@ -180,7 +200,7 @@ class _DiningScreen extends State<Dining> {
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Add Tag',
-                labelStyle: TextStyle(color: Colors.blue),
+                labelStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
                   borderSide: new BorderSide(color: Colors.black),
@@ -211,11 +231,21 @@ class _DiningScreen extends State<Dining> {
           itemCount: _tagList.length,
           itemBuilder: (context, index) {
             return Container(
+                margin: EdgeInsets.only(left: 10),
                 child: Chip(
-                    backgroundColor: Colors.orangeAccent,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0)),
+                    padding: EdgeInsets.only(left: 15),
+                    elevation: 5,
+                    shadowColor: Colors.grey,
+                    backgroundColor: Colors.black,
                     label: Text(
                       _tagList[index],
-                      style: TextStyle(fontSize: 15.0, color: Colors.white),
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                          fontSize: 17.0,
+                          color: Colors.white,
+                          fontStyle: FontStyle.italic),
                     ),
                     onDeleted: () {
                       _tagList.removeAt(index);
@@ -223,10 +253,10 @@ class _DiningScreen extends State<Dining> {
                         _listViewTags(context);
                       });
                     },
-                    labelPadding: EdgeInsets.all(3.0),
+                    labelPadding: EdgeInsets.all(2.0),
                     deleteIcon: Icon(
                       Icons.clear,
-                      color: Colors.red,
+                      color: Colors.white,
                     )));
           }),
     );
@@ -234,6 +264,8 @@ class _DiningScreen extends State<Dining> {
 
   Widget _buildIngredit() {
     return new Card(
+      elevation: 5,
+      margin: EdgeInsets.only(left: 0, right: 0, top: 5),
       child: new Column(
         children: <Widget>[
           new Column(
@@ -246,9 +278,9 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
-                      color: Colors.blue),
+                      color: Colors.black),
                 ),
-              )
+              ),
             ],
           ),
           _listViewIndergents(context),
@@ -260,7 +292,7 @@ class _DiningScreen extends State<Dining> {
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Add Ingredient',
-                labelStyle: TextStyle(color: Colors.blue),
+                labelStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
                   borderSide: new BorderSide(color: Colors.black),
@@ -294,7 +326,7 @@ class _DiningScreen extends State<Dining> {
               (index + 1).toString(),
               style: TextStyle(color: Colors.white),
             ),
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.black,
             maxRadius: 12.0,
           ),
           title: Text(_indergentList[index]),
@@ -308,6 +340,8 @@ class _DiningScreen extends State<Dining> {
 
   Widget _buildSteps() {
     return new Card(
+      elevation: 5,
+      margin: EdgeInsets.only(left: 0, right: 0, top: 5),
       child: new Column(
         children: <Widget>[
           new Column(
@@ -320,7 +354,7 @@ class _DiningScreen extends State<Dining> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
-                      color: Colors.blue),
+                      color: Colors.black),
                 ),
               )
             ],
@@ -334,7 +368,7 @@ class _DiningScreen extends State<Dining> {
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Add Step',
-                labelStyle: TextStyle(color: Colors.blue),
+                labelStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
                   borderSide: new BorderSide(color: Colors.black),
@@ -368,7 +402,7 @@ class _DiningScreen extends State<Dining> {
               (index + 1).toString(),
               style: TextStyle(color: Colors.white),
             ),
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.black,
             maxRadius: 12.0,
           ),
           title: Text(_stepList[index]),
@@ -393,98 +427,100 @@ class _DiningScreen extends State<Dining> {
         displaySelectedFile(galleryFile);
       });
     }
-    return WillPopScope(
-      onWillPop: () {
-        _moveToHomeScreen(context);
-      },
-    child : Scaffold(
-        appBar: AppBar(
-       leading: IconButton(
-       icon: Icon(Icons.arrow_back),
-       onPressed: () {
-       _moveToHomeScreen(context);
-      }),
-          title: _appBarTitle,
-          centerTitle: true,
-          backgroundColor: Colors.blue,
-        ),
-        resizeToAvoidBottomPadding: false,
-        body: new SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(10.0),
-            child: new Column(
-              children: <Widget>[
-                _buildTextFields(),
-                _buildIngredit(),
-                _buildSteps(),
-                _buildTextFieldYouTubeUrl(),
-                _buildTags(),
-                Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: new Column(
-                    children: <Widget>[
-                      displaySelectedFile(galleryFile),
-                      RaisedButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(10.0)),
-                        onPressed: imageSelectorGallery,
-                        child: Text("Select Image"),
-                        color: Colors.blue,
-                        textColor: Colors.black,
-                      )
-                    ],
-                  ),
-                ),
-//                _buildTags(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 20.0, left: 20.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 40.00,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0)),
-                      onPressed: () {
-                        print(dropdownValue);
-                        if (addInputs.currentState.validate()) {
-                          if (_indergentList.isEmpty && _stepList.isEmpty) {
-                            print("Add Data Please");
-                            showDialogSingleButton(context, "Add",
-                                "Please Add Indergents and Steps", "OK");
-                            return null;
-                          }
-                          if (galleryFile == null) {
-                            print("Add Data Please");
-                            showDialogSingleButton(
-                                context, "Add Image", "Please Add Image", "OK");
-                            return null;
-                          } else {
-                            print("Save data");
 
-                            addRecipeAPI(
-                                context,
-                                _nameofRecipe.text,
-                                _timeRequired.text,
-                                dropdownValue.toString(),
-                                _serves.text,
-                                _indergentList,
-                                _stepList,
-                                _youtubeUrl.text,
-                                galleryFile,
-                                _tagList);
-                          }
-                        }
-                      },
-                      child: Text("Add Recipe"),
-                      color: Colors.blue,
-                      textColor: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
+    return WillPopScope(
+        onWillPop: () {
+          _moveToHomeScreen(context);
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    _moveToHomeScreen(context);
+                  }),
+              title: _appBarTitle,
+              centerTitle: true,
             ),
-          ),
-        )));
+            resizeToAvoidBottomPadding: false,
+            body: new SingleChildScrollView(
+              child: Padding(
+                padding:
+                    EdgeInsets.only(left: 10.0, right: 10, top: 10, bottom: 40),
+                child: new Column(
+                  children: <Widget>[
+                    _buildTextFields(),
+                    _buildIngredit(),
+                    _buildSteps(),
+                    _buildTextFieldYouTubeUrl(),
+                    _buildTags(),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: 0.0, right: 0, top: 0, bottom: 20),
+                      child: new Column(
+                        children: <Widget>[
+                          displaySelectedFile(galleryFile),
+                          RaisedButton(
+                            color: Colors.black,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(10.0)),
+                            onPressed: imageSelectorGallery,
+                            child: Text("Select Image"),
+                            textColor: Colors.white,
+                          )
+                        ],
+                      ),
+                    ),
+//                _buildTags(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10.0, left: 10.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 40.00,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(10.0)),
+                          onPressed: () {
+                            print(dropdownValue);
+                            if (addInputs.currentState.validate()) {
+                              if (_indergentList.isEmpty && _stepList.isEmpty) {
+                                print("Add Data Please");
+                                showDialogSingleButton(context, "Add",
+                                    "Please Add Indergents and Steps", "OK");
+                                return null;
+                              }
+                              if (galleryFile == null) {
+                                print("Add Data Please");
+                                showDialogSingleButton(context, "Add Image",
+                                    "Please Add Image", "OK");
+                                return null;
+                              } else {
+                                print("Save data");
+
+                                addRecipeAPI(
+                                    context,
+                                    _nameofRecipe.text,
+                                    _timeRequired.text,
+                                    dropdownValue.toString(),
+                                    _serves.text,
+                                    _indergentList,
+                                    _stepList,
+                                    _youtubeUrl.text,
+                                    galleryFile,
+                                    _tagList);
+                              }
+                            }
+                          },
+                          child: Text("Add Recipe"),
+                          textColor: Colors.white,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )));
   }
 
   Widget displaySelectedFile(File file) {
@@ -495,13 +531,25 @@ class _DiningScreen extends State<Dining> {
 //      file == null ? new Text('No image Selected') : new Image.file(file),
 //    );
     return new SizedBox(
-        height: 200.0,
-        width: 200.0,
-        child:
-        file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/recipe.png'), radius: 200.0,)
-            : new CircleAvatar(backgroundImage: new FileImage(file), radius: 200.0,));
+      height: 246.5,
+      width: 500,
+      child: file == null
+          ? new Card(
+              elevation: 5,
+              margin: EdgeInsets.only(top: 5),
+              child: Image(
+                image: AssetImage('images/recipe.jpg'),
+              ))
+          : new Card(
+              elevation: 5,
+              margin: EdgeInsets.only(top: 5),
+              child: Image(
+                image: new FileImage(file),
+              ),
+            ),
+    );
   }
+
   void _moveToHomeScreen(BuildContext context) =>
       Navigator.of(context).pushReplacementNamed('/HomeScreen');
 }
-

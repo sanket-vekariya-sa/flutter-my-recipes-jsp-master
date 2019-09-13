@@ -1,18 +1,15 @@
-import 'package:flutter/material.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
-
-
+import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-class Favorites extends StatefulWidget{
+
+class Favourite extends StatefulWidget {
   int loginData;
-
-
 
   @override
   _FavroitesScreen createState() => new _FavroitesScreen();
 }
 
-class _FavroitesScreen extends State<Favorites> {
+class _FavroitesScreen extends State<Favourite> {
   var _feedDetails = <ItemDetailsFeed>[];
   Widget _appBarTitle = new Text('Wishlist');
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
@@ -23,41 +20,42 @@ class _FavroitesScreen extends State<Favorites> {
       appBar: AppBar(
         title: _appBarTitle,
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.black,
       ),
       resizeToAvoidBottomPadding: false,
       key: login_state,
       body: FutureBuilder<dynamic>(
-        future: _getResults(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          future: _getResults(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return ListView.builder(
+                itemCount: 10,
+                // Important code
+                itemBuilder: (context, index) => Shimmer.fromColors(
+                    baseColor: Colors.grey[400],
+                    highlightColor: Colors.white,
+                    child: ListItem(index: -1)),
+              );
+            }
             return ListView.builder(
-              itemCount: 10,
-              // Important code
-              itemBuilder: (context, index) =>
-                  Shimmer.fromColors(
-                      baseColor: Colors.grey[400],
-                      highlightColor: Colors.white,
-                      child: ListItem(index: -1)),
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) => ListItem(index: index),
             );
-          }
-          return ListView.builder(
-          itemCount: snapshot.data.length,
-    itemBuilder: (context, index) => ListItem(index: index),
+          }),
     );
-    }),);
-        }}
-
+  }
+}
 
 Future<List<int>> _getResults() async {
   await Future.delayed(Duration(seconds: 3));
   return List<int>.generate(10, (index) => index);
 }
 
-
 class ListItem extends StatelessWidget {
   final int index;
+
   const ListItem({Key key, this.index});
+
   @override
   Widget build(BuildContext context) {
 //    return Container(
@@ -70,7 +68,7 @@ class ListItem extends StatelessWidget {
 //            width: 50.0,
 //            height: 50.0,
 //            margin: EdgeInsets.only(right: 15.0),
-//            color: Colors.blue,
+//            color: Colors.black,
 //          ),
 //          index != -1
 //              ? Column(
@@ -93,9 +91,7 @@ class ListItem extends StatelessWidget {
 //      ),
 //    );
     return Card(
-
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -109,13 +105,10 @@ class ListItem extends StatelessWidget {
               ),
               IconButton(
                 alignment: Alignment.topRight,
-                icon: Icon(Icons.favorite,
-                    color: Colors.red  ),
-
+                icon: Icon(Icons.favorite, color: Colors.red),
               ),
             ],
           ),
-
           Padding(
             padding: const EdgeInsets.only(left: 25.0, top: 10),
             child: new Text("$index",
@@ -150,8 +143,7 @@ class ListItem extends StatelessWidget {
                         ),
                         Text(
                           "$index",
-                          style: TextStyle(
-                              fontSize: 15.0, color: Colors.grey),
+                          style: TextStyle(fontSize: 15.0, color: Colors.grey),
                         )
                       ],
                     ),
@@ -169,8 +161,7 @@ class ListItem extends StatelessWidget {
                         ),
                         Text(
                           "$index",
-                          style: TextStyle(
-                              fontSize: 15.0, color: Colors.grey),
+                          style: TextStyle(fontSize: 15.0, color: Colors.grey),
                         )
                       ],
                     ),
@@ -188,8 +179,7 @@ class ListItem extends StatelessWidget {
                         ),
                         Text(
                           "$index people",
-                          style: TextStyle(
-                              fontSize: 15.0, color: Colors.grey),
+                          style: TextStyle(fontSize: 15.0, color: Colors.grey),
                         )
                       ],
                     ),
@@ -201,6 +191,5 @@ class ListItem extends StatelessWidget {
         ],
       ),
     );
-
   }
 }

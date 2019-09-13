@@ -1,6 +1,6 @@
+import 'package:Flavr/apis/loginAPI.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:Flavr/apis/loginAPI.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -99,7 +99,7 @@ class LoginScreenState extends State<LoginScreen> {
               padding:
                   const EdgeInsets.only(right: 40.0, bottom: 20.0, left: 40.0),
               child: TextFormField(
-                textInputAction: TextInputAction.done,
+                  textInputAction: TextInputAction.done,
                   focusNode: _passwordFocus,
                   obscureText: _obscureText,
                   controller: _passwordController,
@@ -114,7 +114,7 @@ class LoginScreenState extends State<LoginScreen> {
                       suffixIcon: IconButton(
                         icon: Icon(Icons.remove_red_eye),
                         onPressed: _toggle,
-                        color: _obscureText ? Colors.grey : Colors.blue,
+                        color: _obscureText ? Colors.blueGrey : Colors.black,
                       )),
                   validator: (value) {
                     if (value.isEmpty) {
@@ -139,6 +139,7 @@ class LoginScreenState extends State<LoginScreen> {
           }
         },
         child: Scaffold(
+          backgroundColor: Colors.white,
           resizeToAvoidBottomPadding: false,
           body: SingleChildScrollView(
             child: Column(
@@ -184,7 +185,7 @@ class LoginScreenState extends State<LoginScreen> {
                         }
                       },
                       child: Text("LOG IN"),
-                      color: Colors.orange,
+                      color: Colors.black,
                       textColor: Colors.white,
                     ),
                   ),
