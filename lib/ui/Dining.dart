@@ -465,7 +465,7 @@ class _DiningScreen extends State<Dining> {
                                 context,
                                 _nameofRecipe.text,
                                 _timeRequired.text,
-                                dropdownValue.toString(),
+                                dropdownValue,
                                 _serves.text,
                                 _indergentList,
                                 _stepList,

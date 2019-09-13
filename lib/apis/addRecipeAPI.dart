@@ -52,6 +52,7 @@ Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,S
   if (response.statusCode == 200) {
     print("called if loop");
     print("called if ===== $response");
+    var responsesteps;
 
     photoId = response.toString().substring(41,44);
     print("datais$photoId id");
@@ -75,7 +76,7 @@ Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,S
 
     for(var i in steps) {
 
-      final responsesteps = await dio.post(
+       responsesteps = await dio.post(
           stepsUrl,
           data: {"instruction": i.toString(), "recipeId": photoId.toString().trim()},
           options: Options(headers: map)).catchError(
@@ -85,16 +86,11 @@ Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,S
 
       );
       print("called if indegrents aadeed ===== $responsesteps");
-      if (responsesteps.statusCode == 200) {
-        Navigator.of(context).pushReplacementNamed('/HomeScreen');
-      }
+
     }
-
-//    GetResponse newPost = new GetResponse(image.toString(),photoId);
-//    GetResponse p = await createPost(photoUrl,
-//        body: newPost.toMap());
-//    print("data :  $p");
-
+    if (responsesteps.statusCode == 200) {
+      Navigator.of(context).pushReplacementNamed('/HomeScreen');
+    }
 
   }
 
