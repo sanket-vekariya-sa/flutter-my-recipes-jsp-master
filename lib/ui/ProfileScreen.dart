@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -11,6 +14,8 @@ class ProfileScreen extends StatefulWidget {
     return new _ProfileScreenState();
   }
 }
+
+
 
 Future<bool> saveImagePreference(String imgurl) async{
   SharedPreferences pref= await SharedPreferences.getInstance();
@@ -25,24 +30,42 @@ Future<String> getImagePreference() async{
 
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  String _connectionStatus;
+  final Connectivity _connectivity = new Connectivity();
+  StreamSubscription<ConnectivityResult> _connectionSubscription;
   var mail;
   File galleryFile;
   File imgFile;
-  String savedImagenew="";
+  String savedImagenew = "";
   File getImageFile;
   String profileImage;
- SharedPreferences pref;
+  String saveNetworkState;
+  SharedPreferences pref;
+
   @override
   void initState() {
     getImagePreference().then(upDateImage);
     super.initState();
+    _connectionSubscription =
+        _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+          setState(() {
+            _connectionStatus = "Live";
+          });
+        });
+    print("Initstate : $_connectionStatus");
+  }
+
+  @override
+  void dispose() {
+    _connectionSubscription.cancel();
+    super.dispose();
   }
 
   Widget _buildTextFields() {
     return new Form(
         child: new Column(
-      children: <Widget>[
-        /*Padding(
+          children: <Widget>[
+            /*Padding(
           padding: const EdgeInsets.only(
               top: 10.0, right: 10.0, bottom: 10.0, left: 10.0),
           child: Container(
@@ -55,11 +78,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       image: new NetworkImage(
                           "https://images.pexels.com/photos/736716/pexels-photo-736716.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500")))),
         ),*/
-        Padding(
-        padding: const EdgeInsets.only(top: 5.0),
-        child :displaySelectedFile(galleryFile),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: displaySelectedFile(galleryFile),
 
-        ),
+            ),
 //        RaisedButton(
 //          shape: RoundedRectangleBorder(
 //              borderRadius: new BorderRadius.circular(10.0)),
@@ -68,68 +91,91 @@ class _ProfileScreenState extends State<ProfileScreen> {
 //          color: Colors.orange,
 //          textColor: Colors.white,
 //        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: FutureBuilder<dynamic>(
-            future: _loadName(),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                  return Text(
-                    'no data available',
-                    textAlign: TextAlign.center,
-                  );
-                case ConnectionState.active:
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: FutureBuilder<dynamic>(
+                future: _loadName(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                      return Text(
+                        'no data available',
+                        textAlign: TextAlign.center,
+                      );
+                    case ConnectionState.active:
+                      return null;
+                    case ConnectionState.waiting:
+                      return SpinKitFadingCircle(color: Colors.pink);
+                    case ConnectionState.done:
+                      return _buildRow();
+                  }
                   return null;
-                case ConnectionState.waiting:
-                  return SpinKitFadingCircle(color: Colors.pink);
-                case ConnectionState.done:
-                  return _buildRow();
-              }
-              return null;
-            },
-          ),
-        ),
+                },
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: FutureBuilder<dynamic>(
+                future: _loadName(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                      return Text(
+                        'no data available',
+                        textAlign: TextAlign.center,
+                      );
+                    case ConnectionState.active:
+                      return null;
+                    case ConnectionState.waiting:
+                      return SpinKitFadingCircle(color: Colors.pink);
+                    case ConnectionState.done:
+                      return _buildConnectionState();
+                  }
+                  return null;
+                },
+              ),
+            ),
 //
-        Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Text("Enjoy New Dishes",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                  fontSize: 15.0)),
-        ),
-      ],
-    ));
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text("Enjoy New Dishes",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                      fontSize: 20.0)),
+            ),
+          ],
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
         onWillPop: () {
           if (Navigator.canPop(context)) {
             return Navigator.of(context).pushNamedAndRemoveUntil(
                 '/DashBoardScreen', (Route<dynamic> route) => false);
           } else {
-            return Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
+            return Navigator.of(context).pushReplacementNamed(
+                '/DashBoardScreen');
           }
         },
         child: Scaffold(
           resizeToAvoidBottomPadding: false,
-          body: SingleChildScrollView(
+          body: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 100.0),
+                  padding: const EdgeInsets.only(top: 20.0),
                   child: Text(
                     'Hello Foodie',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                        color: Colors.blue,
                         fontSize: 30.0),
                   ),
                 ),
@@ -141,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
-                        fontSize: 15.0),
+                        fontSize: 20.0),
                   ),
                 ),
                 _buildTextFields(),
@@ -154,9 +200,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0)),
                       onPressed: () {
-                        Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
+                        clearPref();
+                        Navigator.of(context).pushReplacementNamed('/LoginScreen');
                       },
-                      child: Text("Go to Recipe List",
+                      child: Text("Logout",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
@@ -175,20 +222,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             tooltip: 'Pick Image',
             child: new Icon(Icons.add_a_photo, color: Colors.black,),
             backgroundColor: Colors.blue,
-            ),
+          ),
         ));
-
   }
 
   _loadName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     mail = prefs.getString("mail");
   }
+
   _loadLocalProfileImage() async {
     pref = SharedPreferences.getInstance() as SharedPreferences;
-    pref.setString('imgUrl',galleryFile.path );
+    pref.setString('imgUrl', galleryFile.path);
     imgFile = await galleryFile.copy(galleryFile.path);
-
   }
 
 
@@ -196,33 +242,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return new Text(mail.toString(),
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontWeight: FontWeight.w600, color: Colors.black, fontSize: 15.0));
+            fontWeight: FontWeight.w600, color: Colors.blue, fontSize: 25.0));
   }
+
+  Widget _buildConnectionState() {
+    return new Text(_connectionStatus,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontWeight: FontWeight.w600, color: Colors.green, fontSize: 25.0));
+  }
+
   imageSelectorGallery() async {
     galleryFile = await ImagePicker.pickImage(
       source: ImageSource.gallery,
       maxHeight: 200.0,
       maxWidth: 200.0,
     );
-   // String img= galleryFile.toString();
-    saveImagePreference(galleryFile.path);
+
+
+    // String img= galleryFile.toString();
+    //  saveImagePreference(galleryFile.path);
     print("You selected gallery image : " + galleryFile.path);
 
     setState(() {
       displaySelectedFile(galleryFile);
     });
-
   }
+
+  Future<Null> initConnectivity() async {
+    String connectionStatus;
+
+    try {
+      connectionStatus = (await _connectivity.checkConnectivity()).toString();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      connectionStatus = "Internet connectivity failed";
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _connectionStatus = connectionStatus;
+    });
+    print("InitConnectivity : $_connectionStatus");
+    if (_connectionStatus == "ConnectivityResult.mobile" ||
+        _connectionStatus == "ConnectivityResult.wifi") {
+      connectionStatus = "Online";
+    } else {
+      connectionStatus = "Ofline";
+    }
+  }
+
   Widget displaySelectedFile(File file) {
-         return new SizedBox(
-                  height: 200.0,
-                  width: 200.0,
-                  child:
-                  file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/profileimage.jpg'), radius: 200.0,)
-                      : new CircleAvatar(backgroundImage: new FileImage(file), radius: 200.0,));
-
-          }
-
+    return new SizedBox(
+        height: 200.0,
+        width: 200.0,
+        child:
+        file == null ? new CircleAvatar(
+          backgroundImage: new AssetImage('images/profileimage.jpg'),
+          radius: 200.0,)
+            : new CircleAvatar(
+          backgroundImage: new FileImage(file), radius: 200.0,));
+  }
 
 
   void upDateImage(String value) {
@@ -230,8 +313,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       this.savedImagenew = value;
     });
   }
+
+  void clearPref () async{
+    SharedPreferences loginprefs = await SharedPreferences.getInstance();
+    loginprefs.clear();
+  }
 }
-
-
-
-

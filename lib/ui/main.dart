@@ -7,6 +7,7 @@ import 'package:Flavr/ui/ProfileScreen.dart';
 import 'package:Flavr/ui/DashBoardScreen.dart';
 import 'package:Flavr/ui/LoginScreen.dart';
 
+
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {

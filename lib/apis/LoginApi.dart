@@ -10,12 +10,12 @@ Future<LoginModel> LoginAPI(
     BuildContext context, String email, String password) async {
   LoginModel loginModel;
   final url = "http://35.160.197.175:3006/api/v1/user/login";
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  SharedPreferences loginprefs = await SharedPreferences.getInstance();
   Dio dio = new Dio();
   final response = await dio.post(url,
       data: {"email": email, "password": password}).catchError((dynamicError) {
     print("called error loop");
-    prefs.setBool('authenticated', false);
+    loginprefs.setBool('authenticated', false);
     showDialogSingleButton(
         context, "Unable to Login", "Please Try Again", "OK");
   });
@@ -23,8 +23,8 @@ Future<LoginModel> LoginAPI(
   if (response.statusCode == 200) {
     print("called if loop");
     Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
-    await prefs.setBool('authenticated', true);
-    prefs.setString("mail", email.toString());
+    await loginprefs.setBool('authenticated', true);
+    loginprefs.setString("mail", email.toString());
 
     Navigator.push(
         context,
