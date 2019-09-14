@@ -5,6 +5,7 @@ import 'package:Flavr/apis/LoginApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/tag.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddRecipeScreen extends StatefulWidget {
   int loginData;
@@ -459,7 +460,12 @@ class _AddRecipeScreen extends State<AddRecipeScreen> {
                             return null;
                           } else {
                             print("Save data");
-
+                            Fluttertoast.showToast(
+                                msg: "Image"+galleryFile.path,
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIos: 1
+                            );
                             AddRecipeApi(
                                 context,
                                 _nameofRecipe.text,
@@ -493,12 +499,31 @@ class _AddRecipeScreen extends State<AddRecipeScreen> {
 //      child:
 //      file == null ? new Text('No image Selected') : new Image.file(file),
 //    );
+//    return new SizedBox(
+//        height: 200.0,
+//        width: 200.0,
+//        child:
+//        file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/foodAdd.png'))
+//            : new CircleAvatar(backgroundImage: new FileImage(file),));
     return new SizedBox(
-        height: 200.0,
-        width: 200.0,
-        child:
-        file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/foodAdd.png'))
-            : new CircleAvatar(backgroundImage: new FileImage(file),));
+      height: 246.5,
+      width: double.infinity,
+      child: file == null
+          ? new Card(
+          elevation: 5,
+          margin: EdgeInsets.only(top: 5),
+          child: Image(
+            image: AssetImage('images/recipe.jpg'),
+          ))
+          : new Card(
+        elevation: 5,
+        margin: EdgeInsets.only(top: 5),
+        child: Image(
+          image: new FileImage(file),
+        ),
+      ),
+    );
+
   }
   void _moveToDashBoardScreen(BuildContext context) =>
       Navigator.of(context).pushReplacementNamed('/DashBoardScreen');

@@ -24,7 +24,6 @@ class _FeedListScreenState extends State<FeedListScreen>  {
   SpeechRecognition _speechRecognition;
   bool _isAvailable = false;
   bool _isListening = false;
-
   String _searchText = "";
 
   @override
@@ -110,6 +109,14 @@ class _FeedListScreenState extends State<FeedListScreen>  {
           }
           return null;
         },
+      ),
+      floatingActionButton: new FloatingActionButton(
+        onPressed: (){
+          Navigator.of(context).pushReplacementNamed('/AddRecipeScreen');
+        },
+        tooltip: 'Add Recipe',
+        child: new Icon(Icons.note_add, color: Colors.black,),
+        backgroundColor: Colors.blue,
       ),
     );
   }

@@ -79,14 +79,7 @@ class _WishListScreenState extends State<WishListScreen> {
           return null;
         },
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: (){
-          Navigator.of(context).pushReplacementNamed('/AddRecipeScreen');
-        },
-        tooltip: 'Add Recipe',
-        child: new Icon(Icons.playlist_add, color: Colors.black,),
-        backgroundColor: Colors.blue,
-      ),
+
     );
   }
 

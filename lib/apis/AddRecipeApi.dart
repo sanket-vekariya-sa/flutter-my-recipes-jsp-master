@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:Flavr/model/AddRecipeModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:Flavr/model/LoginModel.dart';
@@ -18,11 +19,11 @@ Future<GetResponseApi> createPost(String url, {Map body}) async {
   });
 }
 
-Future<LoginModel> AddRecipeApi(BuildContext context, String name, String time,String complexcity,String serves,List ingredents ,List steps,String youTubeUrl,File image, List metaTags) async {
+Future<AddRecipeModel> AddRecipeApi(BuildContext context, String name, String time,String complexcity,String serves,List ingredents ,List steps,String youTubeUrl,File image, List metaTags) async {
 
   print(complexcity);
 
-  LoginModel loginModel;
+  AddRecipeModel addrecipeModel;
   final url = "http://35.160.197.175:3006/api/v1/recipe/add";
   final photoUrl = "http://35.160.197.175:3006/api/v1/recipe/add-update-recipe-photo";
   final ingredentsUrl = "http://35.160.197.175:3006/api/v1/recipe/add-ingredient";
@@ -36,7 +37,7 @@ Future<LoginModel> AddRecipeApi(BuildContext context, String name, String time,S
   };
   final response = await dio.post(
       url,
-      data: {"name": name,"preparationTime": time,"serves":serves,"complexity":complexcity,"ytUrl":youTubeUrl,"metaTags":metaTags}, options: Options(headers: map)).catchError(
+      data: {"name": name,"preparationTime": time,"serves":serves,"complexity":complexcity,"ytUrl":youTubeUrl,"photo":image,"metaTags":metaTags}, options: Options(headers: map)).catchError(
           (dynamicError){
         print("called error loop");
 
@@ -77,6 +78,17 @@ Future<LoginModel> AddRecipeApi(BuildContext context, String name, String time,S
           }
 
       );
+
+      final responsephoto = await dio.post(
+          photoUrl,
+          data: {
+            "recipeId":photoId.toString().trim(),
+            "photo": image
+          }, options: Options(headers: map)).catchError(
+              (dynamicError) {
+            print("called error loop indegrents");
+          }
+      );
       print("called if indegrents aadeed ===== $responsesteps");
       if (responsesteps.statusCode == 200) {
         Navigator.of(context).pushReplacementNamed('/DashBoardScreen');
@@ -86,5 +98,5 @@ Future<LoginModel> AddRecipeApi(BuildContext context, String name, String time,S
   }
 
 
-  return loginModel;
+  return addrecipeModel;
 }
