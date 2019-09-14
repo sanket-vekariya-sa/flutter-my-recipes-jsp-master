@@ -497,8 +497,8 @@ class _AddRecipeScreen extends State<AddRecipeScreen> {
         height: 200.0,
         width: 200.0,
         child:
-        file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/recipe.png'), radius: 200.0,)
-            : new CircleAvatar(backgroundImage: new FileImage(file), radius: 200.0,));
+        file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/foodAdd.png'))
+            : new CircleAvatar(backgroundImage: new FileImage(file),));
   }
   void _moveToDashBoardScreen(BuildContext context) =>
       Navigator.of(context).pushReplacementNamed('/DashBoardScreen');

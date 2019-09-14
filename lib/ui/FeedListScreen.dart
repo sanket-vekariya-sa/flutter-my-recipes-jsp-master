@@ -1,11 +1,13 @@
 import 'dart:io';
 
-import 'package:Flavr/model/FeedListDetailsModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:permission/permission.dart';
+import 'package:speech_recognition/speech_recognition.dart';
+import 'package:Flavr/model/FeedListDetailsModel.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:Flavr/ui/RecipeDetailsScreen.dart';
-import 'package:speech_recognition/speech_recognition.dart';
 
 class FeedListScreen extends StatefulWidget {
   int loginData;
@@ -14,7 +16,7 @@ class FeedListScreen extends StatefulWidget {
   _FeedListScreenState createState() => new _FeedListScreenState();
 }
 
-class _FeedListScreenState extends State<FeedListScreen> {
+class _FeedListScreenState extends State<FeedListScreen>  {
   var _feedDetails = <ItemDetailsFeed>[];
   Future<ItemDetailsFeed> feed;
 
@@ -22,16 +24,47 @@ class _FeedListScreenState extends State<FeedListScreen> {
   SpeechRecognition _speechRecognition;
   bool _isAvailable = false;
   bool _isListening = false;
-  String resultText = "";
-
 
   String _searchText = "";
+
+  @override
+  void initState() {
+    super.initState();
+    initSpeechRecognizer();
+  }
+
+  void initSpeechRecognizer() {
+    _speechRecognition = SpeechRecognition();
+
+    _speechRecognition.setAvailabilityHandler(
+          (bool result) => setState(() => _isAvailable = result),
+    );
+
+    _speechRecognition.setRecognitionStartedHandler(
+          () => setState(() => _isListening = true),
+    );
+
+    _speechRecognition.setRecognitionResultHandler(
+          (String speech) => setState(() => filter.text = speech),
+    );
+
+    _speechRecognition.setRecognitionCompleteHandler(
+          () => setState(() => _isListening = false),
+    );
+
+    _speechRecognition.activate().then(
+          (result) => setState(() => _isAvailable = result),
+    );
+  }
+
   var names = <ItemDetailsFeed>[]; // names we get from API
   var filteredNames = <ItemDetailsFeed>[];
   Icon _searchIcon = new Icon(Icons.search);
-  Widget _appBarTitle = new Text('Home',);
-  final TextEditingController _filter = new TextEditingController();
-  final _speech = SpeechRecognition();
+  Icon _voiceSearchIcon = new Icon(Icons.keyboard_voice);
+
+  Widget _appBarTitle = new Text('Home');
+
+  final TextEditingController filter = new TextEditingController();
 
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
@@ -49,12 +82,11 @@ class _FeedListScreenState extends State<FeedListScreen> {
             },
           ),
           new IconButton(
-            icon: Icon(Icons.mic),
-            focusColor: Colors.pink,
+            icon: _voiceSearchIcon,
             onPressed: () {
-              _micPressed();
+              microphonePermission();
+              _voiceSearchPressed();
             },
-
           ),
         ],
       ),
@@ -79,18 +111,10 @@ class _FeedListScreenState extends State<FeedListScreen> {
           return null;
         },
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: (){
-          Navigator.of(context).pushReplacementNamed('/AddRecipeScreen');
-        },
-        tooltip: 'Add Recipe',
-        child: new Icon(Icons.playlist_add, color: Colors.black,),
-        backgroundColor: Colors.blue,
-      ),
     );
   }
 
-  _loadData() async{
+  Future _loadData() async {
 //    _feedDetails = HomeFeedAPI(context);
 //    HomeFeedAPI(context);
     String feedDetailsURL = "http://35.160.197.175:3006/api/v1/recipe/feeds";
@@ -103,7 +127,6 @@ class _FeedListScreenState extends State<FeedListScreen> {
     await dio.get(feedDetailsURL, options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
-
       final itemDetailsfeed = new ItemDetailsFeed(
           memberJSON["recipeId"],
           memberJSON["name"],
@@ -116,40 +139,91 @@ class _FeedListScreenState extends State<FeedListScreen> {
       _feedDetails.add(itemDetailsfeed);
       names.add(itemDetailsfeed);
       filteredNames = names;
-
     }
   }
 
-  _DashBoardScreenState() {
-    _filter.addListener(() {
+  _LikeState(index) {
+    setState(() {
+      _feedDetails[index].like = !_feedDetails[index].like;
+      likedList.add(filteredNames[index]);
+    });
+  }
+
+  _HomeScreenState() {
+    filter.addListener(() {
       setState(() {
-        _searchText = _filter.text;
+        _searchText = filter.text;
       });
     });
   }
 
+  void _voiceSearchPressed() {
+    if (_isAvailable && !_isListening)
+      _speechRecognition
+          .listen(locale: "en_US")
+          .then((result) => filter.text = result);
 
-
-  void _searchPressed() {
     setState(() {
+      if (this._voiceSearchIcon.icon == Icons.keyboard_voice) {
+        this._voiceSearchIcon = new Icon(Icons.close);
+        this._appBarTitle = TextFormField(
+          textInputAction: TextInputAction.done,
+          controller: filter,
+          autofocus: true,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            prefixIcon: new Icon(Icons.settings_voice),
+            hintText: 'Listening...',
+          ),
+          onFieldSubmitted: (term) {
+            filter.text = _searchText;
+            FocusScope.of(context).unfocus();
+          },
+        );
+        _HomeScreenState();
+      } else {
+        _isAvailable = true;
+        this._searchIcon = Icon(Icons.search);
+        this._voiceSearchIcon = new Icon(Icons.keyboard_voice);
+        this._appBarTitle = Text('Home');
+        filter.clear();
+        _searchText = "";
+      }
+    });
+  }
+
+  Future microphonePermission() async {
+    var permissions =
+    await Permission.getPermissionsStatus([PermissionName.Microphone]);
+    if (permissions != PermissionStatus.allow) {
+      Permission.requestPermissions([PermissionName.Microphone]);
+    } else {}
+  }
+
+  Future _searchPressed() async {
+    await setState(() {
       if (this._searchIcon.icon == Icons.search) {
         this._searchIcon = new Icon(Icons.close);
         this._appBarTitle = TextFormField(
           textInputAction: TextInputAction.done,
-          controller: _filter,
-
+          controller: filter,
           autofocus: true,
+          style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
-              prefixIcon: new Icon(Icons.search), hintText: 'Search...'),
+            prefixIcon: new Icon(Icons.search),
+            hintText: 'Search...',
+          ),
           onFieldSubmitted: (term) {
+            _searchText = filter.text;
             FocusScope.of(context).unfocus();
           },
         );
-        _DashBoardScreenState();
+        _HomeScreenState();
       } else {
         this._searchIcon = new Icon(Icons.search);
-        this._appBarTitle = Text('Home',);
-        _filter.clear();
+        this._appBarTitle = Text('Home');
+        filter.clear();
+        _searchText = "";
       }
     });
   }
@@ -166,189 +240,158 @@ class _FeedListScreenState extends State<FeedListScreen> {
         }
       }
       filteredNames = tempList;
-    }else{
-
     }
     return new ListView.builder(
-      padding: const EdgeInsets.only(top: 10.0),
       itemCount: filteredNames.length,
       itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onPanDown: (_) {
-            FocusScope.of(context).unfocus();
-          },
-          child: SingleChildScrollView(
-            child: new ListTile(
-              onTap: () {
-                navigateToSubPage(context, index, _feedDetails);
-              },
-              title: new Card(
-                child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Stack(
-                      children: <Widget>[
-
-//                        new Image.network(
-//                          filteredNames[index].photo,
-//                          fit: BoxFit.fitWidth,
-//                          width: double.infinity,
-//                          height: 180,
-//                        ),
-                new  FadeInImage.assetNetwork(
-                  placeholder: 'images/loaderfood.gif',
-                  image: filteredNames[index].photo,
-                  fit: BoxFit.fitWidth,
-                  width: double.infinity,
-                  height: 180,
-                ),
-                        IconButton(
-                          alignment: Alignment.topRight,
-                          icon: Icon(
-                              filteredNames[index].like
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: filteredNames[index].like
-                                  ? Colors.red
-                                  : Colors.grey),
-                          onPressed: () { _feedDetails[index].like =
-                          !_feedDetails[index].like;
-                          likedList.add(filteredNames[index]);
-
-                          },
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0, top: 10),
-                      child: new Text(filteredNames[index].name,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.0)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0, top: 5),
-                      child: new Text(filteredNames[index].name,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 15),
-                      child: new Row(
+//        var counter = Provider.of<Counter>(context);
+//        counter.setCounter(false);
+        if (filteredNames.length == 0) {
+          return Scaffold(
+            body: new FadeInImage.assetNetwork(
+              placeholder: 'images/loaderfood.gif',
+              image: filteredNames[index].photo,
+              fit: BoxFit.fitWidth,
+              width: double.infinity,
+              height: 175,
+            ),
+          );
+        } else
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: SingleChildScrollView(
+              child: new ListTile(
+                onTap: () {
+                  navigateToSubPage(context, index, filteredNames);
+                },
+                title: new Card(
+                  margin: EdgeInsets.only(left: 0, right: 0, top: 5),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Stack(
                         children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.access_time,
-                                    color: Colors.grey,
-                                  ),
-                                  Text(
-                                    filteredNames[index].preparationTime,
-                                    style: TextStyle(
-                                        fontSize: 15.0, color: Colors.grey),
-                                  )
-                                ],
-                              ),
-                            ),
+                          new FadeInImage.assetNetwork(
+                            placeholder: 'images/loaderfood.gif',
+                            image: filteredNames[index].photo,
+                            fit: BoxFit.fitWidth,
+                            width: double.infinity,
+                            height: 175,
                           ),
-                          Expanded(
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.library_books,
-                                    color: Colors.grey,
-                                  ),
-                                  Text(
-                                    filteredNames[index].complexity,
-                                    style: TextStyle(
-                                        fontSize: 15.0, color: Colors.grey),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.local_dining,
-                                    color: Colors.grey,
-                                  ),
-                                  Text(
-                                    "${filteredNames[index].serves} people",
-                                    style: TextStyle(
-                                        fontSize: 15.0, color: Colors.grey),
-                                  )
-                                ],
-                              ),
-                            ),
+                          IconButton(
+                            alignment: Alignment.topRight,
+                            icon: Icon(
+                                _feedDetails[index].like
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: _feedDetails[index].like
+                                    ? Colors.red
+                                    : Colors.grey),
+                            onPressed: () {
+                              _feedDetails[index].like =
+                              !_feedDetails[index].like;
+                              likedList.add(filteredNames[index]);
+                              _LikeState(index);
+                             },
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0, top: 10),
+                        child: new Text(filteredNames[index].name,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12.0)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0, top: 5),
+                        child: new Text(filteredNames[index].name,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 15),
+                        child: new Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.access_time,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      filteredNames[index].preparationTime,
+                                      style: TextStyle(
+                                          fontSize: 15.0, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.library_books,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      filteredNames[index].complexity,
+                                      style: TextStyle(
+                                          fontSize: 15.0, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.local_dining,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      "${filteredNames[index].serves} people",
+                                      style: TextStyle(
+                                          fontSize: 15.0, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
+          );
       },
     );
   }
-  @override
-  void initState() {
-    super.initState();
-    initSpeechRecognizer();
-  }
-
-  void initSpeechRecognizer() {
-    _speechRecognition = SpeechRecognition();
-
-    _speechRecognition.setAvailabilityHandler(
-          (bool result) => setState(() => _isAvailable = result),
-    );
-
-    _speechRecognition.setRecognitionStartedHandler(
-          () => setState(() => _isListening = true),
-    );
-
-    _speechRecognition.setRecognitionResultHandler(
-          (String speech) => setState(() => resultText = speech),
-    );
-
-    _speechRecognition.setRecognitionCompleteHandler(
-          () => setState(() => _isListening = false),
-    );
-
-    _speechRecognition.activate().then(
-          (result) => setState(() => _isAvailable = result),
-    );
-  }
-  void _micPressed() {
-    if (_isAvailable && !_isListening)
-      _speechRecognition
-          .listen(locale: "en_US")
-          .then((result) => print('$result'));
-      _searchPressed();
-  }
 }
-
 
 Future navigateToSubPage(context, int, list) async {
   Navigator.push(

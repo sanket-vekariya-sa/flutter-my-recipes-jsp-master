@@ -35,7 +35,7 @@ dependencies:
   youtube_player: ^3.5.0
   speech_recognition: ^0.3.0
   connectivity: ^0.3.0
-
+  permission: ^0.1.2
 
 
 
