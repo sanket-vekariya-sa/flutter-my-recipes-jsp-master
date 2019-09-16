@@ -38,7 +38,16 @@ Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,S
   Map<String, dynamic> map = {
     HttpHeaders.authorizationHeader:
     "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
+
   };
+
+  Map<String, dynamic> map2 = {
+    HttpHeaders.authorizationHeader:
+    "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s",
+    HttpHeaders.contentTypeHeader:"application/x-www-form-urlencoded"
+
+  };
+
   final response = await dio.post(
       url,
       data: {"name": name,"preparationTime": time,"serves":serves,"complexity":complexcity,"ytUrl":youTubeUrl,"metaTags":metaTags}, options: Options(headers: map)).catchError(
@@ -60,17 +69,10 @@ Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,S
 //    if (response.statusCode == 200) {
 //      Navigator.of(context).pushReplacementNamed('/HomeScreen');
 //    }
-    var formData = FormData();
-    formData.add("photo", image);
-    formData.add("recipeId",photoId);
+//
+   // var request = new http.MultipartRequest("POST", photoUrl.);
 
-    final responsePhoto = await dio.post(
-        photoUrl,
-         options: Options(headers: map)).catchError(
-            (dynamicError) {
-          print("called error loop indegrents");
-        }
-    );
+
 
     for(var i in ingredents) {
 
@@ -101,6 +103,26 @@ Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,S
       print("called if indegrents aadeed ===== $responsesteps");
 
     }
+
+    print("Data Photo saved=====$photoId============$image");
+    var formData = new FormData.from({
+      "photo": image.path,
+      "recipeId":photoId
+    });
+//    var formData = FormData();
+//    formData.add("photo", image);
+//    formData.add("recipeId",photoId);
+    final responsePhoto = await dio.post(
+        photoUrl,
+        data: formData,
+        options: Options(headers: map2)).catchError(
+            (dynamicError) {
+          print("called error loop image");
+        }
+    );
+    print("Data Photo saved=====$responsePhoto");
+
+
     if (responsesteps.statusCode == 200) {
       Navigator.of(context).pushReplacementNamed('/HomeScreen');
     }

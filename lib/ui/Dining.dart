@@ -317,6 +317,7 @@ class _DiningScreen extends State<Dining> {
 
   Widget _listViewIndergents(BuildContext context) {
     return ListView.separated(
+      primary: false,
       shrinkWrap: true,
       itemCount: _indergentList.length,
       itemBuilder: (context, index) {
@@ -393,6 +394,7 @@ class _DiningScreen extends State<Dining> {
 
   Widget _listViewSteps(BuildContext context) {
     return ListView.separated(
+      primary: false,
       shrinkWrap: true,
       itemCount: _stepList.length,
       itemBuilder: (context, index) {
