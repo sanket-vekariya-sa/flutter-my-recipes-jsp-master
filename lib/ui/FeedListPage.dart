@@ -105,30 +105,39 @@ class _FeedListPageState extends State<FeedListPage> {
         ],
       ),
       resizeToAvoidBottomPadding: false,
-      key: login_state,
-      body: FutureBuilder<dynamic>(
-        future: _loadData(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return Text(
-                'no data available',
-                textAlign: TextAlign.center,
-              );
-            case ConnectionState.active:
-              return null;
-            case ConnectionState.waiting:
-              return Shimmer.fromColors(
-                  baseColor: Colors.grey[400],
-                  highlightColor: Colors.white,
-                  child: _buildRow());
-            case ConnectionState.done:
-              return _buildRow();
-          }
-          return null;
-        },
+      body: RefreshIndicator(
+        key: login_state,
+        onRefresh: _refresh,
+        child: FutureBuilder<dynamic>(
+          future: _loadData(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Text(
+                  'no data available',
+                  textAlign: TextAlign.center,
+                );
+              case ConnectionState.active:
+                return null;
+              case ConnectionState.waiting:
+                return Shimmer.fromColors(
+                    baseColor: Colors.grey[400],
+                    highlightColor: Colors.white,
+                    child: _buildRow());
+              case ConnectionState.done:
+                return _buildRow();
+            }
+            return null;
+          },
+        ),
       ),
     );
+  }
+
+  Future<Null> _refresh() {
+    return _loadData().then((_FeedListPageState) {
+      setState(() => initSpeechRecognizer());
+    });
   }
 
   Future _loadData() async {
@@ -145,7 +154,7 @@ class _FeedListPageState extends State<FeedListPage> {
 
     for (var memberJSON in response1.data) {
       var isInCookingList = false;
-      if(memberJSON["inCookingList"] == 1){
+      if (memberJSON["inCookingList"] == 1) {
         isInCookingList = true;
       }
 
@@ -314,20 +323,20 @@ class _FeedListPageState extends State<FeedListPage> {
                               onPressed: () {
                                 setState(() {
                                   _feedDetails[index].like =
-                                  !_feedDetails[index].like;
+                                      !_feedDetails[index].like;
                                   print("====${_feedDetails[index].like}");
-                                  if(_feedDetails[index].like == true){
-                                    addcookingListAPI(context,filteredNames[index].recipeId);
+                                  if (_feedDetails[index].like == true) {
+                                    addcookingListAPI(
+                                        context, filteredNames[index].recipeId);
                                   }
-                                  if(_feedDetails[index].like == false){
-                                    removeCookingListAPI(context,filteredNames[index].recipeId);
+                                  if (_feedDetails[index].like == false) {
+                                    removeCookingListAPI(
+                                        context, filteredNames[index].recipeId);
                                   }
-
                                 });
                               },
                             ),
                           ),
-
                         ],
                       ),
                       Padding(

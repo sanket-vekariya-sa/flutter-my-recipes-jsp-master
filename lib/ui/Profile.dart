@@ -1,12 +1,12 @@
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -15,19 +15,17 @@ class Profile extends StatefulWidget {
   }
 }
 
-
-
-Future<bool> saveImagePreference(String imgurl) async{
-  SharedPreferences pref= await SharedPreferences.getInstance();
+Future<bool> saveImagePreference(String imgurl) async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
   pref.setString("imgUrl", imgurl);
   return pref.commit();
 }
-Future<String> getImagePreference() async{
-  SharedPreferences pref= await SharedPreferences.getInstance();
+
+Future<String> getImagePreference() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
   String savedImage = pref.getString("imgUrl");
   return savedImage;
 }
-
 
 class _ProfileScreenState extends State<Profile> {
   String _connectionStatus;
@@ -48,10 +46,10 @@ class _ProfileScreenState extends State<Profile> {
     super.initState();
     _connectionSubscription =
         _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
-          setState(() {
-            _connectionStatus = "Live";
-          });
-        });
+      setState(() {
+        _connectionStatus = "Live";
+      });
+    });
     print("Initstate : $_connectionStatus");
   }
 
@@ -64,8 +62,8 @@ class _ProfileScreenState extends State<Profile> {
   Widget _buildTextFields() {
     return new Form(
         child: new Column(
-          children: <Widget>[
-            /*Padding(
+      children: <Widget>[
+        /*Padding(
           padding: const EdgeInsets.only(
               top: 10.0, right: 10.0, bottom: 10.0, left: 10.0),
           child: Container(
@@ -78,11 +76,10 @@ class _ProfileScreenState extends State<Profile> {
                       image: new NetworkImage(
                           "https://images.pexels.com/photos/736716/pexels-photo-736716.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500")))),
         ),*/
-            Padding(
-              padding: const EdgeInsets.only(top: 5.0),
-              child: displaySelectedFile(galleryFile),
-
-            ),
+        Padding(
+          padding: const EdgeInsets.only(top: 5.0),
+          child: displaySelectedFile(galleryFile),
+        ),
 //        RaisedButton(
 //          shape: RoundedRectangleBorder(
 //              borderRadius: new BorderRadius.circular(10.0)),
@@ -92,63 +89,63 @@ class _ProfileScreenState extends State<Profile> {
 //          textColor: Colors.white,
 //        ),
 
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: FutureBuilder<dynamic>(
-                future: _loadName(),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                      return Text(
-                        'no data available',
-                        textAlign: TextAlign.center,
-                      );
-                    case ConnectionState.active:
-                      return null;
-                    case ConnectionState.waiting:
-                      return SpinKitFadingCircle(color: Colors.pink);
-                    case ConnectionState.done:
-                      return _buildRow();
-                  }
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: FutureBuilder<dynamic>(
+            future: _loadName(),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return Text(
+                    'no data available',
+                    textAlign: TextAlign.center,
+                  );
+                case ConnectionState.active:
                   return null;
-                },
-              ),
-            ),
+                case ConnectionState.waiting:
+                  return SpinKitFadingCircle(color: Colors.black);
+                case ConnectionState.done:
+                  return _buildRow();
+              }
+              return null;
+            },
+          ),
+        ),
 
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: FutureBuilder<dynamic>(
-                future: _loadName(),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                      return Text(
-                        'no data available',
-                        textAlign: TextAlign.center,
-                      );
-                    case ConnectionState.active:
-                      return null;
-                    case ConnectionState.waiting:
-                      return SpinKitFadingCircle(color: Colors.pink);
-                    case ConnectionState.done:
-                      return _buildConnectionState();
-                  }
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: FutureBuilder<dynamic>(
+            future: _loadName(),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return Text(
+                    'no data available',
+                    textAlign: TextAlign.center,
+                  );
+                case ConnectionState.active:
                   return null;
-                },
-              ),
-            ),
+                case ConnectionState.waiting:
+                  return SpinKitFadingCircle(color: Colors.black);
+                case ConnectionState.done:
+                  return _buildConnectionState();
+              }
+              return null;
+            },
+          ),
+        ),
 //
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Text("Enjoy New Dishes",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                      fontSize: 20.0)),
-            ),
-          ],
-        ));
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Text("Enjoy New Dishes",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  fontSize: 20.0)),
+        ),
+      ],
+    ));
   }
 
   @override
@@ -159,8 +156,7 @@ class _ProfileScreenState extends State<Profile> {
             return Navigator.of(context).pushNamedAndRemoveUntil(
                 '/LoginScreen', (Route<dynamic> route) => false);
           } else {
-            return Navigator.of(context).pushReplacementNamed(
-                '/LoginScreen');
+            return Navigator.of(context).pushReplacementNamed('/LoginScreen');
           }
         },
         child: Scaffold(
@@ -176,7 +172,7 @@ class _ProfileScreenState extends State<Profile> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: Colors.blue,
+                        color: Colors.black,
                         fontSize: 30.0),
                   ),
                 ),
@@ -193,25 +189,27 @@ class _ProfileScreenState extends State<Profile> {
                 ),
                 _buildTextFields(),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0, right: 40.0, left: 40.0),
+                  padding:
+                      const EdgeInsets.only(top: 20.0, right: 40.0, left: 40.0),
                   child: SizedBox(
                     width: double.infinity,
                     height: 50.00,
                     child: RaisedButton(
+                      color: Colors.black,
                       shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0)),
+                          borderRadius: new BorderRadius.circular(10.0)),
                       onPressed: () {
                         clearPref();
-                        Navigator.of(context).pushReplacementNamed('/LoginScreen');
+                        Navigator.of(context)
+                            .pushReplacementNamed('/LoginScreen');
                       },
-                      child: Text("Logout",
+                      textColor: Colors.white,
+                      child: Text("LogOut",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
-                              color: Colors.black,
+                              color: Colors.white,
                               fontSize: 15.0)),
-                      color: Colors.blue,
-                      textColor: Colors.black,
                     ),
                   ),
                 ),
@@ -222,7 +220,10 @@ class _ProfileScreenState extends State<Profile> {
             onPressed: imageSelectorGallery,
             backgroundColor: Colors.black,
             tooltip: 'Image',
-            child: new Icon(Icons.add_a_photo, color: Colors.white,),
+            child: new Icon(
+              Icons.add_a_photo,
+              color: Colors.white,
+            ),
           ),
         ));
   }
@@ -238,12 +239,11 @@ class _ProfileScreenState extends State<Profile> {
     imgFile = await galleryFile.copy(galleryFile.path);
   }
 
-
   Widget _buildRow() {
     return new Text(mail.toString(),
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontWeight: FontWeight.w600, color: Colors.blue, fontSize: 25.0));
+            fontWeight: FontWeight.w600, color: Colors.black, fontSize: 25.0));
   }
 
   Widget _buildConnectionState() {
@@ -259,7 +259,6 @@ class _ProfileScreenState extends State<Profile> {
       maxHeight: 200.0,
       maxWidth: 200.0,
     );
-
 
     // String img= galleryFile.toString();
     //  saveImagePreference(galleryFile.path);
@@ -300,14 +299,16 @@ class _ProfileScreenState extends State<Profile> {
     return new SizedBox(
         height: 200.0,
         width: 200.0,
-        child:
-        file == null ? new CircleAvatar(
-          backgroundImage: new AssetImage('images/profileimage.jpg'),
-          radius: 200.0,)
+        child: file == null
+            ? new CircleAvatar(
+                backgroundImage: new AssetImage('images/profile.png'),
+                radius: 200.0,
+              )
             : new CircleAvatar(
-          backgroundImage: new FileImage(file), radius: 200.0,));
+                backgroundImage: new FileImage(file),
+                radius: 200.0,
+              ));
   }
-
 
   void upDateImage(String value) {
     setState(() {
@@ -315,7 +316,7 @@ class _ProfileScreenState extends State<Profile> {
     });
   }
 
-  void clearPref () async{
+  void clearPref() async {
     SharedPreferences loginprefs = await SharedPreferences.getInstance();
     loginprefs.clear();
   }

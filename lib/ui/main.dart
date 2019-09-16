@@ -1,5 +1,3 @@
-import 'package:Flavr/model/Counter.dart';
-import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:Flavr/ui/Dining.dart';
 import 'package:Flavr/ui/Farvorites.dart';
 import 'package:Flavr/ui/FeedListPage.dart';
@@ -8,7 +6,6 @@ import 'package:Flavr/ui/homeScreen.dart';
 import 'package:Flavr/ui/loginScreen.dart';
 import 'package:Flavr/ui/splashScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 void main() => runApp(new MyApp());
 
@@ -42,11 +39,7 @@ class MyApp extends StatelessWidget {
         "/Profile": (BuildContext context) => Profile(),
         "/Dining": (BuildContext context) => Dining(),
       },
-
-      home: ChangeNotifierProvider<Counter>(
-        builder: (_) => Counter(false),
-        child: SplashScreen(),
-      ),
+      home: SplashScreen(),
     );
   }
 }
