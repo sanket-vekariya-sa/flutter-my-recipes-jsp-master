@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:Flavr/model/loginModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:Flavr/model/loginModel.dart';
 import 'package:http/http.dart' as http;
 
 import 'getresponse.dart';
@@ -41,6 +43,7 @@ Future<LoginModel> addRecipeAPI(
       "http://35.160.197.175:3006/api/v1/recipe/add-ingredient";
   final stepsUrl = "http://35.160.197.175:3006/api/v1/recipe/add-instruction";
 
+
   var photoId;
   Dio dio = new Dio();
   Map<String, dynamic> map = {
@@ -68,7 +71,7 @@ Future<LoginModel> addRecipeAPI(
     print("called if ===== $response");
     var responsesteps;
 
-    photoId = response.toString().substring(41, 44);
+    photoId = response.toString().substring(41,44);
     print("datais$photoId id");
 //    if (response.statusCode == 200) {
 //      Navigator.of(context).pushReplacementNamed('/HomeScreen');
@@ -118,11 +121,14 @@ Future<LoginModel> addRecipeAPI(
         print("called error loop steps");
       });
       print("called if indegrents aadeed ===== $responsesteps");
+
     }
     if (responsesteps.statusCode == 200) {
       Navigator.of(context).pushReplacementNamed('/HomeScreen');
     }
+
   }
+
 
   return loginModel;
 }
