@@ -32,6 +32,7 @@ Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,S
   final ingredentsUrl = "http://35.160.197.175:3006/api/v1/recipe/add-ingredient";
   final stepsUrl = "http://35.160.197.175:3006/api/v1/recipe/add-instruction";
 
+
   var photoId;
   Dio dio = new Dio();
   Map<String, dynamic> map = {
@@ -59,6 +60,18 @@ Future<LoginModel> addRecipeAPI(BuildContext context, String name, String time,S
 //    if (response.statusCode == 200) {
 //      Navigator.of(context).pushReplacementNamed('/HomeScreen');
 //    }
+    var formData = FormData();
+    formData.add("photo", image);
+    formData.add("recipeId",photoId);
+
+    final responsePhoto = await dio.post(
+        photoUrl,
+         options: Options(headers: map)).catchError(
+            (dynamicError) {
+          print("called error loop indegrents");
+        }
+    );
+
     for(var i in ingredents) {
 
       final responseindegrents = await dio.post(

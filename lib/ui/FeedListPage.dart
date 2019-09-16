@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Flavr/apis/cookingListAPI.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -73,6 +74,17 @@ class _FeedListPageState extends State<FeedListPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      floatingActionButton: new FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushReplacementNamed('/Dining');
+        },
+        backgroundColor: Colors.black,
+        tooltip: 'Add Recipe',
+        child: new Icon(
+          Icons.playlist_add,
+          color: Colors.white,
+        ),
+      ),
       appBar: AppBar(
         title: _appBarTitle,
         centerTitle: true,
@@ -132,6 +144,11 @@ class _FeedListPageState extends State<FeedListPage> {
         await dio.get(feedDetailsURL, options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
+      var isInCookingList = false;
+      if(memberJSON["inCookingList"] == 1){
+        isInCookingList = true;
+      }
+
       final itemDetailsfeed = new ItemDetailsFeed(
           memberJSON["recipeId"],
           memberJSON["name"],
@@ -139,19 +156,12 @@ class _FeedListPageState extends State<FeedListPage> {
           memberJSON["preparationTime"],
           memberJSON["serves"],
           memberJSON["complexity"],
-          false,
+          isInCookingList,
           memberJSON["ytUrl"]);
       _feedDetails.add(itemDetailsfeed);
       names.add(itemDetailsfeed);
       filteredNames = names;
     }
-  }
-
-  _LikeState(index) {
-    setState(() {
-      _feedDetails[index].like = !_feedDetails[index].like;
-      likedList.add(filteredNames[index]);
-    });
   }
 
   _HomeScreenState() {
@@ -287,21 +297,37 @@ class _FeedListPageState extends State<FeedListPage> {
                             width: double.infinity,
                             height: 175,
                           ),
-                          IconButton(
-                            alignment: Alignment.topRight,
-                            icon: Icon(
-                                _feedDetails[index].like
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: _feedDetails[index].like
-                                    ? Colors.red
-                                    : Colors.grey),
-                            onPressed: () {
-                              _feedDetails[index].like =
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100.0),
+                            ),
+                            color: Colors.white,
+                            child: IconButton(
+                              alignment: Alignment.center,
+                              icon: Icon(
+                                  _feedDetails[index].like
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: _feedDetails[index].like
+                                      ? Colors.red
+                                      : Colors.grey),
+                              onPressed: () {
+                                setState(() {
+                                  _feedDetails[index].like =
                                   !_feedDetails[index].like;
-                              likedList.add(filteredNames[index]);
-                            },
+                                  print("====${_feedDetails[index].like}");
+                                  if(_feedDetails[index].like == true){
+                                    addcookingListAPI(context,filteredNames[index].recipeId);
+                                  }
+                                  if(_feedDetails[index].like == false){
+                                    removeCookingListAPI(context,filteredNames[index].recipeId);
+                                  }
+
+                                });
+                              },
+                            ),
                           ),
+
                         ],
                       ),
                       Padding(

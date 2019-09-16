@@ -22,12 +22,10 @@ Future<LoginModel> loginAPI(
 
   if (response.statusCode == 200) {
     print("called if loop");
-    Navigator.of(context).pushReplacementNamed('/HomeScreen');
     await prefs.setBool('authenticated', true);
     prefs.setString("mail", email.toString());
 
-    Navigator.push(
-        context,
+    Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => HomeScreen(email),
         ));

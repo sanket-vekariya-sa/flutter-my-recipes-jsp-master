@@ -49,17 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: widgetOptions.elementAt(selectedIndex),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushReplacementNamed('/Dining');
-        },
-        backgroundColor: Colors.black,
-        tooltip: 'Add Recipe',
-        child: new Icon(
-          Icons.playlist_add,
-          color: Colors.white,
-        ),
-      ),
+
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),

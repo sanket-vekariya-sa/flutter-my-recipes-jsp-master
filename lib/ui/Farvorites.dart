@@ -1,17 +1,71 @@
+import 'dart:io';
+
 import 'package:Flavr/model/ItemDetailsFeed.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:permission/permission.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:speech_recognition/speech_recognition.dart';
+import 'Dashboard.dart';
 
 class Favourite extends StatefulWidget {
   int loginData;
+  var likedFeed = <ItemDetailsFeed>[];
 
   @override
-  _FavroitesScreen createState() => new _FavroitesScreen();
+  _FavouriteState createState() => new _FavouriteState();
 }
 
-class _FavroitesScreen extends State<Favourite> {
+class _FavouriteState extends State<Favourite> {
   var _feedDetails = <ItemDetailsFeed>[];
-  Widget _appBarTitle = new Text('Wishlist');
+  Future<ItemDetailsFeed> feed;
+
+  SpeechRecognition _speechRecognition;
+  bool _isAvailable = false;
+  bool _isListening = false;
+
+  String _searchText = "";
+
+  @override
+  void initState() {
+    super.initState();
+    initSpeechRecognizer();
+  }
+
+  void initSpeechRecognizer() {
+    _speechRecognition = SpeechRecognition();
+
+    _speechRecognition.setAvailabilityHandler(
+          (bool result) => setState(() => _isAvailable = result),
+    );
+
+    _speechRecognition.setRecognitionStartedHandler(
+          () => setState(() => _isListening = true),
+    );
+
+    _speechRecognition.setRecognitionResultHandler(
+          (String speech) => setState(() => filter.text = speech),
+    );
+
+    _speechRecognition.setRecognitionCompleteHandler(
+          () => setState(() => _isListening = false),
+    );
+
+    _speechRecognition.activate().then(
+          (result) => setState(() => _isAvailable = result),
+    );
+  }
+
+  var names = <ItemDetailsFeed>[]; // names we get from API
+  var filteredNames = <ItemDetailsFeed>[];
+  Icon _searchIcon = new Icon(Icons.search);
+  Icon _voiceSearchIcon = new Icon(Icons.keyboard_voice);
+
+  Widget _appBarTitle = new Text('WishList');
+
+  final TextEditingController filter = new TextEditingController();
+
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
   @override
@@ -20,176 +74,306 @@ class _FavroitesScreen extends State<Favourite> {
       appBar: AppBar(
         title: _appBarTitle,
         centerTitle: true,
-        backgroundColor: Colors.black,
+        actions: <Widget>[
+          new IconButton(
+            icon: _searchIcon,
+            onPressed: () {
+              _searchPressed();
+            },
+          ),
+          new IconButton(
+            icon: _voiceSearchIcon,
+            onPressed: () {
+              microphonePermission();
+              _voiceSearchPressed();
+            },
+          ),
+        ],
       ),
       resizeToAvoidBottomPadding: false,
       key: login_state,
       body: FutureBuilder<dynamic>(
-          future: _getResults(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return ListView.builder(
-                itemCount: 10,
-                // Important code
-                itemBuilder: (context, index) => Shimmer.fromColors(
-                    baseColor: Colors.grey[400],
-                    highlightColor: Colors.white,
-                    child: ListItem(index: -1)),
+        future: _loadData(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Text(
+                'no data available',
+                textAlign: TextAlign.center,
               );
-            }
-            return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, index) => ListItem(index: index),
-            );
-          }),
-    );
-  }
-}
-
-Future<List<int>> _getResults() async {
-  await Future.delayed(Duration(seconds: 3));
-  return List<int>.generate(10, (index) => index);
-}
-
-class ListItem extends StatelessWidget {
-  final int index;
-
-  const ListItem({Key key, this.index});
-
-  @override
-  Widget build(BuildContext context) {
-//    return Container(
-//      height: 60,
-//      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-//      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0)),
-//      child: Row(
-//        children: <Widget>[
-//          Container(
-//            width: 50.0,
-//            height: 50.0,
-//            margin: EdgeInsets.only(right: 15.0),
-//            color: Colors.black,
-//          ),
-//          index != -1
-//              ? Column(
-//            crossAxisAlignment: CrossAxisAlignment.start,
-//            children: <Widget>[
-//              Text(
-//                'This is title $index',
-//                style: TextStyle(fontWeight: FontWeight.bold),
-//              ),
-//              Text('This is more details'),
-//              Text('One more detail'),
-//            ],
-//          )
-//              : Expanded(
-//            child: Container(
-//              color: Colors.grey,
-//            ),
-//          )
-//        ],
-//      ),
-//    );
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-      child: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          new Stack(
-            children: <Widget>[
-              new Image.network(
-                "http://35.160.197.175:3006/uploads/e4621e53-c973-47de-9afd-1e12d79a191d.jpg",
-                fit: BoxFit.fitWidth,
-                width: double.infinity,
-                height: 180,
-              ),
-              IconButton(
-                alignment: Alignment.topRight,
-                icon: Icon(Icons.favorite, color: Colors.red),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0, top: 10),
-            child: new Text("$index",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12.0)),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0, top: 5),
-            child: new Text("$index",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0)),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 15),
-            child: new Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.access_time,
-                          color: Colors.grey,
-                        ),
-                        Text(
-                          "$index",
-                          style: TextStyle(fontSize: 15.0, color: Colors.grey),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.library_books,
-                          color: Colors.grey,
-                        ),
-                        Text(
-                          "$index",
-                          style: TextStyle(fontSize: 15.0, color: Colors.grey),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.local_dining,
-                          color: Colors.grey,
-                        ),
-                        Text(
-                          "$index people",
-                          style: TextStyle(fontSize: 15.0, color: Colors.grey),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+            case ConnectionState.active:
+              return null;
+            case ConnectionState.waiting:
+              return Shimmer.fromColors(
+                  baseColor: Colors.grey[400],
+                  highlightColor: Colors.white,
+                  child: _buildRow());
+            case ConnectionState.done:
+              return _buildRow();
+          }
+          return null;
+        },
       ),
     );
   }
+
+  Future _loadData() async {
+//    _feedDetails = HomeFeedAPI(context);
+//    HomeFeedAPI(context);
+    String feedDetailsURL = "http://35.160.197.175:3006/api/v1/recipe/cooking-list";
+    var dio = new Dio();
+    Map<String, dynamic> map = {
+      HttpHeaders.authorizationHeader:
+      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
+    };
+    var response1 =
+    await dio.get(feedDetailsURL, options: Options(headers: map));
+
+    for (var memberJSON in response1.data) {
+      final itemDetailsfeed = new ItemDetailsFeed(
+          memberJSON["recipeId"],
+          memberJSON["name"],
+          memberJSON["photo"],
+          memberJSON["preparationTime"],
+          memberJSON["serves"],
+          memberJSON["complexity"],
+          false,
+          memberJSON["ytUrl"]);
+      _feedDetails.add(itemDetailsfeed);
+      names.add(itemDetailsfeed);
+      filteredNames = names;
+    }
+  }
+
+  _HomeScreenState() {
+    filter.addListener(() {
+      setState(() {
+        _searchText = filter.text;
+      });
+    });
+  }
+
+  void _voiceSearchPressed() {
+    if (_isAvailable && !_isListening)
+      _speechRecognition
+          .listen(locale: "en_US")
+          .then((result) => filter.text = result);
+
+    setState(() {
+      if (this._voiceSearchIcon.icon == Icons.keyboard_voice) {
+        this._voiceSearchIcon = new Icon(Icons.close);
+        this._appBarTitle = TextFormField(
+          textInputAction: TextInputAction.done,
+          controller: filter,
+          autofocus: true,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            prefixIcon: new Icon(Icons.settings_voice),
+            hintText: 'Listening...',
+          ),
+          onFieldSubmitted: (term) {
+            filter.text = _searchText;
+            FocusScope.of(context).unfocus();
+          },
+        );
+        _HomeScreenState();
+      } else {
+        _isAvailable = true;
+        this._searchIcon = Icon(Icons.search);
+        this._voiceSearchIcon = new Icon(Icons.keyboard_voice);
+        this._appBarTitle = Text('Home');
+        filter.clear();
+        _searchText = "";
+      }
+    });
+  }
+
+  Future microphonePermission() async {
+    var permissions =
+    await Permission.getPermissionsStatus([PermissionName.Microphone]);
+    if (permissions != PermissionStatus.allow) {
+      Permission.requestPermissions([PermissionName.Microphone]);
+    } else {}
+  }
+
+  Future _searchPressed() async {
+    await setState(() {
+      if (this._searchIcon.icon == Icons.search) {
+        this._searchIcon = new Icon(Icons.close);
+        this._appBarTitle = TextFormField(
+          textInputAction: TextInputAction.done,
+          controller: filter,
+          autofocus: true,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            prefixIcon: new Icon(Icons.search),
+            hintText: 'Search...',
+          ),
+          onFieldSubmitted: (term) {
+            _searchText = filter.text;
+            FocusScope.of(context).unfocus();
+          },
+        );
+        _HomeScreenState();
+      } else {
+        this._searchIcon = new Icon(Icons.search);
+        this._appBarTitle = Text('Home');
+        filter.clear();
+        _searchText = "";
+      }
+    });
+  }
+
+  Widget _buildRow() {
+    if (!(_searchText.isEmpty)) {
+      var tempList = <ItemDetailsFeed>[];
+      for (int i = 0; i < filteredNames.length; i++) {
+        if (filteredNames[i]
+            .getName()
+            .toLowerCase()
+            .contains(_searchText.toLowerCase())) {
+          tempList.add(filteredNames[i]);
+        }
+      }
+      filteredNames = tempList;
+    }
+    return new ListView.builder(
+      itemCount: filteredNames.length,
+      itemBuilder: (BuildContext context, int index) {
+//        var counter = Provider.of<Counter>(context);
+//        counter.setCounter(false);
+        if (filteredNames.length == 0) {
+          return Scaffold(
+            body: new FadeInImage.assetNetwork(
+              placeholder: 'images/loaderfood.gif',
+              image: filteredNames[index].photo,
+              fit: BoxFit.fitWidth,
+              width: double.infinity,
+              height: 175,
+            ),
+          );
+        } else
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: SingleChildScrollView(
+              child: new ListTile(
+                onTap: () {
+                  navigateToSubPage(context, index, filteredNames);
+                },
+                title: new Card(
+                  margin: EdgeInsets.only(left: 0, right: 0, top: 5),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Stack(
+                        children: <Widget>[
+                          new FadeInImage.assetNetwork(
+                            placeholder: 'images/loaderfood.gif',
+                            image: filteredNames[index].photo,
+                            fit: BoxFit.fitWidth,
+                            width: double.infinity,
+                            height: 175,
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0, top: 10),
+                        child: new Text(filteredNames[index].name,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12.0)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0, top: 5),
+                        child: new Text(filteredNames[index].name,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 15),
+                        child: new Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.access_time,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      filteredNames[index].preparationTime,
+                                      style: TextStyle(
+                                          fontSize: 15.0, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.library_books,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      filteredNames[index].complexity,
+                                      style: TextStyle(
+                                          fontSize: 15.0, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.local_dining,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      "${filteredNames[index].serves} people",
+                                      style: TextStyle(
+                                          fontSize: 15.0, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+      },
+    );
+  }
+}
+
+Future navigateToSubPage(context, int, list) async {
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => DashBoard(int, list)));
 }
