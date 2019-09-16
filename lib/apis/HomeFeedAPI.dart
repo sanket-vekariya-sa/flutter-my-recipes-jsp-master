@@ -4,7 +4,7 @@ import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-HomeFeedAPI(BuildContext context) async {
+Future HomeFeedAPI(BuildContext context) async {
   ItemDetailsFeed itemDetailsFeed;
   var _feedDetails = <ItemDetailsFeed>[];
 
@@ -30,5 +30,7 @@ HomeFeedAPI(BuildContext context) async {
       response.data["complexity"],
       false,
       response.data["ytUrl"]);
-  return _feedDetails.add(itemDetailsFeed);
+  _feedDetails.add(itemDetailsFeed);
+
+  return _feedDetails;
 }

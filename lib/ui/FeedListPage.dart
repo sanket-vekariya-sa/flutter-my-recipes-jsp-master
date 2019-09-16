@@ -4,15 +4,16 @@ import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission/permission.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:speech_recognition/speech_recognition.dart';
 
 import 'Dashboard.dart';
-import 'Farvorites.dart';
 
 class FeedListPage extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
+
   @override
   _FeedListPageState createState() => new _FeedListPageState();
 }
@@ -25,8 +26,6 @@ class _FeedListPageState extends State<FeedListPage> {
   SpeechRecognition _speechRecognition;
   bool _isAvailable = false;
   bool _isListening = false;
-  String resultText = "";
-
 
   String _searchText = "";
 
@@ -48,7 +47,7 @@ class _FeedListPageState extends State<FeedListPage> {
     );
 
     _speechRecognition.setRecognitionResultHandler(
-      (String speech) => setState(() => _filter.text = speech),
+      (String speech) => setState(() => filter.text = speech),
     );
 
     _speechRecognition.setRecognitionCompleteHandler(
@@ -66,8 +65,8 @@ class _FeedListPageState extends State<FeedListPage> {
   Icon _voiceSearchIcon = new Icon(Icons.keyboard_voice);
 
   Widget _appBarTitle = new Text('Home');
-  final TextEditingController _filter = new TextEditingController();
-  final _speech = SpeechRecognition();
+
+  final TextEditingController filter = new TextEditingController();
 
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
@@ -87,6 +86,7 @@ class _FeedListPageState extends State<FeedListPage> {
           new IconButton(
             icon: _voiceSearchIcon,
             onPressed: () {
+              microphonePermission();
               _voiceSearchPressed();
             },
           ),
@@ -109,7 +109,7 @@ class _FeedListPageState extends State<FeedListPage> {
               return Shimmer.fromColors(
                   baseColor: Colors.grey[400],
                   highlightColor: Colors.white,
-                  child: ListItem(index: -1));
+                  child: _buildRow());
             case ConnectionState.done:
               return _buildRow();
           }
@@ -119,7 +119,7 @@ class _FeedListPageState extends State<FeedListPage> {
     );
   }
 
-  _loadData() async {
+  Future _loadData() async {
 //    _feedDetails = HomeFeedAPI(context);
 //    HomeFeedAPI(context);
     String feedDetailsURL = "http://35.160.197.175:3006/api/v1/recipe/feeds";
@@ -144,14 +144,20 @@ class _FeedListPageState extends State<FeedListPage> {
       _feedDetails.add(itemDetailsfeed);
       names.add(itemDetailsfeed);
       filteredNames = names;
-
     }
   }
 
+  _LikeState(index) {
+    setState(() {
+      _feedDetails[index].like = !_feedDetails[index].like;
+      likedList.add(filteredNames[index]);
+    });
+  }
+
   _HomeScreenState() {
-    _filter.addListener(() {
+    filter.addListener(() {
       setState(() {
-        _searchText = _filter.text;
+        _searchText = filter.text;
       });
     });
   }
@@ -160,63 +166,60 @@ class _FeedListPageState extends State<FeedListPage> {
     if (_isAvailable && !_isListening)
       _speechRecognition
           .listen(locale: "en_US")
-          .then((result) => print('$result'));
+          .then((result) => filter.text = result);
 
     setState(() {
       if (this._voiceSearchIcon.icon == Icons.keyboard_voice) {
         this._voiceSearchIcon = new Icon(Icons.close);
         this._appBarTitle = TextFormField(
           textInputAction: TextInputAction.done,
-          controller: _filter,
+          controller: filter,
           autofocus: true,
-          style: new TextStyle(
-            color: Colors.white,
-            decorationColor: Colors.white,
-          ),
-          cursorColor: Colors.white,
+          style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
-              prefixIcon: new Icon(Icons.settings_voice),
-              hintText: 'Listening...',
-              hintStyle: TextStyle(
-                color: Colors.white,
-              )),
+            prefixIcon: new Icon(Icons.settings_voice),
+            hintText: 'Listening...',
+          ),
           onFieldSubmitted: (term) {
-            _filter.text = _searchText;
+            filter.text = _searchText;
             FocusScope.of(context).unfocus();
           },
         );
-        _filter.text = _searchText;
+        _HomeScreenState();
       } else {
-//        _speechRecognition.stop();
-//        _speechRecognition.cancel();
         _isAvailable = true;
         this._searchIcon = Icon(Icons.search);
         this._voiceSearchIcon = new Icon(Icons.keyboard_voice);
         this._appBarTitle = Text('Home');
-        _filter.clear();
+        filter.clear();
         _searchText = "";
       }
     });
   }
 
-  void _searchPressed() {
-    setState(() {
+  Future microphonePermission() async {
+    var permissions =
+        await Permission.getPermissionsStatus([PermissionName.Microphone]);
+    if (permissions != PermissionStatus.allow) {
+      Permission.requestPermissions([PermissionName.Microphone]);
+    } else {}
+  }
+
+  Future _searchPressed() async {
+    await setState(() {
       if (this._searchIcon.icon == Icons.search) {
         this._searchIcon = new Icon(Icons.close);
         this._appBarTitle = TextFormField(
           textInputAction: TextInputAction.done,
-          controller: _filter,
+          controller: filter,
           autofocus: true,
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
-              prefixIcon: new Icon(Icons.search),
-              hintText: 'Search...',
-              hintStyle: TextStyle(
-                color: Colors.white,
-              )),
+            prefixIcon: new Icon(Icons.search),
+            hintText: 'Search...',
+          ),
           onFieldSubmitted: (term) {
+            _searchText = filter.text;
             FocusScope.of(context).unfocus();
           },
         );
@@ -224,7 +227,8 @@ class _FeedListPageState extends State<FeedListPage> {
       } else {
         this._searchIcon = new Icon(Icons.search);
         this._appBarTitle = Text('Home');
-        _filter.clear();
+        filter.clear();
+        _searchText = "";
       }
     });
   }
@@ -243,144 +247,151 @@ class _FeedListPageState extends State<FeedListPage> {
       filteredNames = tempList;
     }
     return new ListView.builder(
-      padding: const EdgeInsets.only(top: 10.0),
       itemCount: filteredNames.length,
       itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onPanDown: (_) {
-            FocusScope.of(context).unfocus();
-          },
-          child: SingleChildScrollView(
-            child: new ListTile(
-              onTap: () {
-                navigateToSubPage(context, index, filteredNames);
-              },
-              title: new Card(
-                child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Stack(
-                      children: <Widget>[
-
-//                        new Image.network(
-//                          filteredNames[index].photo,
-//                          fit: BoxFit.fitWidth,
-//                          width: double.infinity,
-//                          height: 180,
-//                        ),
-                new  FadeInImage.assetNetwork(
-                  placeholder: 'images/loaderfood.gif',
-                  image: filteredNames[index].photo,
-                  fit: BoxFit.fitWidth,
-                  width: double.infinity,
-                  height: 180,
-                ),
-                        IconButton(
-                          alignment: Alignment.topRight,
-                          icon: Icon(
-                              filteredNames[index].like
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: filteredNames[index].like
-                                  ? Colors.red
-                                  : Colors.grey),
-                          onPressed: () {
-                            _feedDetails[index].like =
-                                !_feedDetails[index].like;
-                            likedList.add(filteredNames[index]);
-                          },
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0, top: 10),
-                      child: new Text(filteredNames[index].name,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.0)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0, top: 5),
-                      child: new Text(filteredNames[index].name,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 15),
-                      child: new Row(
+//        var counter = Provider.of<Counter>(context);
+//        counter.setCounter(false);
+        if (filteredNames.length == 0) {
+          return Scaffold(
+            body: new FadeInImage.assetNetwork(
+              placeholder: 'images/loaderfood.gif',
+              image: filteredNames[index].photo,
+              fit: BoxFit.fitWidth,
+              width: double.infinity,
+              height: 175,
+            ),
+          );
+        } else
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: SingleChildScrollView(
+              child: new ListTile(
+                onTap: () {
+                  navigateToSubPage(context, index, filteredNames);
+                },
+                title: new Card(
+                  margin: EdgeInsets.only(left: 0, right: 0, top: 5),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Stack(
                         children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.access_time,
-                                    color: Colors.grey,
-                                  ),
-                                  Text(
-                                    filteredNames[index].preparationTime,
-                                    style: TextStyle(
-                                        fontSize: 15.0, color: Colors.grey),
-                                  )
-                                ],
-                              ),
-                            ),
+                          new FadeInImage.assetNetwork(
+                            placeholder: 'images/loaderfood.gif',
+                            image: filteredNames[index].photo,
+                            fit: BoxFit.fitWidth,
+                            width: double.infinity,
+                            height: 175,
                           ),
-                          Expanded(
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.library_books,
-                                    color: Colors.grey,
-                                  ),
-                                  Text(
-                                    filteredNames[index].complexity,
-                                    style: TextStyle(
-                                        fontSize: 15.0, color: Colors.grey),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.local_dining,
-                                    color: Colors.grey,
-                                  ),
-                                  Text(
-                                    "${filteredNames[index].serves} people",
-                                    style: TextStyle(
-                                        fontSize: 15.0, color: Colors.grey),
-                                  )
-                                ],
-                              ),
-                            ),
+                          IconButton(
+                            alignment: Alignment.topRight,
+                            icon: Icon(
+                                _feedDetails[index].like
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: _feedDetails[index].like
+                                    ? Colors.red
+                                    : Colors.grey),
+                            onPressed: () {
+                              _feedDetails[index].like =
+                                  !_feedDetails[index].like;
+                              likedList.add(filteredNames[index]);
+                            },
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0, top: 10),
+                        child: new Text(filteredNames[index].name,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12.0)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0, top: 5),
+                        child: new Text(filteredNames[index].name,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 15),
+                        child: new Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.access_time,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      filteredNames[index].preparationTime,
+                                      style: TextStyle(
+                                          fontSize: 15.0, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.library_books,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      filteredNames[index].complexity,
+                                      style: TextStyle(
+                                          fontSize: 15.0, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.local_dining,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      "${filteredNames[index].serves} people",
+                                      style: TextStyle(
+                                          fontSize: 15.0, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
+          );
       },
     );
   }

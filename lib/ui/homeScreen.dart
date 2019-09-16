@@ -1,37 +1,39 @@
-import 'package:flutter/material.dart';
-import 'package:Flavr/ui/Dining.dart';
 import 'package:Flavr/ui/Farvorites.dart';
 import 'package:Flavr/ui/FeedListPage.dart';
 import 'package:Flavr/ui/Profile.dart';
+import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   final String text;
+
   HomeScreen(this.text);
+
   @override
-  _HomeScreenState createState() =>  _HomeScreenState(text);
+  _HomeScreenState createState() => _HomeScreenState(text);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-    int selectedIndex = 0;
-     String  text;
+  int selectedIndex = 0;
+  String text;
 
-    _HomeScreenState(this.text);
-String appBarTitleText ='Home';
+  _HomeScreenState(this.text);
+
+  String appBarTitleText = 'Home';
   final widgetOptions = [
     new FeedListPage(),
-    new Favorites(),
+    new Favourite(),
     new Profile(),
   ];
+
   @override
   void initState() {
     super.initState();
-     }
+  }
 
-   @override
+  @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      resizeToAvoidBottomPadding : false,
+      resizeToAvoidBottomPadding: false,
 //      appBar: AppBar(title: Text(appBarTitleText, style: TextStyle(color: Colors.black),),
 //        backgroundColor: Colors.white,
 //          centerTitle: true,
@@ -44,47 +46,43 @@ String appBarTitleText ='Home';
 //        Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 6.0,
 //      ),
 
-       body: Center(
+      body: Center(
         child: widgetOptions.elementAt(selectedIndex),
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           Navigator.of(context).pushReplacementNamed('/Dining');
         },
+        backgroundColor: Colors.black,
         tooltip: 'Add Recipe',
-        child: new Icon(Icons.playlist_add, color: Colors.black,),
-        backgroundColor: Colors.blue,
+        child: new Icon(
+          Icons.playlist_add,
+          color: Colors.white,
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
           BottomNavigationBarItem(
               icon: Icon(Icons.local_dining), title: Text('Wishlist')),
-           BottomNavigationBarItem(
+          BottomNavigationBarItem(
               icon: Icon(Icons.person), title: Text('Profile')),
         ],
         currentIndex: selectedIndex,
-        unselectedItemColor:Colors.black ,
-        selectedItemColor: Colors.blue,
-
-       onTap: onItemTapped,
+        onTap: onItemTapped,
       ),
-
-
     );
   }
+
   void onItemTapped(int index) {
-    if(index == 0){
+    if (index == 0) {
       appBarTitleText = 'Home';
-
-    }else if(index == 1){
+    } else if (index == 1) {
       appBarTitleText = 'Wishlist';
-
-    }else if(index == 2){
+    } else if (index == 2) {
       //appBarTitleText = 'Favourites';
       appBarTitleText = 'Profile';
-
-   }
+    }
 // else if(index == 3){
 //      appBarTitleText = 'Profile';
 //
@@ -92,8 +90,6 @@ String appBarTitleText ='Home';
 
     setState(() {
       selectedIndex = index;
-
     });
   }
-
 }

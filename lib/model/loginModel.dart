@@ -1,4 +1,6 @@
-class LoginModel {
+import 'package:flutter/material.dart';
+
+class LoginModel with ChangeNotifier{
   final String email;
   final String password;
 

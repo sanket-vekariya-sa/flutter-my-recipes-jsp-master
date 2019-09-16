@@ -1,237 +1,123 @@
-import 'dart:io';
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:image_picker/image_picker.dart';
 
-class Profile extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return new ProfileScreenState();
-  }
-}
-
-Future<bool> saveImagePreference(String imgurl) async{
-  SharedPreferences pref= await SharedPreferences.getInstance();
-      pref.setString("imgUrl", imgurl);
-  return pref.commit();
-}
-Future<String> getImagePreference() async{
-  SharedPreferences pref= await SharedPreferences.getInstance();
-  String savedImage = pref.getString("imgUrl");
-  return savedImage;
-}
-
-
-class ProfileScreenState extends State<Profile> {
-  var mail;
-  File galleryFile;
-  File imgFile;
-  String savedImagenew="";
-
-  String profileImage;
- SharedPreferences pref;
-  @override
-  void initState() {
-    getImagePreference().then(upDateImage);
-    super.initState();
-  }
-
-  Widget _buildTextFields() {
-    return new Form(
-        child: new Column(
-      children: <Widget>[
-        /*Padding(
-          padding: const EdgeInsets.only(
-              top: 10.0, right: 10.0, bottom: 10.0, left: 10.0),
-          child: Container(
-              width: 100.0,
-              height: 100.0,
-              decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: new DecorationImage(
-                      fit: BoxFit.fill,
-                      image: new NetworkImage(
-                          "https://images.pexels.com/photos/736716/pexels-photo-736716.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500")))),
-        ),*/
-        Padding(
-        padding: const EdgeInsets.only(top: 5.0),
-        child :displaySelectedFile(galleryFile),
-
-        ),
-//        RaisedButton(
-//          shape: RoundedRectangleBorder(
-//              borderRadius: new BorderRadius.circular(10.0)),
-//          onPressed: imageSelectorGallery,
-//          child: Text("Select Image"),
-//          color: Colors.orange,
-//          textColor: Colors.white,
-//        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: FutureBuilder<dynamic>(
-            future: _loadName(),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                  return Text(
-                    'no data available',
-                    textAlign: TextAlign.center,
-                  );
-                case ConnectionState.active:
-                  return null;
-                case ConnectionState.waiting:
-                  return SpinKitFadingCircle(color: Colors.pink);
-                case ConnectionState.done:
-                  return _buildRow();
-              }
-              return null;
-            },
-          ),
-        ),
-//
-        Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Text("Enjoy New Dishes",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                  fontSize: 15.0)),
-        ),
-      ],
-    ));
-  }
-
+class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
-    return WillPopScope(
-        onWillPop: () {
-          if (Navigator.canPop(context)) {
-            return Navigator.of(context).pushNamedAndRemoveUntil(
-                '/HomeScreen', (Route<dynamic> route) => false);
-          } else {
-            return Navigator.of(context).pushReplacementNamed('/HomeScreen');
-          }
-        },
-        child: Scaffold(
-          resizeToAvoidBottomPadding: false,
-          body: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 100.0),
-                  child: Text(
-                    'Hello Foodie',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                        fontSize: 30.0),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Text(
-                    'Delicious Recipes App',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                        fontSize: 15.0),
-                  ),
-                ),
-                _buildTextFields(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0, right: 40.0, left: 40.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 50.00,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0)),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacementNamed('/HomeScreen');
-                      },
-                      child: Text("Go to Recipe List",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                              fontSize: 15.0)),
-                      color: Colors.blue,
-                      textColor: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          floatingActionButton: new FloatingActionButton(
-            onPressed: imageSelectorGallery,
-            tooltip: 'Pick Image',
-            child: new Icon(Icons.add_a_photo, color: Colors.black,),
-            backgroundColor: Colors.blue,
-            ),
-        ));
-
-  }
-
-  _loadName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    mail = prefs.getString("mail");
-  }
-  _loadLocalProfileImage() async {
-    pref = SharedPreferences.getInstance() as SharedPreferences;
-    pref.setString('imgUrl',galleryFile.path );
-    imgFile = await galleryFile.copy(galleryFile.path);
-
-  }
-
-
-  Widget _buildRow() {
-    return new Text(mail.toString(),
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontWeight: FontWeight.w600, color: Colors.black, fontSize: 15.0));
-  }
-  imageSelectorGallery() async {
-    galleryFile = await ImagePicker.pickImage(
-      source: ImageSource.gallery,
-      maxHeight: 200.0,
-      maxWidth: 200.0,
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: new MyHomePage(),
     );
-   // String img= galleryFile.toString();
-    saveImagePreference(galleryFile.path);
-    print("You selected gallery image : " + galleryFile.path);
-
-    setState(() {
-      displaySelectedFile(galleryFile);
-    });
-
-  }
-  Widget displaySelectedFile(File file) {
-         return new SizedBox(
-                  height: 200.0,
-                  width: 200.0,
-                  child:
-                  file == null ? new CircleAvatar(backgroundImage:new AssetImage('images/profileimage.jpg'), radius: 200.0,)
-                      : new CircleAvatar(backgroundImage: new FileImage(file), radius: 200.0,));
-
-          }
-
-
-
-  void upDateImage(String value) {
-    setState(() {
-      this.savedImagenew = value;
-    });
   }
 }
 
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => new _MyHomePageState();
+}
 
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        body: new Stack(
+          children: <Widget>[
+            ClipPath(
+              child: Container(color: Colors.black.withOpacity(0.8)),
+              clipper: getClipper(),
+            ),
+            Positioned(
+                width: 350.0,
+                top: MediaQuery.of(context).size.height / 5,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                        width: 150.0,
+                        height: 150.0,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                    'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg'),
+                                fit: BoxFit.cover),
+                            borderRadius: BorderRadius.all(Radius.circular(75.0)),
+                            boxShadow: [
+                              BoxShadow(blurRadius: 7.0, color: Colors.black)
+                            ])),
+                    SizedBox(height: 90.0),
+                    Text(
+                      'Tom Cruise',
+                      style: TextStyle(
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat'),
+                    ),
+                    SizedBox(height: 15.0),
+                    Text(
+                      'Subscribe guys',
+                      style: TextStyle(
+                          fontSize: 17.0,
+                          fontStyle: FontStyle.italic,
+                          fontFamily: 'Montserrat'),
+                    ),
+                    SizedBox(height: 25.0),
+                    Container(
+                        height: 30.0,
+                        width: 95.0,
+                        child: Material(
+                          borderRadius: BorderRadius.circular(20.0),
+                          shadowColor: Colors.greenAccent,
+                          color: Colors.green,
+                          elevation: 7.0,
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Center(
+                              child: Text(
+                                'Edit Name',
+                                style: TextStyle(color: Colors.white, fontFamily: 'Montserrat'),
+                              ),
+                            ),
+                          ),
+                        )),
+                    SizedBox(height: 25.0),
+                    Container(
+                        height: 30.0,
+                        width: 95.0,
+                        child: Material(
+                          borderRadius: BorderRadius.circular(20.0),
+                          shadowColor: Colors.redAccent,
+                          color: Colors.red,
+                          elevation: 7.0,
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Center(
+                              child: Text(
+                                'Log out',
+                                style: TextStyle(color: Colors.white, fontFamily: 'Montserrat'),
+                              ),
+                            ),
+                          ),
+                        ))
+                  ],
+                ))
+          ],
+        ));
+  }
+}
 
+class getClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = new Path();
 
+    path.lineTo(0.0, size.height / 1.9);
+    path.lineTo(size.width + 125, 0.0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    // TODO: implement shouldReclip
+    return true;
+  }
+}

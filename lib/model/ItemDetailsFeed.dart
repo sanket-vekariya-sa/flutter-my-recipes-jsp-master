@@ -10,14 +10,13 @@ class ItemDetailsFeed with ChangeNotifier {
   bool like;
   String youtubeUrl;
 
-  ItemDetailsFeed(this.recipeId,this.name, this.photo, this.preparationTime, this.serves,
-      this.complexity, this.like,this.youtubeUrl) {
+  ItemDetailsFeed(this.recipeId, this.name, this.photo, this.preparationTime,
+      this.serves, this.complexity, this.like, this.youtubeUrl) {
     if (name == null) {
       name = "default";
     }
     if (photo == null) {
-      photo =
-      "https://media.giphy.com/media/g8rEwOqIStrBC/giphy.gif";
+      photo = "https://media.giphy.com/media/g8rEwOqIStrBC/giphy.gif";
     }
     if (preparationTime == null) {
       preparationTime = "5";
@@ -28,13 +27,15 @@ class ItemDetailsFeed with ChangeNotifier {
     if (complexity == null) {
       complexity = "Easy";
     }
-    if(youtubeUrl == null){
+    if (youtubeUrl == null) {
       youtubeUrl = "";
     }
-    if(recipeId == null){
+    if (recipeId == null) {
       recipeId = 1;
     }
   }
+
+  bool getLike() => like;
 
   void likeUpdate(value) {
     like = value;
