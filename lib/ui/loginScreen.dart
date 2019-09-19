@@ -140,65 +140,71 @@ class LoginScreenState extends State<LoginScreen> {
         },
         child: Scaffold(
           backgroundColor: Colors.white,
-          resizeToAvoidBottomPadding: false,
-          body: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 100.0),
-                  child: Text(
-                    'LOG IN',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                        fontSize: 30.0),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Text(
-                    'Good to see you again',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                        fontSize: 15.0),
-                  ),
-                ),
-                _buildTextFields(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 40.0, left: 40.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 40.00,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0)),
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          SystemChannels.textInput
-                              .invokeMethod('TextInput.hide');
-                          loginAPI(context, _emailController.text,
-                              _passwordController.text);
-                        }
-                      },
-                      child: Text("LOG IN"),
-                      color: Colors.black,
-                      textColor: Colors.white,
+          resizeToAvoidBottomPadding: true,
+          body: ListView(
+            shrinkWrap: true,
+            primary: false,
+            children: <Widget>[
+              SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 100.0),
+                      child: Text(
+                        'LOG IN',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                            fontSize: 30.0),
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        'Good to see you again',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                            fontSize: 15.0),
+                      ),
+                    ),
+                    _buildTextFields(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 40.0, left: 40.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 40.00,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30.0)),
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              SystemChannels.textInput
+                                  .invokeMethod('TextInput.hide');
+                              loginAPI(context, _emailController.text,
+                                  _passwordController.text);
+                            }
+                          },
+                          child: Text("LOG IN"),
+                          color: Colors.black,
+                          textColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20,bottom: 40),
+                      child: Text(
+                        'Forgot your password?',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Text(
-                    'Forgot your password?',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ));
   }

@@ -60,6 +60,7 @@ flutter:
     - images/profile.png
     - images/recipe.jpg
     - images/loaderfood.gif
+    - images/notFound.gif
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

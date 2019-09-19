@@ -32,7 +32,7 @@ class _DiningScreen extends State<Dining> {
 
   Widget _buildTextFields() {
     return new Form(
-      autovalidate: true,
+      autovalidate: false,
       key: addInputs,
       child: new Card(
         elevation: 5,

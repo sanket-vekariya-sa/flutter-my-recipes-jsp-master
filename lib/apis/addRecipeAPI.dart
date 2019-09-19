@@ -76,6 +76,10 @@ Future<LoginModel> addRecipeAPI(
 //    if (response.statusCode == 200) {
 //      Navigator.of(context).pushReplacementNamed('/HomeScreen');
 //    }
+    FormData formdata = new FormData();
+    formdata.add("photo", new UploadFileInfo(image, image.path, contentType: ContentType.parse('image/png')));
+    formdata.add("recipeId", photoId);
+
 //    var formData = FormData();
 //    formData.add("photo", image);
 //    formData.add("recipeId", photoId);
@@ -85,14 +89,14 @@ Future<LoginModel> addRecipeAPI(
 //      "recipeId":photoId
 //    });
 //
-//    final responsePhoto = await dio
-//        .post(photoUrl,data: formData, options: Options(headers: map))
-//        .catchError((dynamicError) {
-//      print("called error loop indegrents");
-//    });
+    final responsePhoto = await dio
+        .post(photoUrl,data: formdata, options: Options(headers: map))
+        .catchError((dynamicError) {
+      print("called error loop indegrents");
+    });
 
-//    print("responsephoto : $responsePhoto");
-//    print("responsephoto : ${responsePhoto.statusCode}");
+    print("responsephoto : $responsePhoto");
+    print("responsephoto : ${responsePhoto.statusCode}");
 
 
     for (var i in ingredents) {

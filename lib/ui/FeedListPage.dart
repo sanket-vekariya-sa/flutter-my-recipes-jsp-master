@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Flavr/apis/cookingListAPI.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission/permission.dart';
@@ -264,12 +265,23 @@ class _FeedListPageState extends State<FeedListPage> {
         }
       }
       filteredNames = tempList;
+      if (filteredNames.length == 0) {
+        return Container(
+          color: Colors.white,
+          alignment: Alignment.center,
+          height: double.infinity,
+          width: double.infinity,
+          child: FadeInImage.assetNetwork(
+            placeholder: 'images/notFound.gif',
+            image: 'images/notFound.gif',
+            fit: BoxFit.cover,
+          ),
+        );
+      }
     }
     return new ListView.builder(
       itemCount: filteredNames.length,
       itemBuilder: (BuildContext context, int index) {
-//        var counter = Provider.of<Counter>(context);
-//        counter.setCounter(false);
         if (filteredNames.length == 0) {
           return Scaffold(
             body: new FadeInImage.assetNetwork(
