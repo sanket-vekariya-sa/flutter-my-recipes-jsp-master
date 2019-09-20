@@ -64,10 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
       //appBarTitleText = 'Favourites';
       appBarTitleText = Constants.APPTITLEPROFILE;
     }
-// else if(index == 3){
-//      appBarTitleText = 'Profile';
-//
-//    }
 
     setState(() {
       selectedIndex = index;

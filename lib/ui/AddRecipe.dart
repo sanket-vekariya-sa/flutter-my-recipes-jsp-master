@@ -528,12 +528,7 @@ class _DiningScreen extends State<Dining> {
   }
 
   Widget displaySelectedFile(File file) {
-//    return new SizedBox(
-//      height: 200.0,
-//      width: 200.0,
-//      child:
-//      file == null ? new Text('No image Selected') : new Image.file(file),
-//    );
+
     return new SizedBox(
       height: 246.5,
       width: 500,
