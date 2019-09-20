@@ -2,13 +2,12 @@ import 'dart:io';
 
 import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:Flavr/values/CONSTANTS.dart';
+import 'package:Flavr/values/UserPermission.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:permission/permission.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:speech_recognition/speech_recognition.dart';
-import 'DetailScreen.dart';
 
 class WishList extends StatefulWidget {
   int loginData;
@@ -186,13 +185,6 @@ class _WishListState extends State<WishList> {
     });
   }
 
-  Future microphonePermission() async {
-    var permissions =
-        await Permission.getPermissionsStatus([PermissionName.Microphone]);
-    if (permissions != PermissionStatus.allow) {
-      Permission.requestPermissions([PermissionName.Microphone]);
-    } else {}
-  }
 
   Future _searchPressed() async {
     await setState(() {
@@ -368,9 +360,4 @@ class _WishListState extends State<WishList> {
       },
     );
   }
-}
-
-Future navigateToSubPage(context, int, list) async {
-  Navigator.push(
-      context, MaterialPageRoute(builder: (context) => DetailScreen(int, list)));
 }

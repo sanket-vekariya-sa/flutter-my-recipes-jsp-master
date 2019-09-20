@@ -42,10 +42,10 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           "/HomeScreen": (BuildContext context) => HomeScreen("email id"),
           "/LoginScreen": (BuildContext context) => LoginScreen(),
-          "/FeedListPage": (BuildContext context) => FeedScreen(),
-          "/Favorites": (BuildContext context) => WishList(),
-          "/Profile": (BuildContext context) => ProfileScreen(),
-          "/Dining": (BuildContext context) => AddRecipeScreen(),
+          "/FeedScreen": (BuildContext context) => FeedScreen(),
+          "/WishList": (BuildContext context) => WishList(),
+          "/ProfileScreen": (BuildContext context) => ProfileScreen(),
+          "/AddRecipe": (BuildContext context) => AddRecipeScreen(),
         },
 
         home: SplashScreen(),

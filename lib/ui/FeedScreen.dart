@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Flavr/apis/cookingListAPI.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
 import 'package:Flavr/values/CONSTANTS.dart';
+import 'package:Flavr/values/UserPermission.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,7 @@ class _FeedScreenState extends State<FeedScreen> {
     return new Scaffold(
       floatingActionButton: new FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushReplacementNamed('/Dining');
+          Navigator.of(context).pushReplacementNamed('/AddRecipe');
         },
         backgroundColor: Colors.black,
         tooltip: Constants.TEXTADDRECIPE,
@@ -213,14 +214,6 @@ class _FeedScreenState extends State<FeedScreen> {
         _searchText = "";
       }
     });
-  }
-
-  Future microphonePermission() async {
-    var permissions =
-        await Permission.getPermissionsStatus([PermissionName.Microphone]);
-    if (permissions != PermissionStatus.allow) {
-      Permission.requestPermissions([PermissionName.Microphone]);
-    } else {}
   }
 
   Future _searchPressed() async {
@@ -431,7 +424,3 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 }
 
-Future navigateToSubPage(context, int, list) async {
-  Navigator.push(
-      context, MaterialPageRoute(builder: (context) => DetailScreen(int, list)));
-}
