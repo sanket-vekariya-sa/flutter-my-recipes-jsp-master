@@ -2,18 +2,17 @@ import 'dart:io';
 
 import 'package:Flavr/apis/cookingListAPI.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
+import 'package:Flavr/ui/DetailScreen.dart';
+import 'package:Flavr/ui/Skelton.dart';
+import 'package:Flavr/utils/CustomNavigation.dart';
+import 'package:Flavr/utils/Permissions.dart';
 import 'package:Flavr/values/CONSTANTS.dart';
-import 'package:Flavr/values/UserPermission.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:permission/permission.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:speech_recognition/speech_recognition.dart';
-
-import 'DetailScreen.dart';
 
 class FeedScreen extends StatefulWidget {
   int loginData;
@@ -124,10 +123,7 @@ class _FeedScreenState extends State<FeedScreen> {
               case ConnectionState.active:
                 return null;
               case ConnectionState.waiting:
-                return Shimmer.fromColors(
-                    baseColor: Colors.grey[400],
-                    highlightColor: Colors.white,
-                    child: _buildRow(context));
+                return buildRowLoading(context);
               case ConnectionState.done:
                 return _buildRow(context);
             }
@@ -261,11 +257,10 @@ class _FeedScreenState extends State<FeedScreen> {
     return new ListView.builder(
       itemCount: filteredNames.length,
       itemBuilder: (BuildContext context, int index) {
-
         if (filteredNames.length == 0) {
           return Scaffold(
             body: new FadeInImage.assetNetwork(
-              placeholder: 'images/loaderfood.gif',
+              placeholder: 'images/notFound.gif',
               image: filteredNames[index].photo,
               fit: BoxFit.fitWidth,
               width: double.infinity,
@@ -278,7 +273,8 @@ class _FeedScreenState extends State<FeedScreen> {
             child: SingleChildScrollView(
               child: new ListTile(
                 onTap: () {
-                  navigateToSubPage(context, index, filteredNames);
+                  navigateToSubPage(
+                      context, index, filteredNames);
                 },
                 title: new Card(
                   margin: EdgeInsets.only(left: 0, right: 0, top: 5),
@@ -296,7 +292,7 @@ class _FeedScreenState extends State<FeedScreen> {
                             image: filteredNames[index].photo,
                             fit: BoxFit.fitWidth,
                             width: double.infinity,
-                            height: 175,
+                            height: 200,
                           ),
                           Card(
                             shape: RoundedRectangleBorder(
@@ -422,5 +418,6 @@ class _FeedScreenState extends State<FeedScreen> {
       },
     );
   }
-}
 
+
+}
