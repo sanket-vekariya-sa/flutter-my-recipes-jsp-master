@@ -22,9 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String appBarTitleText = 'Home';
   final widgetOptions = [
-    new FeedListPage(),
-    new Favourite(),
-    new Profile(),
+    new FeedScreen(),
+    new WishList(),
+    new ProfileScreen(),
   ];
 
   @override

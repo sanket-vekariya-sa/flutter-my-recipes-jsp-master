@@ -1,5 +1,5 @@
 import 'package:Flavr/model/ItemDetailsFeed.dart';
-import 'package:Flavr/ui/AddRecipe.dart';
+import 'package:Flavr/ui/AddRecipeScreen.dart';
 import 'package:Flavr/ui/WishList.dart';
 import 'package:Flavr/ui/FeedScreen.dart';
 import 'package:Flavr/ui/ProfileScreen.dart';
@@ -42,10 +42,10 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           "/HomeScreen": (BuildContext context) => HomeScreen("email id"),
           "/LoginScreen": (BuildContext context) => LoginScreen(),
-          "/FeedListPage": (BuildContext context) => FeedListPage(),
-          "/Favorites": (BuildContext context) => Favourite(),
-          "/Profile": (BuildContext context) => Profile(),
-          "/Dining": (BuildContext context) => Dining(),
+          "/FeedListPage": (BuildContext context) => FeedScreen(),
+          "/Favorites": (BuildContext context) => WishList(),
+          "/Profile": (BuildContext context) => ProfileScreen(),
+          "/Dining": (BuildContext context) => AddRecipeScreen(),
         },
 
         home: SplashScreen(),

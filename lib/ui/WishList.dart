@@ -10,15 +10,15 @@ import 'package:shimmer/shimmer.dart';
 import 'package:speech_recognition/speech_recognition.dart';
 import 'DetailScreen.dart';
 
-class Favourite extends StatefulWidget {
+class WishList extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
 
   @override
-  _FavouriteState createState() => new _FavouriteState();
+  _WishListState createState() => new _WishListState();
 }
 
-class _FavouriteState extends State<Favourite> {
+class _WishListState extends State<WishList> {
   var _feedDetails = <ItemDetailsFeed>[];
   Future<ItemDetailsFeed> feed;
   final Constants = CONSTANTS();
@@ -372,5 +372,5 @@ class _FavouriteState extends State<Favourite> {
 
 Future navigateToSubPage(context, int, list) async {
   Navigator.push(
-      context, MaterialPageRoute(builder: (context) => DashBoard(int, list)));
+      context, MaterialPageRoute(builder: (context) => DetailScreen(int, list)));
 }

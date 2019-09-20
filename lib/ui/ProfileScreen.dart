@@ -9,7 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Profile extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return new _ProfileScreenState();
@@ -28,7 +28,7 @@ Future<String> getImagePreference() async {
   return savedImage;
 }
 
-class _ProfileScreenState extends State<Profile> {
+class _ProfileScreenState extends State<ProfileScreen> {
   String _connectionStatus;
   final Connectivity _connectivity = new Connectivity();
   final Constants = CONSTANTS();

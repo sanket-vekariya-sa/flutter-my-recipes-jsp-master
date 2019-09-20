@@ -6,14 +6,14 @@ import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class Dining extends StatefulWidget {
+class AddRecipeScreen extends StatefulWidget {
   int loginData;
 
   @override
   _DiningScreen createState() => new _DiningScreen();
 }
 
-class _DiningScreen extends State<Dining> {
+class _DiningScreen extends State<AddRecipeScreen> {
 
   final Constansts = CONSTANTS();
   final addInputs = GlobalKey<FormState>();

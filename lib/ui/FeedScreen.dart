@@ -14,19 +14,19 @@ import 'package:speech_recognition/speech_recognition.dart';
 
 import 'DetailScreen.dart';
 
-class FeedListPage extends StatefulWidget {
+class FeedScreen extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
 
   @override
-  _FeedListPageState createState() => new _FeedListPageState();
+  _FeedScreenState createState() => new _FeedScreenState();
 }
 
-class _FeedListPageState extends State<FeedListPage> {
+class _FeedScreenState extends State<FeedScreen> {
   var _feedDetails = <ItemDetailsFeed>[];
   Future<ItemDetailsFeed> feed;
   var Constants = CONSTANTS();
-  var likedList = FeedListPage().likedFeed;
+  var likedList = FeedScreen().likedFeed;
   SpeechRecognition _speechRecognition;
   bool _isAvailable = false;
   bool _isListening = false;
@@ -433,5 +433,5 @@ class _FeedListPageState extends State<FeedListPage> {
 
 Future navigateToSubPage(context, int, list) async {
   Navigator.push(
-      context, MaterialPageRoute(builder: (context) => DashBoard(int, list)));
+      context, MaterialPageRoute(builder: (context) => DetailScreen(int, list)));
 }

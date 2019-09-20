@@ -10,17 +10,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:share/share.dart';
 import 'package:youtube_player/youtube_player.dart';
 
-class DashBoard extends StatefulWidget {
+class DetailScreen extends StatefulWidget {
   int index;
   List<ItemDetailsFeed> list;
 
-  DashBoard(this.index, this.list);
+  DetailScreen(this.index, this.list);
 
   @override
-  _DashBoardState createState() => new _DashBoardState(index, list);
+  _DetailScreenState createState() => new _DetailScreenState(index, list);
 }
 
-class _DashBoardState extends State<DashBoard> {
+class _DetailScreenState extends State<DetailScreen> {
   int data;
   int newindex;
   List<ItemDetailsFeed> list;
@@ -31,7 +31,7 @@ class _DashBoardState extends State<DashBoard> {
 
   GlobalKey<ScaffoldState> login_state = new GlobalKey<ScaffoldState>();
 
-  _DashBoardState(this.data, this.list);
+  _DetailScreenState(this.data, this.list);
 
   var _feedDetails = <IngredientsDetailsFeed>[];
   var _instructionDetails = <InstructionDetailsFeed>[];
