@@ -238,8 +238,7 @@ class _FavouriteState extends State<Favourite> {
     return new ListView.builder(
       itemCount: filteredNames.length,
       itemBuilder: (BuildContext context, int index) {
-//        var counter = Provider.of<Counter>(context);
-//        counter.setCounter(false);
+
         if (filteredNames.length == 0) {
           return Scaffold(
             body: new FadeInImage.assetNetwork(
