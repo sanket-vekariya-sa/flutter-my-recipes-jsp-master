@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Flavr/model/IngredientsDetailsFeed.dart';
 import 'package:Flavr/model/InstructionDetailsFeed.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
+import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -23,6 +24,7 @@ class _DashBoardState extends State<DashBoard> {
   int data;
   int newindex;
   List<ItemDetailsFeed> list;
+  final Constants = CONSTANTS();
 
   var indegrents;
   var insturctions;
@@ -225,7 +227,7 @@ class _DashBoardState extends State<DashBoard> {
                                     children: <Widget>[
                                       Icon(Icons.fastfood),
                                       Text(
-                                        list[data].serves + " people",
+                                        list[data].serves + Constants.TEXTPEOPLE,
                                         style: TextStyle(
                                             fontSize: 15.0, color: Colors.grey),
                                       )
@@ -247,7 +249,7 @@ class _DashBoardState extends State<DashBoard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        "INGREDIENTS",
+                        Constants.TEXTINGREDENT,
                         style: TextStyle(
                             fontSize: 15.0,
                             fontWeight: FontWeight.bold,
@@ -256,7 +258,6 @@ class _DashBoardState extends State<DashBoard> {
                     ],
                   ),
                 ),
-//            _listViewIndergents(context),
                 Container(
                   color: Colors.white,
                   child: FutureBuilder<dynamic>(
@@ -266,15 +267,14 @@ class _DashBoardState extends State<DashBoard> {
                       switch (snapshot.connectionState) {
                         case ConnectionState.none:
                           return Text(
-                            'no data available',
+                            Constants.NODATAMSG,
                             textAlign: TextAlign.center,
                           );
                         case ConnectionState.active:
                           return Text(
-                            'no data available',
+                            Constants.NODATAMSG,
                             textAlign: TextAlign.center,
                           );
-                          return SpinKitFadingCircle(color: Colors.black);
                         case ConnectionState.waiting:
                           return SpinKitFadingCircle(color: Colors.pink);
                         case ConnectionState.done:
@@ -294,7 +294,7 @@ class _DashBoardState extends State<DashBoard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        "INSTRUCTIONS",
+                        Constants.TEXTINSTRUCTION,
                         style: TextStyle(
                             fontSize: 15.0,
                             fontWeight: FontWeight.bold,
@@ -311,12 +311,12 @@ class _DashBoardState extends State<DashBoard> {
                       switch (snapshot.connectionState) {
                         case ConnectionState.none:
                           return Text(
-                            'no data available',
+                            Constants.NODATAMSG,
                             textAlign: TextAlign.center,
                           );
                         case ConnectionState.active:
                           return Text(
-                            'no data available',
+                            Constants.NODATAMSG,
                             textAlign: TextAlign.center,
                           );
                         case ConnectionState.waiting:
@@ -338,21 +338,20 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   _loadData() async {
-    print("${list[data].recipeId}=====recipeId is===");
     String ingredientsURL =
-        "http://35.160.197.175:3006/api/v1/recipe/${list[data].recipeId}/ingredients";
+        "${Constants.GETINGREDENTSandINSTURCTIONSAPI}${list[data].recipeId}/ingredients";
     var dio = new Dio();
     Map<String, dynamic> map = {
       HttpHeaders.authorizationHeader:
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
+          Constants.APITOKEN
     };
     var response1 =
         await dio.get(ingredientsURL, options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
       final ingreditentfeed = new IngredientsDetailsFeed(
-        memberJSON["id"],
-        memberJSON["ingredient"],
+        memberJSON[Constants.ID],
+        memberJSON[Constants.INGREDENT],
       );
       _feedDetails.add(ingreditentfeed);
     }
@@ -363,25 +362,23 @@ class _DashBoardState extends State<DashBoard> {
 
   _loadInstruction() async {
     String instructionsURL =
-        "http://35.160.197.175:3006/api/v1/recipe/${list[data].recipeId}/instructions";
+        "${Constants.GETINGREDENTSandINSTURCTIONSAPI}${list[data].recipeId}/instructions";
     var dio = new Dio();
     Map<String, dynamic> map = {
       HttpHeaders.authorizationHeader:
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
+          Constants.APITOKEN
     };
     var response1 =
         await dio.get(instructionsURL, options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
       final instructionfeed = new InstructionDetailsFeed(
-        memberJSON["id"],
-        memberJSON["instruction"],
+        memberJSON[Constants.ID],
+        memberJSON[Constants.INSTRUCTION],
       );
       _instructionDetails.add(instructionfeed);
     }
 
-    print(
-        "length response instruction : ${_instructionDetails[0].instruction}");
   }
 
   @override
@@ -392,15 +389,15 @@ class _DashBoardState extends State<DashBoard> {
   void _shareRecipe() {
     if (list[data].youtubeUrl == "") {
       Share.share("Recipe : ${list[data].name}\n"
-          "Searve : ${list[data].serves}\n"
-          "Preparation Time : ${list[data].preparationTime}\n"
-          "Complexity : ${list[data].complexity}\n");
+          "${Constants.HINTSERVES} : ${list[data].serves}\n"
+          "${Constants.HINTTIME}: ${list[data].preparationTime}\n"
+          "${Constants.COMPLEXITY} : ${list[data].complexity}\n");
     } else {
       Share.share("Recipe : ${list[data].name}\n"
-          "Searve : ${list[data].serves}\n"
-          "Preparation Time : ${list[data].preparationTime}\n"
-          "Complexity : ${list[data].complexity}\n"
-          "Youtube Link : ${list[data].youtubeUrl}");
+          "${Constants.HINTSERVES} : ${list[data].serves}\n"
+          "${Constants.HINTTIME} : ${list[data].preparationTime}\n"
+          "${Constants.COMPLEXITY} : ${list[data].complexity}\n"
+          "${Constants.TEXTYOUTUBELINK}: ${list[data].youtubeUrl}");
     }
   }
 }

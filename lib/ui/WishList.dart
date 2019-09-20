@@ -1,30 +1,28 @@
 import 'dart:io';
 
-import 'package:Flavr/apis/cookingListAPI.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
+import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission/permission.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:speech_recognition/speech_recognition.dart';
+import 'DetailScreen.dart';
 
-import 'Dashboard.dart';
-
-class FeedListPage extends StatefulWidget {
+class Favourite extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
 
   @override
-  _FeedListPageState createState() => new _FeedListPageState();
+  _FavouriteState createState() => new _FavouriteState();
 }
 
-class _FeedListPageState extends State<FeedListPage> {
+class _FavouriteState extends State<Favourite> {
   var _feedDetails = <ItemDetailsFeed>[];
   Future<ItemDetailsFeed> feed;
+  final Constants = CONSTANTS();
 
-  var likedList = FeedListPage().likedFeed;
   SpeechRecognition _speechRecognition;
   bool _isAvailable = false;
   bool _isListening = false;
@@ -66,7 +64,7 @@ class _FeedListPageState extends State<FeedListPage> {
   Icon _searchIcon = new Icon(Icons.search);
   Icon _voiceSearchIcon = new Icon(Icons.keyboard_voice);
 
-  Widget _appBarTitle = new Text('Home');
+  Widget _appBarTitle = new Text('WISHLIST');
 
   final TextEditingController filter = new TextEditingController();
 
@@ -75,19 +73,8 @@ class _FeedListPageState extends State<FeedListPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      floatingActionButton: new FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushReplacementNamed('/Dining');
-        },
-        backgroundColor: Colors.black,
-        tooltip: 'Add Recipe',
-        child: new Icon(
-          Icons.playlist_add,
-          color: Colors.white,
-        ),
-      ),
       appBar: AppBar(
-        title: _appBarTitle,
+        title: new Text(Constants.APPTITLEWISHLIST),
         centerTitle: true,
         actions: <Widget>[
           new IconButton(
@@ -106,68 +93,50 @@ class _FeedListPageState extends State<FeedListPage> {
         ],
       ),
       resizeToAvoidBottomPadding: false,
-      body: RefreshIndicator(
-        key: login_state,
-        onRefresh: _refresh,
-        child: FutureBuilder<dynamic>(
-          future: _loadData(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return Text(
-                  'no data available',
-                  textAlign: TextAlign.center,
-                );
-              case ConnectionState.active:
-                return null;
-              case ConnectionState.waiting:
-                return Shimmer.fromColors(
-                    baseColor: Colors.grey[400],
-                    highlightColor: Colors.white,
-                    child: _buildRow());
-              case ConnectionState.done:
-                return _buildRow();
-            }
-            return null;
-          },
-        ),
+      key: login_state,
+      body: FutureBuilder<dynamic>(
+        future: _loadData(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Text(
+                'no data available',
+                textAlign: TextAlign.center,
+              );
+            case ConnectionState.active:
+              return null;
+            case ConnectionState.waiting:
+              return Shimmer.fromColors(
+                  baseColor: Colors.grey[400],
+                  highlightColor: Colors.white,
+                  child: _buildRow());
+            case ConnectionState.done:
+              return _buildRow();
+          }
+          return null;
+        },
       ),
     );
   }
 
-  Future<Null> _refresh() {
-    return _loadData().then((_FeedListPageState) {
-      setState(() => initSpeechRecognizer());
-    });
-  }
-
   Future _loadData() async {
-//    _feedDetails = HomeFeedAPI(context);
-//    HomeFeedAPI(context);
-    String feedDetailsURL = "http://35.160.197.175:3006/api/v1/recipe/feeds";
     var dio = new Dio();
     Map<String, dynamic> map = {
-      HttpHeaders.authorizationHeader:
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
+      HttpHeaders.authorizationHeader: Constants.APITOKEN
     };
-    var response1 =
-        await dio.get(feedDetailsURL, options: Options(headers: map));
+    var response1 = await dio.get(Constants.COOKINGLISTSAPI,
+        options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
-      var isInCookingList = false;
-      if (memberJSON["inCookingList"] == 1) {
-        isInCookingList = true;
-      }
-
       final itemDetailsfeed = new ItemDetailsFeed(
-          memberJSON["recipeId"],
-          memberJSON["name"],
-          memberJSON["photo"],
-          memberJSON["preparationTime"],
-          memberJSON["serves"],
-          memberJSON["complexity"],
-          isInCookingList,
-          memberJSON["ytUrl"]);
+          memberJSON[Constants.RECIPEID],
+          memberJSON[Constants.NAME],
+          memberJSON[Constants.PHOTO],
+          memberJSON[Constants.PREPARATIONTIME],
+          memberJSON[Constants.SERVES],
+          memberJSON[Constants.COMPLEXITY],
+          false,
+          memberJSON[Constants.YOUTUBEURL]);
       _feedDetails.add(itemDetailsfeed);
       names.add(itemDetailsfeed);
       filteredNames = names;
@@ -185,7 +154,7 @@ class _FeedListPageState extends State<FeedListPage> {
   void _voiceSearchPressed() {
     if (_isAvailable && !_isListening)
       _speechRecognition
-          .listen(locale: "en_US")
+          .listen(locale: Constants.ENGLISHLANGUAGE)
           .then((result) => filter.text = result);
 
     setState(() {
@@ -198,7 +167,7 @@ class _FeedListPageState extends State<FeedListPage> {
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
             prefixIcon: new Icon(Icons.settings_voice),
-            hintText: 'Listening...',
+            hintText: Constants.HINTLISTINIG,
           ),
           onFieldSubmitted: (term) {
             filter.text = _searchText;
@@ -210,7 +179,7 @@ class _FeedListPageState extends State<FeedListPage> {
         _isAvailable = true;
         this._searchIcon = Icon(Icons.search);
         this._voiceSearchIcon = new Icon(Icons.keyboard_voice);
-        this._appBarTitle = Text('Home');
+        this._appBarTitle = Text(Constants.APPTITLEHOME);
         filter.clear();
         _searchText = "";
       }
@@ -236,7 +205,7 @@ class _FeedListPageState extends State<FeedListPage> {
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
             prefixIcon: new Icon(Icons.search),
-            hintText: 'Search...',
+            hintText: Constants.HINTSEARCH,
           ),
           onFieldSubmitted: (term) {
             _searchText = filter.text;
@@ -246,7 +215,7 @@ class _FeedListPageState extends State<FeedListPage> {
         _HomeScreenState();
       } else {
         this._searchIcon = new Icon(Icons.search);
-        this._appBarTitle = Text('Home');
+        this._appBarTitle = Text(Constants.APPTITLEWISHLIST);
         filter.clear();
         _searchText = "";
       }
@@ -265,23 +234,12 @@ class _FeedListPageState extends State<FeedListPage> {
         }
       }
       filteredNames = tempList;
-      if (filteredNames.length == 0) {
-        return Container(
-          color: Colors.white,
-          alignment: Alignment.center,
-          height: double.infinity,
-          width: double.infinity,
-          child: FadeInImage.assetNetwork(
-            placeholder: 'images/notFound.gif',
-            image: 'images/notFound.gif',
-            fit: BoxFit.cover,
-          ),
-        );
-      }
     }
     return new ListView.builder(
       itemCount: filteredNames.length,
       itemBuilder: (BuildContext context, int index) {
+//        var counter = Provider.of<Counter>(context);
+//        counter.setCounter(false);
         if (filteredNames.length == 0) {
           return Scaffold(
             body: new FadeInImage.assetNetwork(
@@ -317,37 +275,6 @@ class _FeedListPageState extends State<FeedListPage> {
                             fit: BoxFit.fitWidth,
                             width: double.infinity,
                             height: 175,
-                          ),
-                          Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100.0),
-                            ),
-                            color: Colors.white,
-                            child: IconButton(
-                              alignment: Alignment.center,
-                              icon: Icon(
-                                  _feedDetails[index].like
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  color: _feedDetails[index].like
-                                      ? Colors.red
-                                      : Colors.grey),
-                              onPressed: () {
-                                setState(() {
-                                  _feedDetails[index].like =
-                                      !_feedDetails[index].like;
-                                  print("====${_feedDetails[index].like}");
-                                  if (_feedDetails[index].like == true) {
-                                    addcookingListAPI(
-                                        context, filteredNames[index].recipeId);
-                                  }
-                                  if (_feedDetails[index].like == false) {
-                                    removeCookingListAPI(
-                                        context, filteredNames[index].recipeId);
-                                  }
-                                });
-                              },
-                            ),
                           ),
                         ],
                       ),
@@ -422,7 +349,7 @@ class _FeedListPageState extends State<FeedListPage> {
                                       color: Colors.grey,
                                     ),
                                     Text(
-                                      "${filteredNames[index].serves} people",
+                                      "${filteredNames[index].serves} ${Constants.TEXTPEOPLE}",
                                       style: TextStyle(
                                           fontSize: 15.0, color: Colors.grey),
                                     )

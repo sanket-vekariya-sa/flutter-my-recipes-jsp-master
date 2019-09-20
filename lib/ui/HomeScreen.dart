@@ -1,6 +1,7 @@
-import 'package:Flavr/ui/Farvorites.dart';
-import 'package:Flavr/ui/FeedListPage.dart';
-import 'package:Flavr/ui/Profile.dart';
+import 'package:Flavr/ui/WishList.dart';
+import 'package:Flavr/ui/FeedScreen.dart';
+import 'package:Flavr/ui/ProfileScreen.dart';
+import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
   String text;
+  var Constants = CONSTANTS();
 
   _HomeScreenState(this.text);
 
@@ -34,17 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-//      appBar: AppBar(title: Text(appBarTitleText, style: TextStyle(color: Colors.black),),
-//        backgroundColor: Colors.white,
-//          centerTitle: true,
-//        actions: <Widget>[
-//        new IconButton( icon: new Icon(Icons.search), onPressed: () {
-//
-//        },),],
-//        iconTheme: IconThemeData(color: Colors.black),
-//        elevation:
-//        Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 6.0,
-//      ),
 
       body: Center(
         child: widgetOptions.elementAt(selectedIndex),
@@ -52,11 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
+          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text(Constants.APPTITLEHOME)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.local_dining), title: Text('Wishlist')),
+              icon: Icon(Icons.local_dining), title: Text(Constants.APPTITLEWISHLIST)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person), title: Text('Profile')),
+              icon: Icon(Icons.person), title: Text(Constants.APPTITLEPROFILE)),
         ],
         currentIndex: selectedIndex,
         onTap: onItemTapped,
@@ -66,12 +57,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void onItemTapped(int index) {
     if (index == 0) {
-      appBarTitleText = 'Home';
+      appBarTitleText = Constants.APPTITLEHOME;
     } else if (index == 1) {
-      appBarTitleText = 'Wishlist';
+      appBarTitleText = Constants.APPTITLEWISHLIST;
     } else if (index == 2) {
       //appBarTitleText = 'Favourites';
-      appBarTitleText = 'Profile';
+      appBarTitleText = Constants.APPTITLEPROFILE;
     }
 // else if(index == 3){
 //      appBarTitleText = 'Profile';

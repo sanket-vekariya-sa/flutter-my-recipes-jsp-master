@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:Flavr/values/CONSTANTS.dart';
+
 class GetResponse {
   final String photo;
   final String recipeId;
@@ -7,19 +9,19 @@ class GetResponse {
   GetResponse(this.photo, this.recipeId);
 
   GetResponse.fromJson(Map<String, dynamic> json)
-      : photo = json['photo'],
-        recipeId = json['recipeId'];
+      : photo = json[CONSTANTS().PHOTO],
+        recipeId = json[CONSTANTS().RECIPEID];
 
   Map<String, dynamic> toJson() =>
       {
-        'photo': photo,
-        'recipeId': recipeId,
+        CONSTANTS().PHOTO: photo,
+        CONSTANTS().RECIPEID: recipeId,
       };
 
   Map toMap() {
     var map = new Map<String, dynamic>();
-    map["photo"] = photo;
-    map["recipeId"] = recipeId;
+    map[CONSTANTS().PHOTO] = photo;
+    map[CONSTANTS().RECIPEID] = recipeId;
 
 
     return map;

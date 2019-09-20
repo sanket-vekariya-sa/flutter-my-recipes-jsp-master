@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,19 +18,20 @@ class Profile extends StatefulWidget {
 
 Future<bool> saveImagePreference(String imgurl) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
-  pref.setString("imgUrl", imgurl);
+  pref.setString(CONSTANTS().IMAGEURL, imgurl);
   return pref.commit();
 }
 
 Future<String> getImagePreference() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
-  String savedImage = pref.getString("imgUrl");
+  String savedImage = pref.getString(CONSTANTS().IMAGEURL);
   return savedImage;
 }
 
 class _ProfileScreenState extends State<Profile> {
   String _connectionStatus;
   final Connectivity _connectivity = new Connectivity();
+  final Constants = CONSTANTS();
   StreamSubscription<ConnectivityResult> _connectionSubscription;
   var mail;
   File galleryFile;
@@ -47,10 +49,10 @@ class _ProfileScreenState extends State<Profile> {
     _connectionSubscription =
         _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
       setState(() {
-        _connectionStatus = "Live";
+        _connectionStatus = Constants.LIVE;
       });
     });
-    print("Initstate : $_connectionStatus");
+
   }
 
   @override
@@ -63,32 +65,10 @@ class _ProfileScreenState extends State<Profile> {
     return new Form(
         child: new Column(
       children: <Widget>[
-        /*Padding(
-          padding: const EdgeInsets.only(
-              top: 10.0, right: 10.0, bottom: 10.0, left: 10.0),
-          child: Container(
-              width: 100.0,
-              height: 100.0,
-              decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: new DecorationImage(
-                      fit: BoxFit.fill,
-                      image: new NetworkImage(
-                          "https://images.pexels.com/photos/736716/pexels-photo-736716.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500")))),
-        ),*/
         Padding(
           padding: const EdgeInsets.only(top: 5.0),
           child: displaySelectedFile(galleryFile),
         ),
-//        RaisedButton(
-//          shape: RoundedRectangleBorder(
-//              borderRadius: new BorderRadius.circular(10.0)),
-//          onPressed: imageSelectorGallery,
-//          child: Text("Select Image"),
-//          color: Colors.orange,
-//          textColor: Colors.white,
-//        ),
-
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: FutureBuilder<dynamic>(
@@ -97,7 +77,7 @@ class _ProfileScreenState extends State<Profile> {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
                   return Text(
-                    'no data available',
+                    Constants.NODATAMSG,
                     textAlign: TextAlign.center,
                   );
                 case ConnectionState.active:
@@ -120,7 +100,7 @@ class _ProfileScreenState extends State<Profile> {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
                   return Text(
-                    'no data available',
+                    Constants.NODATAMSG,
                     textAlign: TextAlign.center,
                   );
                 case ConnectionState.active:
@@ -137,7 +117,7 @@ class _ProfileScreenState extends State<Profile> {
 //
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
-          child: Text("Enjoy New Dishes",
+          child: Text(Constants.TEXTENJOY,
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -168,7 +148,7 @@ class _ProfileScreenState extends State<Profile> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: Text(
-                    'Hello Foodie',
+                    Constants.TEXTHELLO,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -179,7 +159,7 @@ class _ProfileScreenState extends State<Profile> {
                 Padding(
                   padding: const EdgeInsets.only(top: 5.0),
                   child: Text(
-                    'Delicious Recipes App',
+                    Constants.TEXTAPPDEC,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -204,7 +184,7 @@ class _ProfileScreenState extends State<Profile> {
                             .pushReplacementNamed('/LoginScreen');
                       },
                       textColor: Colors.white,
-                      child: Text("LogOut",
+                      child: Text(Constants.LOGOUT,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
@@ -219,7 +199,7 @@ class _ProfileScreenState extends State<Profile> {
           floatingActionButton: new FloatingActionButton(
             onPressed: imageSelectorGallery,
             backgroundColor: Colors.black,
-            tooltip: 'Image',
+            tooltip: Constants.SELECTIMAGE,
             child: new Icon(
               Icons.add_a_photo,
               color: Colors.white,
@@ -235,7 +215,7 @@ class _ProfileScreenState extends State<Profile> {
 
   _loadLocalProfileImage() async {
     pref = SharedPreferences.getInstance() as SharedPreferences;
-    pref.setString('imgUrl', galleryFile.path);
+    pref.setString(Constants.IMAGEURL, galleryFile.path);
     imgFile = await galleryFile.copy(galleryFile.path);
   }
 
@@ -260,10 +240,6 @@ class _ProfileScreenState extends State<Profile> {
       maxWidth: 200.0,
     );
 
-    // String img= galleryFile.toString();
-    //  saveImagePreference(galleryFile.path);
-    print("You selected gallery image : " + galleryFile.path);
-
     setState(() {
       displaySelectedFile(galleryFile);
     });
@@ -276,7 +252,7 @@ class _ProfileScreenState extends State<Profile> {
       connectionStatus = (await _connectivity.checkConnectivity()).toString();
     } on PlatformException catch (e) {
       print(e.toString());
-      connectionStatus = "Internet connectivity failed";
+      connectionStatus = Constants.CONNECTIONMSG;
     }
 
     if (!mounted) {
@@ -286,12 +262,12 @@ class _ProfileScreenState extends State<Profile> {
     setState(() {
       _connectionStatus = connectionStatus;
     });
-    print("InitConnectivity : $_connectionStatus");
-    if (_connectionStatus == "ConnectivityResult.mobile" ||
-        _connectionStatus == "ConnectivityResult.wifi") {
-      connectionStatus = "Online";
+
+    if (_connectionStatus == Constants.CONNECTIONMOBLIE ||
+        _connectionStatus == Constants.CONNECTIONWIFI) {
+      connectionStatus = Constants.CONNECTIONONLINE;
     } else {
-      connectionStatus = "Ofline";
+      connectionStatus = Constants.CONNECTIONOFFLINE;
     }
   }
 

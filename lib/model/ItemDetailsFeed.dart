@@ -37,6 +37,10 @@ class ItemDetailsFeed with ChangeNotifier {
 
   bool getLike() => like;
 
+
+  ItemDetailsFeed.fromFeed(bool like){
+    this.like = like;
+  }
   void likeUpdate(value) {
     like = value;
     notifyListeners();

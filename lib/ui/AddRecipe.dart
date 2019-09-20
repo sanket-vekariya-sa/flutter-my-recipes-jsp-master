@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Flavr/apis/addRecipeAPI.dart';
 import 'package:Flavr/apis/loginAPI.dart';
+import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -13,15 +14,15 @@ class Dining extends StatefulWidget {
 }
 
 class _DiningScreen extends State<Dining> {
-  //GlobalKey<ScaffoldState> add_inputs = new GlobalKey<ScaffoldState>();
+
+  final Constansts = CONSTANTS();
   final addInputs = GlobalKey<FormState>();
-  Widget _appBarTitle = new Text('Add New Recipe');
   List<String> _indergentList = new List<String>();
-  String dropdownValue = "Easy";
+  String dropdownValue = CONSTANTS().COMPLEXCITYEASY;
   List<String> _stepList = new List<String>();
   File galleryFile;
   File cameraFile;
-  final TextEditingController _indergrent = TextEditingController();
+  final TextEditingController ingredient = TextEditingController();
   final TextEditingController _step = TextEditingController();
   final TextEditingController _nameofRecipe = TextEditingController();
   List<String> _tagList = new List<String>();
@@ -43,7 +44,7 @@ class _DiningScreen extends State<Dining> {
             Padding(
               padding: EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
               child: Text(
-                "Details",
+                Constansts.TEXTDETAILS,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20.0,
@@ -57,7 +58,7 @@ class _DiningScreen extends State<Dining> {
                   textInputAction: TextInputAction.next,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
-                    labelText: 'Name Of Recipe*',
+                    labelText: Constansts.HINTNAMEOFRECIPE,
                     labelStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -66,7 +67,7 @@ class _DiningScreen extends State<Dining> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please Enter Name of Recipe';
+                      return Constansts.ERRORNAMEOFRECIPE;
                     }
                     return null;
                   }),
@@ -79,7 +80,7 @@ class _DiningScreen extends State<Dining> {
                   textInputAction: TextInputAction.done,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
-                    labelText: 'Time Required*',
+                    labelText: Constansts.HINTTIME,
                     labelStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -88,7 +89,7 @@ class _DiningScreen extends State<Dining> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please Enter Time';
+                      return Constansts.ERRORTIME;
                     }
                     return null;
                   }),
@@ -106,7 +107,7 @@ class _DiningScreen extends State<Dining> {
                       print(dropdownValue);
                     });
                   },
-                  items: <String>['Easy', 'Hard', 'Medium']
+                  items: <String>[Constansts.COMPLEXCITYEASY, Constansts.COMPLEXCITYMEDIUM, Constansts.COMPLEXCITYHARD]
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -124,7 +125,7 @@ class _DiningScreen extends State<Dining> {
                   textInputAction: TextInputAction.next,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
-                    labelText: 'No of Serves*',
+                    labelText: Constansts.HINTSERVES,
                     labelStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -133,7 +134,7 @@ class _DiningScreen extends State<Dining> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please Enter No of Serves';
+                      return Constansts.ERRORSERVES;
                     }
                     return null;
                   }),
@@ -157,7 +158,7 @@ class _DiningScreen extends State<Dining> {
                 textInputAction: TextInputAction.next,
                 style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
-                  labelText: 'YouTube Url(Optional)',
+                  labelText: Constansts.HINTYTURL,
                   labelStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -182,7 +183,7 @@ class _DiningScreen extends State<Dining> {
               Padding(
                 padding: EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
                 child: Text(
-                  "Tags",
+                  Constansts.TEXTTAGS,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
@@ -199,7 +200,7 @@ class _DiningScreen extends State<Dining> {
               controller: tag,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                labelText: 'Add Tag',
+                labelText: Constansts.HINTTAGS,
                 labelStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
@@ -274,7 +275,7 @@ class _DiningScreen extends State<Dining> {
               Padding(
                 padding: EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
                 child: Text(
-                  "Ingredients",
+                  Constansts.TEXTINGREDENT,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
@@ -288,10 +289,10 @@ class _DiningScreen extends State<Dining> {
             padding: EdgeInsets.all(10.0),
             child: TextFormField(
               textInputAction: TextInputAction.next,
-              controller: _indergrent,
+              controller: ingredient,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                labelText: 'Add Ingredient',
+                labelText: Constansts.HINTINGREDENT,
                 labelStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
@@ -300,12 +301,14 @@ class _DiningScreen extends State<Dining> {
                 suffixIcon: IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {
-                      var textis = _indergrent.text;
-                      _indergentList.add(textis.toString());
-                      setState(() {
-                        _listViewIndergents(context);
-                        _indergrent.clear();
-                      });
+                      var textis = ingredient.text;
+                      if(textis.length!=0) {
+                        _indergentList.add(textis.toString());
+                        setState(() {
+                          _listViewIndergents(context);
+                          ingredient.clear();
+                        });
+                      }
                     }),
               ),
             ),
@@ -351,7 +354,7 @@ class _DiningScreen extends State<Dining> {
               Padding(
                 padding: EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
                 child: Text(
-                  "Instructions",
+                  Constansts.TEXTINSTRUCTION,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
@@ -368,7 +371,7 @@ class _DiningScreen extends State<Dining> {
               controller: _step,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                labelText: 'Add Step',
+                labelText: Constansts.HINTINSTRUCTION,
                 labelStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
@@ -378,11 +381,13 @@ class _DiningScreen extends State<Dining> {
                     icon: Icon(Icons.add),
                     onPressed: () {
                       var textis = _step.text;
-                      _stepList.add(textis.toString());
-                      setState(() {
-                        _listViewSteps(context);
-                        _step.clear();
-                      });
+                      if(textis.length !=0) {
+                        _stepList.add(textis.toString());
+                        setState(() {
+                          _listViewSteps(context);
+                          _step.clear();
+                        });
+                      }
                     }),
               ),
             ),
@@ -424,7 +429,6 @@ class _DiningScreen extends State<Dining> {
         maxHeight: 200.0,
         maxWidth: 200.0,
       );
-      print("You selected gallery image : " + galleryFile.path);
       setState(() {
         displaySelectedFile(galleryFile);
       });
@@ -441,7 +445,7 @@ class _DiningScreen extends State<Dining> {
                   onPressed: () {
                     _moveToHomeScreen(context);
                   }),
-              title: _appBarTitle,
+              title: new Text(Constansts.APPTITLEADDRECIPE),
               centerTitle: true,
             ),
             resizeToAvoidBottomPadding: false,
@@ -467,7 +471,7 @@ class _DiningScreen extends State<Dining> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(10.0)),
                             onPressed: imageSelectorGallery,
-                            child: Text("Select Image"),
+                            child: Text(Constansts.SELECTIMAGE),
                             textColor: Colors.white,
                           )
                         ],
@@ -486,18 +490,16 @@ class _DiningScreen extends State<Dining> {
                             print(dropdownValue);
                             if (addInputs.currentState.validate()) {
                               if (_indergentList.isEmpty && _stepList.isEmpty) {
-                                print("Add Data Please");
-                                showDialogSingleButton(context, "Add",
-                                    "Please Add Indergents and Steps", "OK");
+                                showDialogSingleButton(context, Constansts.ERRORADD,
+                                    Constansts.ERRORADDDATA, Constansts.TEXTOK);
                                 return null;
                               }
                               if (galleryFile == null) {
-                                print("Add Data Please");
-                                showDialogSingleButton(context, "Add Image",
-                                    "Please Add Image", "OK");
+
+                                showDialogSingleButton(context, Constansts.ERRORADD,
+                                    Constansts.ERRORADDIMAGE, Constansts.TEXTOK);
                                 return null;
                               } else {
-                                print("Save data");
 
                                 addRecipeAPI(
                                     context,
@@ -513,7 +515,7 @@ class _DiningScreen extends State<Dining> {
                               }
                             }
                           },
-                          child: Text("Add Recipe"),
+                          child: Text(Constansts.TEXTADDRECIPE),
                           textColor: Colors.white,
                           color: Colors.black,
                         ),

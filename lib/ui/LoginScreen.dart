@@ -1,4 +1,5 @@
 import 'package:Flavr/apis/loginAPI.dart';
+import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,14 +13,14 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final FocusNode _passwordFocus = FocusNode();
+  final Constansts = CONSTANTS();
   bool _obscureText = true;
 
   String validateEmail(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value))
-      return 'Please Enter Valid Email';
+      return Constansts.ERROREMAIL;
     else
       return null;
   }
@@ -51,7 +52,7 @@ class LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(color: Colors.black),
                 controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Your Email',
+                  labelText: Constansts.HINTEMAIL,
                   labelStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -65,36 +66,6 @@ class LoginScreenState extends State<LoginScreen> {
               ),
             ),
 
-//            Container(
-//            padding: const EdgeInsets.only(
-//                  right: 40.0, bottom: 20.0, left: 40.0),
-//              child: new Row(
-//                children: <Widget>[
-//                TextFormField(
-//                focusNode: _passwordFocus,
-//                  obscureText: true,
-//                  controller: _passwordController,
-//                  style: TextStyle(color: Colors.black),
-//                  decoration: InputDecoration(
-//                    labelText: 'Password',
-//                    labelStyle: TextStyle(color: Colors.grey),
-//                    border: OutlineInputBorder(
-//                      borderRadius: BorderRadius.circular(5.0),
-//                      borderSide: new BorderSide(color: Colors.black),
-//                    ),
-//
-//                  ),
-//                  validator: (value) {
-//                    if (value.isEmpty) {
-//                      return 'Please Enter Password';
-//                    }
-//                    return null;
-//                  }),
-//
-//                ],
-//              ),
-//            )
-
             Padding(
               padding:
                   const EdgeInsets.only(right: 40.0, bottom: 20.0, left: 40.0),
@@ -105,7 +76,7 @@ class LoginScreenState extends State<LoginScreen> {
                   controller: _passwordController,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: Constansts.HINTPASSWORD,
                       labelStyle: TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
@@ -118,7 +89,7 @@ class LoginScreenState extends State<LoginScreen> {
                       )),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please Enter Password';
+                      return Constansts.ERRORPASSWORD;
                     }
                     return null;
                   }),
@@ -152,7 +123,7 @@ class LoginScreenState extends State<LoginScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 100.0),
                       child: Text(
-                        'LOG IN',
+                        Constansts.STRINGLOGIN,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -163,7 +134,7 @@ class LoginScreenState extends State<LoginScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 5.0),
                       child: Text(
-                        'Good to see you again',
+                        Constansts.LOGINMSG,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -188,7 +159,7 @@ class LoginScreenState extends State<LoginScreen> {
                                   _passwordController.text);
                             }
                           },
-                          child: Text("LOG IN"),
+                          child: Text(Constansts.STRINGLOGIN),
                           color: Colors.black,
                           textColor: Colors.white,
                         ),
@@ -197,7 +168,7 @@ class LoginScreenState extends State<LoginScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 20,bottom: 40),
                       child: Text(
-                        'Forgot your password?',
+                        Constansts.FORGETPASSWORD,
                         style: TextStyle(color: Colors.black),
                       ),
                     ),

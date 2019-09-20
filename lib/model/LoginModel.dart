@@ -1,3 +1,4 @@
+import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:flutter/material.dart';
 
 class LoginModel with ChangeNotifier{

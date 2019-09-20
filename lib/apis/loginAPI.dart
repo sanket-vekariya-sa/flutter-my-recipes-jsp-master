@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:Flavr/model/loginModel.dart';
-import 'package:Flavr/ui/homeScreen.dart';
+import 'package:Flavr/model/LoginModel.dart';
+import 'package:Flavr/ui/HomeScreen.dart';
+import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,21 +10,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<LoginModel> loginAPI(
     BuildContext context, String email, String password) async {
   LoginModel loginModel;
-  final url = "http://35.160.197.175:3006/api/v1/user/login";
+  var Constants = CONSTANTS();
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
   Dio dio = new Dio();
-  final response = await dio.post(url,
-      data: {"email": email, "password": password}).catchError((dynamicError) {
-    print("called error loop");
+  final response = await dio.post(Constants.LOGINAPI,
+      data: {Constants.EMAILKEY: email, Constants.PASSWORDKEY: password}).catchError((dynamicError) {
     prefs.setBool('authenticated', false);
     showDialogSingleButton(
-        context, "Unable to Login", "Please Try Again", "OK");
+        context, Constants.ERRORLOGIN, Constants.TRYAGINMSG, Constants.TEXTOK);
   });
 
   if (response.statusCode == 200) {
-    print("called if loop");
     await prefs.setBool('authenticated', true);
-    prefs.setString("mail", email.toString());
+    prefs.setString(Constants.EMAIL, email.toString());
 
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -32,8 +32,8 @@ Future<LoginModel> loginAPI(
   }
 
   loginModel = LoginModel(
-    response.data["email"],
-    response.data["password"],
+    response.data[Constants.EMAILKEY],
+    response.data[Constants.PASSWORDKEY],
   );
   return loginModel;
 }

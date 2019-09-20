@@ -1,26 +1,32 @@
 import 'dart:io';
 
+import 'package:Flavr/apis/cookingListAPI.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
+import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission/permission.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:speech_recognition/speech_recognition.dart';
-import 'Dashboard.dart';
 
-class Favourite extends StatefulWidget {
+import 'DetailScreen.dart';
+
+class FeedListPage extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
 
   @override
-  _FavouriteState createState() => new _FavouriteState();
+  _FeedListPageState createState() => new _FeedListPageState();
 }
 
-class _FavouriteState extends State<Favourite> {
+class _FeedListPageState extends State<FeedListPage> {
   var _feedDetails = <ItemDetailsFeed>[];
   Future<ItemDetailsFeed> feed;
-
+  var Constants = CONSTANTS();
+  var likedList = FeedListPage().likedFeed;
   SpeechRecognition _speechRecognition;
   bool _isAvailable = false;
   bool _isListening = false;
@@ -37,24 +43,24 @@ class _FavouriteState extends State<Favourite> {
     _speechRecognition = SpeechRecognition();
 
     _speechRecognition.setAvailabilityHandler(
-          (bool result) => setState(() => _isAvailable = result),
+      (bool result) => setState(() => _isAvailable = result),
     );
 
     _speechRecognition.setRecognitionStartedHandler(
-          () => setState(() => _isListening = true),
+      () => setState(() => _isListening = true),
     );
 
     _speechRecognition.setRecognitionResultHandler(
-          (String speech) => setState(() => filter.text = speech),
+      (String speech) => setState(() => filter.text = speech),
     );
 
     _speechRecognition.setRecognitionCompleteHandler(
-          () => setState(() => _isListening = false),
+      () => setState(() => _isListening = false),
     );
 
     _speechRecognition.activate().then(
           (result) => setState(() => _isAvailable = result),
-    );
+        );
   }
 
   var names = <ItemDetailsFeed>[]; // names we get from API
@@ -62,7 +68,7 @@ class _FavouriteState extends State<Favourite> {
   Icon _searchIcon = new Icon(Icons.search);
   Icon _voiceSearchIcon = new Icon(Icons.keyboard_voice);
 
-  Widget _appBarTitle = new Text('WishList');
+  Widget _appBarTitle = new Text('Home');
 
   final TextEditingController filter = new TextEditingController();
 
@@ -71,6 +77,17 @@ class _FavouriteState extends State<Favourite> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      floatingActionButton: new FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushReplacementNamed('/Dining');
+        },
+        backgroundColor: Colors.black,
+        tooltip: Constants.TEXTADDRECIPE,
+        child: new Icon(
+          Icons.playlist_add,
+          color: Colors.white,
+        ),
+      ),
       appBar: AppBar(
         title: _appBarTitle,
         centerTitle: true,
@@ -91,54 +108,64 @@ class _FavouriteState extends State<Favourite> {
         ],
       ),
       resizeToAvoidBottomPadding: false,
-      key: login_state,
-      body: FutureBuilder<dynamic>(
-        future: _loadData(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return Text(
-                'no data available',
-                textAlign: TextAlign.center,
-              );
-            case ConnectionState.active:
-              return null;
-            case ConnectionState.waiting:
-              return Shimmer.fromColors(
-                  baseColor: Colors.grey[400],
-                  highlightColor: Colors.white,
-                  child: _buildRow());
-            case ConnectionState.done:
-              return _buildRow();
-          }
-          return null;
-        },
+      body: RefreshIndicator(
+        key: login_state,
+        onRefresh: _refresh,
+        child: FutureBuilder<dynamic>(
+          future: _loadData(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Text(
+                  Constants.NODATAMSG,
+                  textAlign: TextAlign.center,
+                );
+              case ConnectionState.active:
+                return null;
+              case ConnectionState.waiting:
+                return Shimmer.fromColors(
+                    baseColor: Colors.grey[400],
+                    highlightColor: Colors.white,
+                    child: _buildRow(context));
+              case ConnectionState.done:
+                return _buildRow(context);
+            }
+            return null;
+          },
+        ),
       ),
     );
   }
 
+  Future<Null> _refresh() {
+    return _loadData().then((_FeedListPageState) {
+      setState(() => initSpeechRecognizer());
+    });
+  }
+
   Future _loadData() async {
-//    _feedDetails = HomeFeedAPI(context);
-//    HomeFeedAPI(context);
-    String feedDetailsURL = "http://35.160.197.175:3006/api/v1/recipe/cooking-list";
     var dio = new Dio();
     Map<String, dynamic> map = {
-      HttpHeaders.authorizationHeader:
-      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mn0.MGBf-reNrHdQuwQzRDDNPMo5oWv4GlZKlDShFAAe16s"
+      HttpHeaders.authorizationHeader: Constants.APITOKEN
     };
     var response1 =
-    await dio.get(feedDetailsURL, options: Options(headers: map));
+        await dio.get(Constants.FEEDSAPI, options: Options(headers: map));
 
     for (var memberJSON in response1.data) {
+      var isInCookingList = false;
+      if (memberJSON[Constants.INCOOKINGLIST] == 1) {
+        isInCookingList = true;
+      }
+
       final itemDetailsfeed = new ItemDetailsFeed(
-          memberJSON["recipeId"],
-          memberJSON["name"],
-          memberJSON["photo"],
-          memberJSON["preparationTime"],
-          memberJSON["serves"],
-          memberJSON["complexity"],
-          false,
-          memberJSON["ytUrl"]);
+          memberJSON[Constants.RECIPEID],
+          memberJSON[Constants.NAME],
+          memberJSON[Constants.PHOTO],
+          memberJSON[Constants.PREPARATIONTIME],
+          memberJSON[Constants.SERVES],
+          memberJSON[Constants.COMPLEXITY],
+          isInCookingList,
+          memberJSON[Constants.YOUTUBEURL]);
       _feedDetails.add(itemDetailsfeed);
       names.add(itemDetailsfeed);
       filteredNames = names;
@@ -156,7 +183,7 @@ class _FavouriteState extends State<Favourite> {
   void _voiceSearchPressed() {
     if (_isAvailable && !_isListening)
       _speechRecognition
-          .listen(locale: "en_US")
+          .listen(locale: Constants.ENGLISHLANGUAGE)
           .then((result) => filter.text = result);
 
     setState(() {
@@ -169,7 +196,7 @@ class _FavouriteState extends State<Favourite> {
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
             prefixIcon: new Icon(Icons.settings_voice),
-            hintText: 'Listening...',
+            hintText: Constants.HINTLISTINIG,
           ),
           onFieldSubmitted: (term) {
             filter.text = _searchText;
@@ -181,7 +208,7 @@ class _FavouriteState extends State<Favourite> {
         _isAvailable = true;
         this._searchIcon = Icon(Icons.search);
         this._voiceSearchIcon = new Icon(Icons.keyboard_voice);
-        this._appBarTitle = Text('Home');
+        this._appBarTitle = Text(Constants.APPTITLEHOME);
         filter.clear();
         _searchText = "";
       }
@@ -190,7 +217,7 @@ class _FavouriteState extends State<Favourite> {
 
   Future microphonePermission() async {
     var permissions =
-    await Permission.getPermissionsStatus([PermissionName.Microphone]);
+        await Permission.getPermissionsStatus([PermissionName.Microphone]);
     if (permissions != PermissionStatus.allow) {
       Permission.requestPermissions([PermissionName.Microphone]);
     } else {}
@@ -207,7 +234,7 @@ class _FavouriteState extends State<Favourite> {
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
             prefixIcon: new Icon(Icons.search),
-            hintText: 'Search...',
+            hintText: Constants.HINTSEARCH,
           ),
           onFieldSubmitted: (term) {
             _searchText = filter.text;
@@ -217,14 +244,15 @@ class _FavouriteState extends State<Favourite> {
         _HomeScreenState();
       } else {
         this._searchIcon = new Icon(Icons.search);
-        this._appBarTitle = Text('Home');
+        this._appBarTitle = Text(Constants.APPTITLEHOME);
         filter.clear();
         _searchText = "";
       }
     });
   }
 
-  Widget _buildRow() {
+  Widget _buildRow(BuildContext context) {
+    var counterProvider = Provider.of<ItemDetailsFeed>(context);
     if (!(_searchText.isEmpty)) {
       var tempList = <ItemDetailsFeed>[];
       for (int i = 0; i < filteredNames.length; i++) {
@@ -277,6 +305,37 @@ class _FavouriteState extends State<Favourite> {
                             fit: BoxFit.fitWidth,
                             width: double.infinity,
                             height: 175,
+                          ),
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100.0),
+                            ),
+                            color: Colors.white,
+                            child: IconButton(
+                              alignment: Alignment.center,
+                              icon: Icon(
+                                  _feedDetails[index].like
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: _feedDetails[index].like
+                                      ? Colors.red
+                                      : Colors.grey),
+                              onPressed: () {
+                                _feedDetails[index].like =
+                                    !_feedDetails[index].like;
+                                if (_feedDetails[index].like == true) {
+                                  counterProvider.likeUpdate(true);
+                                  addcookingListAPI(
+                                      context, filteredNames[index].recipeId);
+                                }
+                                if (_feedDetails[index].like == false) {
+                                  counterProvider.likeUpdate(false);
+
+                                  removeCookingListAPI(
+                                      context, filteredNames[index].recipeId);
+                                }
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -351,7 +410,7 @@ class _FavouriteState extends State<Favourite> {
                                       color: Colors.grey,
                                     ),
                                     Text(
-                                      "${filteredNames[index].serves} people",
+                                      "${filteredNames[index].serves} ${Constants.TEXTPEOPLE}",
                                       style: TextStyle(
                                           fontSize: 15.0, color: Colors.grey),
                                     )
