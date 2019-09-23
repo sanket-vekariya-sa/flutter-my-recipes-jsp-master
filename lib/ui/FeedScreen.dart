@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:Flavr/apis/cookingListAPI.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
-import 'package:Flavr/ui/DetailScreen.dart';
 import 'package:Flavr/ui/Skelton.dart';
 import 'package:Flavr/utils/CustomNavigation.dart';
 import 'package:Flavr/utils/Permissions.dart';

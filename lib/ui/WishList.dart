@@ -11,6 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:speech_recognition/speech_recognition.dart';
 
+import 'Skelton.dart';
+
 class WishList extends StatefulWidget {
   int loginData;
   var likedFeed = <ItemDetailsFeed>[];
@@ -107,10 +109,7 @@ class _WishListState extends State<WishList> {
             case ConnectionState.active:
               return null;
             case ConnectionState.waiting:
-              return Shimmer.fromColors(
-                  baseColor: Colors.grey[400],
-                  highlightColor: Colors.white,
-                  child: _buildRow());
+              return buildRowLoading(context);
             case ConnectionState.done:
               return _buildRow();
           }
