@@ -89,6 +89,19 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
+
+  Widget _noDataFound() {
+
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Text('No Data Found',textAlign: TextAlign.center,style: TextStyle(fontSize: 20.0),),
+    );
+  }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -279,7 +292,13 @@ class _DetailScreenState extends State<DetailScreen> {
                           return SpinKitFadingCircle(color: Colors.pink);
                         case ConnectionState.done:
                           newindex = data;
-                          return _listViewIndergents();
+                          if(_feedDetails.length == 0){
+                            return _noDataFound();
+                          }else{
+                            return _listViewIndergents();
+                          }
+
+                          //return _listViewIndergents();
                       }
                       return null;
                     },
@@ -323,7 +342,14 @@ class _DetailScreenState extends State<DetailScreen> {
                           return SpinKitFadingCircle(color: Colors.pink);
                         case ConnectionState.done:
                           newindex = data;
-                          return _listViewSteps();
+
+                          if(_instructionDetails.length == 0){
+                            return _noDataFound();
+                          }else{
+                            return _listViewSteps();
+                          }
+
+//                          return _listViewSteps();
                       }
                       return null;
                     },
