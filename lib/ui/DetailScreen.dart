@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Flavr/model/IngredientsDetailsFeed.dart';
 import 'package:Flavr/model/InstructionDetailsFeed.dart';
 import 'package:Flavr/model/ItemDetailsFeed.dart';
+import 'package:Flavr/utils/ListViewWidget.dart';
 import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -38,63 +39,11 @@ class _DetailScreenState extends State<DetailScreen> {
   VideoPlayerController _videoController;
   var isPlaying = false;
 
-  Widget _listViewIndergents() {
-    return ListView.separated(
-      primary: false,
-      shrinkWrap: true,
-      itemCount: _feedDetails.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: CircleAvatar(
-            child: Text(
-              (index + 1).toString(),
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.black,
-            maxRadius: 12.0,
-          ),
-          title: Text(_feedDetails[index].ingredient),
-        );
-      },
-      separatorBuilder: (context, index) {
-        return Divider();
-      },
-    );
-  }
-
-  Widget _listViewSteps() {
-    final int a = _instructionDetails.length;
-    return ListView.separated(
-      primary: false,
-      shrinkWrap: true,
-      itemCount: a,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: CircleAvatar(
-            child: Text(
-              (index + 1).toString(),
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.black,
-            maxRadius: 12.0,
-          ),
-          title: Text(
-            _instructionDetails[index].instruction,
-          ),
-        );
-      },
-      separatorBuilder: (context, index) {
-        return Divider();
-      },
-    );
-  }
-
-
   Widget _noDataFound() {
 
     return Padding(
       padding: EdgeInsets.all(10.0),
-      child: Text('No Data Found',textAlign: TextAlign.center,style: TextStyle(fontSize: 20.0),),
+      child: Text(Constants.NODATAFOUND,textAlign: TextAlign.center,style: TextStyle(fontSize: 20.0),),
     );
   }
 
@@ -295,7 +244,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           if(_feedDetails.length == 0){
                             return _noDataFound();
                           }else{
-                            return _listViewIndergents();
+                            return listViewIndergents(_feedDetails);
                           }
 
                           //return _listViewIndergents();
@@ -346,10 +295,8 @@ class _DetailScreenState extends State<DetailScreen> {
                           if(_instructionDetails.length == 0){
                             return _noDataFound();
                           }else{
-                            return _listViewSteps();
+                            return listViewSteps(_instructionDetails);
                           }
-
-//                          return _listViewSteps();
                       }
                       return null;
                     },

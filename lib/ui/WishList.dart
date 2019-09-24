@@ -1,16 +1,12 @@
 import 'dart:io';
-
 import 'package:Flavr/model/ItemDetailsFeed.dart';
-import 'package:Flavr/ui/DetailScreen.dart';
 import 'package:Flavr/utils/CustomNavigation.dart';
 import 'package:Flavr/utils/Permissions.dart';
 import 'package:Flavr/values/CONSTANTS.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:speech_recognition/speech_recognition.dart';
-
 import 'Skelton.dart';
 
 class WishList extends StatefulWidget {
@@ -186,7 +182,6 @@ class _WishListState extends State<WishList> {
     });
   }
 
-
   Future _searchPressed() async {
     await setState(() {
       if (this._searchIcon.icon == Icons.search) {
@@ -231,7 +226,6 @@ class _WishListState extends State<WishList> {
     return new ListView.builder(
       itemCount: filteredNames.length,
       itemBuilder: (BuildContext context, int index) {
-
         if (filteredNames.length == 0) {
           return Scaffold(
             body: new FadeInImage.assetNetwork(

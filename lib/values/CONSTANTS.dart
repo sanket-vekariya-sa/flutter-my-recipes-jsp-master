@@ -60,6 +60,7 @@ class CONSTANTS{
   var APPTITLEADDRECIPE = "ADD NEW RECIPE";
 
   var NODATAMSG = "no data available";
+  var NODATAFOUND = "No Data Found";
   var HINTLISTINIG = "Listening...";
   var HINTSEARCH = "Search...";
   var TEXTPEOPLE = "people";
