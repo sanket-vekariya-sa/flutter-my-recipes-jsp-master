@@ -1,16 +1,18 @@
-# myrecipes
+## Flutter My Recipes
+### Cool Flutter project for the recipes you can made and share with others.
 
-A new Flutter project.
+### This Project Includes:
+Implementation of API.<br>
+Login through API.<br>
+Youtube Player.<br>
+Login Sessions.<br>
+Android MVVM architecture.<br>
+Flutter Provider architecture.<br>
+Working in Android and IOS properly.<br>
+Image upload in API.<br>
+CRUD of data with API.<br>
+Shimmer Effects.<br>
+Foldable Titlebars.<br>
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### For more info:
+Email: ssvekariya11@gmail.com
